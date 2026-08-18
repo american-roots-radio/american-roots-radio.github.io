@@ -132,7 +132,7 @@
         
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
-            <form action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+            <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
                 
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
                 <input type="hidden" name="subject" value="Radio Hub — New Message">
@@ -143,12 +143,59 @@
                 <textarea name="message" placeholder="Report a broken stream or suggest a station..." rows="2" required 
                           style="background: #111111; border: 1px solid #444444; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; resize: vertical;"></textarea>
 
-                <button type="submit" 
+                <button type="submit" id="submit-btn" 
                         style="color: #000000; background-color: #ff9900; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
                     ✉️ Send Message
                 </button>
             </form>
+
+            <div id="form-result" style="display: none; margin-top: 12px; text-align: center; font-size: 13px; font-weight: bold;"></div>
         </div>
+
+        <script>
+            const form = document.getElementById('contact-form');
+            const result = document.getElementById('form-result');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const object = Object.fromEntries(formData);
+                const json = JSON.stringify(object);
+
+                result.style.display = "block";
+                result.style.color = "#ff9900";
+                result.innerHTML = "Sending...";
+
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                })
+                .then(async (response) => {
+                    let res = await response.json();
+                    if (response.status == 200) {
+                        result.style.color = "#28a745";
+                        result.innerHTML = "✅ Message sent successfully! Thank you.";
+                    } else {
+                        result.style.color = "#dc3545";
+                        result.innerHTML = res.message;
+                    }
+                })
+                .catch(error => {
+                    result.style.color = "#dc3545";
+                    result.innerHTML = "Something went wrong!";
+                })
+                .then(function() {
+                    form.reset();
+                    setTimeout(() => {
+                        result.style.display = "none";
+                    }, 5000);
+                });
+            });
+        </script>
     </header>
 
     <div class="container">
