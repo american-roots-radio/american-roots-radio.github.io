@@ -223,9 +223,12 @@
        <!-- Contact Box -->
        <div class="contact-box">
        <h3>📢 Broken Stream or Want to Suggest a Station?</h3>
-       <p>If a live stream link is down, contact us at: <strong>mgennaro0373@gmail.com</strong></p>
-       <a href="mailto:mgennaro0373@gmail.com?subject=Radio%20Report" class="contact-btn">✉️ Report Broken Station</a>
-    </div>
+       <form action="https://formsubmit.co/mgennaro0373@gmail.com" method="POST" class="contact-form">
+        <input type="email" name="email" placeholder="Your email address" required class="form-input">
+        <textarea name="message" placeholder="Describe the issue or station name..." rows="3" required class="form-input"></textarea>
+        <button type="submit" class="contact-btn">✉️ Send Report</button>
+       </form>
+       </div>
 
         <footer>
             <p>© 2026 Country Radio Hub — Direct Live Streams Aggregator</p>
