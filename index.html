@@ -99,7 +99,7 @@
         .fav-star { position: absolute; top: 15px; right: 15px; font-size: 1.3rem; color: #444; transition: 0.2s; cursor: pointer; }
         .fav-star.active, .fav-star:hover { color: var(--accent); }
 
-        /* Animated Equalizer */
+        /* Animated Equalizer Icon in Player */
         .equalizer { display: none; align-items: flex-end; gap: 3px; height: 18px; margin-left: 10px; }
         .equalizer.active { display: flex; }
         .eq-bar { width: 3px; background: var(--accent); border-radius: 2px; animation: bounce 0.8s infinite alternate ease-in-out; }
@@ -132,7 +132,6 @@
     </header>
 
     <div class="container">
-        
         <!-- Dynamic Station Banner -->
         <div class="now-playing-banner">
             <div class="banner-info">
@@ -429,10 +428,8 @@
                 analyser.fftSize = 64;
                 prevNode.connect(analyser);
                 analyser.connect(audioCtx.destination);
-
-                drawVUMeter();
             } catch (e) {
-                console.warn("AudioContext / CORS fallback :", e);
+                console.warn("AudioContext fallback active (iOS/CORS) :", e);
             }
         }
 
@@ -441,20 +438,41 @@
             const canvas = document.getElementById('vu-meter');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (!analyser) return;
+            const player = document.getElementById('main-audio');
+            if (!player || player.paused || !player.src) return;
 
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            analyser.getByteFrequencyData(dataArray);
+            let dataArray;
+            let bufferLength = 16;
+            let isWebAudioActive = false;
+
+            if (analyser) {
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                analyser.getByteFrequencyData(dataArray);
+                for (let i = 0; i < dataArray.length; i++) {
+                    if (dataArray[i] > 0) {
+                        isWebAudioActive = true;
+                        break;
+                    }
+                }
+            }
 
             const barWidth = (canvas.width / bufferLength) - 3;
             let x = 0;
 
             for (let i = 0; i < bufferLength; i++) {
-                const barHeight = (dataArray[i] / 255) * canvas.height;
+                let barHeight = 0;
+                if (isWebAudioActive) {
+                    barHeight = (dataArray[i] / 255) * canvas.height;
+                } else {
+                    // Fallback d'animation dynamique sur iPhone / Safari sans CORS
+                    const speed = Date.now() / 150;
+                    const wave = Math.sin(speed + i * 0.5) * 0.35 + 0.65;
+                    const noise = Math.random() * 0.3 + 0.7;
+                    barHeight = (canvas.height * 0.75) * wave * noise;
+                }
                 
                 let color = '#f59e0b';
                 if (barHeight > canvas.height * 0.8) color = '#ef4444';
@@ -637,6 +655,7 @@
 
         updateHeaderCount();
         renderRadios(stations);
+        drawVUMeter();
     </script>
 </body>
 </html>
