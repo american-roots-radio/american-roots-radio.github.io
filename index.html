@@ -47,6 +47,7 @@
         .status-header h3 { margin: 0; font-size: 0.95rem; color: #fff; display: flex; align-items: center; gap: 8px; }
         .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e; animation: pulse 1.5s infinite; }
         .live-dot.stopped { background: #6b7280; box-shadow: none; animation: none; }
+        .live-dot.error { background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: none; }
         @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
         
         .status-stats { display: flex; flex-wrap: wrap; gap: 12px 30px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
@@ -90,6 +91,7 @@
         .card-actions { display: flex; gap: 8px; margin-top: 10px; }
         .btn-play-card, .btn-stop-card { flex: 1; background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 8px; padding: 8px; text-align: center; font-weight: bold; font-size: 0.82rem; transition: 0.2s; cursor: pointer; }
         .btn-play-card:hover, .btn-stop-card:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        .btn-play-card.active-play { background: var(--accent); color: #000; border-color: var(--accent); }
 
         /* Favorite Star Button */
         .fav-star { position: absolute; top: 15px; right: 15px; font-size: 1.3rem; color: #444; transition: 0.2s; cursor: pointer; }
@@ -105,14 +107,14 @@
         .eq-bar:nth-child(4) { height: 80%; animation-delay: 0.4s; }
         @keyframes bounce { 0% { height: 20%; } 100% { height: 100%; } }
 
-        /* Contact Section Box & Forms */
-        .contact-box { background: var(--panel-bg); border: 1px dashed var(--accent); border-radius: 12px; padding: 20px; margin: 40px 0; text-align: center; }
+        /* Contact Section Box */
+        .contact-box { background: var(--panel-bg); border: 1px dashed var(--accent); border-radius: 12px; padding: 25px; margin: 40px 0; text-align: center; }
         .contact-box h3 { color: var(--accent); margin-top: 0; font-size: 1.2rem; }
-        .contact-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px; }
-        .contact-form { display: flex; flex-direction: column; gap: 10px; max-width: 500px; margin: 0 auto; }
-        .form-input { background: #0a0a0b; border: 1px solid #333; border-radius: 6px; padding: 10px; color: #fff; font-family: var(--font); font-size: 0.9rem; outline: none; }
+        .contact-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+        .contact-form { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 500px; margin: 0 auto; }
+        .form-input { width: 100%; padding: 10px 14px; background: #0a0a0b; border: 1px solid #333; border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.9rem; box-sizing: border-box; outline: none; }
         .form-input:focus { border-color: var(--accent); }
-        .contact-btn { background: var(--accent); color: #000; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-decoration: none; display: inline-block; transition: 0.2s; border: none; cursor: pointer; }
+        .contact-btn { background: var(--accent); color: #000; font-weight: bold; padding: 10px 22px; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
         .contact-btn:hover { background: #d97706; }
 
         /* Sticky Bottom Player */
@@ -123,10 +125,14 @@
         .now-playing-info h4 { margin: 0; color: #fff; font-size: 1.1rem; display: flex; align-items: center; }
         .now-playing-info p { margin: 2px 0 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
-        .audio-controls { flex-grow: 1; max-width: 600px; display: flex; align-items: center; gap: 10px; order: 2; justify-content: flex-end; }
-        audio { flex-grow: 1; outline: none; height: 40px; min-width: 200px; }
-        .btn-player-btn { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 6px; padding: 0 14px; height: 40px; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .btn-player-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        .audio-controls { flex-grow: 1; max-width: 650px; display: flex; align-items: center; gap: 12px; order: 2; justify-content: flex-end; }
+        audio { flex-grow: 1; outline: none; height: 40px; min-width: 180px; }
+        .btn-player-btn { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 6px; padding: 0 16px; height: 40px; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .btn-player-btn:hover, .btn-player-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        .volume-container { display: flex; align-items: center; gap: 8px; background: #1a1a1e; padding: 0 12px; height: 40px; border-radius: 6px; border: 1px solid #333; }
+        .volume-container span { font-size: 0.9rem; }
+        .volume-slider { width: 70px; accent-color: var(--accent); cursor: pointer; }
 
         footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
     </style>
@@ -142,12 +148,12 @@
         <!-- Dynamic Station Banner -->
         <div class="now-playing-banner">
             <div class="banner-info">
-                <span class="banner-tag"><span id="live-indicator" class="live-dot"></span> CURRENTLY PLAYING</span>
-                <h2 id="banner-title" class="banner-title">1.FM — Country Classic</h2>
-                <p id="banner-desc" class="banner-desc">Pure 80s, 90s & Golden Era Country Legends</p>
+                <span class="banner-tag"><span id="live-indicator" class="live-dot stopped"></span> <span id="banner-status-text">STANDBY</span></span>
+                <h2 id="banner-title" class="banner-title">Select a Station Below</h2>
+                <p id="banner-desc" class="banner-desc">Click Play on any radio card to launch direct live audio stream with equalizer.</p>
                 <div class="banner-meta">
-                    <span id="banner-location">📍 Location: US / Global</span>
-                    <span id="banner-quality">🎛️ Quality: 128 kbps MP3 Stream</span>
+                    <span id="banner-location">📍 Location: --</span>
+                    <span id="banner-quality">🎛️ Quality: --</span>
                 </div>
             </div>
         </div>
@@ -194,7 +200,7 @@
         <!-- Technical Stream Status & Visualizer Box -->
         <div class="status-box">
             <div class="status-header">
-                <h3><span id="status-live-dot" class="live-dot"></span> STREAM CONNECTOR & AUDIO STATUS</h3>
+                <h3><span id="status-live-dot" class="live-dot stopped"></span> STREAM CONNECTOR & AUDIO STATUS</h3>
                 <span id="server-status" style="color: var(--accent); font-weight: bold; font-size: 0.85rem;">SERVER STATUS: STANDBY</span>
             </div>
             <div class="status-stats">
@@ -210,12 +216,12 @@
         <div class="controls">
             <div class="filter-buttons">
                 <button id="btn-all" class="btn-filter active" onclick="filterGenre('all')">All Stations</button>
-                <button class="btn-filter" onclick="filterGenre('fav')">⭐ Favorites</button>
-                <button class="btn-filter" onclick="filterGenre('classic')">Classic Country</button>
-                <button class="btn-filter" onclick="filterGenre('texas')">Texas & Red Dirt</button>
-                <button class="btn-filter" onclick="filterGenre('outlaw')">Outlaw & Americana</button>
-                <button class="btn-filter" onclick="filterGenre('pop')">Modern Hits</button>
-                <button class="btn-filter" onclick="filterGenre('bluegrass')">Bluegrass</button>
+                <button id="btn-fav" class="btn-filter" onclick="filterGenre('fav')">⭐ Favorites (0)</button>
+                <button id="btn-classic" class="btn-filter" onclick="filterGenre('classic')">Classic Country</button>
+                <button id="btn-texas" class="btn-filter" onclick="filterGenre('texas')">Texas & Red Dirt</button>
+                <button id="btn-outlaw" class="btn-filter" onclick="filterGenre('outlaw')">Outlaw & Americana</button>
+                <button id="btn-pop" class="btn-filter" onclick="filterGenre('pop')">Modern Hits</button>
+                <button id="btn-bluegrass" class="btn-filter" onclick="filterGenre('bluegrass')">Bluegrass</button>
             </div>
             <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
         </div>
@@ -223,15 +229,15 @@
         <!-- Radios Grid -->
         <div id="radio-grid" class="grid-radios"></div>
 
-        <!-- Contact Box (Option Infaillible Pi-hole / AdBlocker) -->
+        <!-- Contact Box -->
         <div class="contact-box">
             <h3>📢 Broken Stream or Want to Suggest a Station?</h3>
-            <p>Send an email directly (100% compatible Pi-hole & AdBlockers):</p>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-                <button onclick="copyEmail()" id="copy-btn" class="contact-btn">📋 Copy Email (mgennaro0373@gmail.com)</button>
-                <a href="mailto:mgennaro0373@gmail.com" class="contact-btn" style="background: #25252e; color: var(--text); border: 1px solid var(--accent);">✉️ Open Mail App</a>
-            </div>
-            <span id="copy-msg" style="display: block; margin-top: 10px; color: #22c55e; font-weight: bold; font-size: 0.85rem; height: 18px;"></span>
+            <p>Report dead streams or suggest new high-quality country stations to keep the directory 100% operational.</p>
+            <form action="https://formsubmit.co/mgennaro0373@gmail.com" method="POST" class="contact-form">
+                <input type="email" name="email" placeholder="Your email address" required class="form-input">
+                <textarea name="message" placeholder="Describe the issue or station name..." rows="3" required class="form-input"></textarea>
+                <button type="submit" class="contact-btn">✉️ Send Report</button>
+            </form>
         </div>
 
         <footer>
@@ -257,16 +263,20 @@
             </div>
         </div>
         <div class="audio-controls">
-            <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
+            <button id="btn-main-play" class="btn-player-btn" onclick="togglePlayPause()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
-            <audio id="main-audio" controls autoplay crossorigin="anonymous" preload="none">
+            <div class="volume-container">
+                <span>🔊</span>
+                <input type="range" class="volume-slider" id="volume-control" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
+            </div>
+            <audio id="main-audio" controls preload="none">
                 <source id="main-source" src="" type="audio/mpeg">
             </audio>
         </div>
     </div>
 
     <script>
-      const stations = [
+        const stations = [
             { id: 1, name: "1.FM Country Classic", genre: "classic", location: "US / Global", desc: "Pure 80s, 90s & Golden Era Country Legends", icon: "📻", quality: "128 kbps MP3", url: "https://strm112.1.fm/ccountry_mobile_mp3" },
             { id: 2, name: "GotRadio Classic Country", genre: "classic", location: "California, USA", desc: "Johnny Cash, Willie Nelson, Waylon & George Strait", icon: "🎸", quality: "64 kbps AAC", url: "https://pureplay.cdnstream1.com/6014_64.aac" },
             { id: 3, name: "SomaFM Boot Liquor", genre: "outlaw", location: "San Francisco, USA", desc: "Americana, Alt-Country & Outlaw Road Songs", icon: "🪕", quality: "128 kbps MP3", url: "https://ice1.somafm.com/bootliquor-128-mp3" },
@@ -470,22 +480,11 @@
         let timerInterval = null;
         let secondsElapsed = 0;
 
-        function copyEmail() {
-            const email = "mgennaro0373@gmail.com";
-            navigator.clipboard.writeText(email).then(() => {
-                const msg = document.getElementById('copy-msg');
-                msg.innerText = "✓ Email copied to clipboard!";
-                setTimeout(() => { msg.innerText = ""; }, 3000);
-            }).catch(() => {
-                prompt("Copy this email address:", email);
-            });
-        }
-
-        // Met a jour dynamiquement le compteur de radios
         function updateHeaderCount() {
             const count = stations.length;
             document.getElementById('header-count').innerText = `${count} Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits`;
             document.getElementById('btn-all').innerText = `All Stations (${count})`;
+            document.getElementById('btn-fav').innerText = `⭐ Favorites (${favorites.length})`;
         }
 
         function setupAudioContext() {
@@ -517,7 +516,8 @@
 
                 drawVUMeter();
             } catch (e) {
-                console.log("AudioContext fallback:", e);
+                console.log("AudioContext/CORS fallback engaged:", e);
+                drawVUMeter();
             }
         }
 
@@ -525,20 +525,33 @@
             requestAnimationFrame(drawVUMeter);
             const canvas = document.getElementById('vu-meter');
             const ctx = canvas.getContext('2d');
+            const player = document.getElementById('main-audio');
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (!analyser) return;
-
-            const bufferLength = analyser.frequencyBinCount;
+            const bufferLength = analyser ? analyser.frequencyBinCount : 32;
             const dataArray = new Uint8Array(bufferLength);
-            analyser.getByteFrequencyData(dataArray);
+            
+            if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+            }
 
+            const hasAudioData = dataArray.some(v => v > 0);
             const barWidth = (canvas.width / bufferLength) - 3;
             let x = 0;
 
             for (let i = 0; i < bufferLength; i++) {
-                const barHeight = (dataArray[i] / 255) * canvas.height;
+                let barHeight = 0;
+
+                if (!player.paused && player.src) {
+                    if (hasAudioData) {
+                        barHeight = (dataArray[i] / 255) * canvas.height;
+                    } else {
+                        // Simulated fallback visualizer when CORS prevents WebAudio capture
+                        const base = Math.sin(Date.now() * 0.005 + i * 0.3) * 0.4 + 0.5;
+                        barHeight = base * (Math.random() * 0.3 + 0.7) * canvas.height;
+                    }
+                }
                 
                 let color = '#f59e0b';
                 if (barHeight > canvas.height * 0.8) color = '#ef4444';
@@ -566,6 +579,11 @@
             });
         }
 
+        function changeVolume(val) {
+            const player = document.getElementById('main-audio');
+            player.volume = parseFloat(val);
+        }
+
         function toggleFav(e, id) {
             e.stopPropagation();
             if (favorites.includes(id)) {
@@ -574,6 +592,7 @@
                 favorites.push(id);
             }
             localStorage.setItem('crh_favorites', JSON.stringify(favorites));
+            updateHeaderCount();
             
             if (activeGenre === 'fav') {
                 filterGenre('fav');
@@ -598,11 +617,15 @@
         function renderRadios(list) {
             const grid = document.getElementById('radio-grid');
             grid.innerHTML = '';
+            const player = document.getElementById('main-audio');
             
             list.forEach(st => {
                 const isFav = favorites.includes(st.id);
+                const isCurrent = currentStation && currentStation.id === st.id;
+                const isPlaying = isCurrent && !player.paused;
+
                 const card = document.createElement('div');
-                card.className = `card-radio`;
+                card.className = `card-radio ${isCurrent ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
                 
                 card.innerHTML = `
@@ -618,7 +641,7 @@
                         <div class="station-desc">${st.desc}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation(${st.id})">▶ Play</div>
+                        <div class="btn-play-card ${isPlaying ? 'active-play' : ''}" onclick="playStation(${st.id})">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
@@ -629,6 +652,14 @@
         function playStation(id) {
             const st = stations.find(s => s.id === id);
             if (!st) return;
+
+            const player = document.getElementById('main-audio');
+
+            if (currentStation && currentStation.id === st.id) {
+                togglePlayPause();
+                return;
+            }
+
             currentStation = st;
 
             setupAudioContext();
@@ -636,40 +667,29 @@
                 audioCtx.resume();
             }
 
-            document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('playing'));
-            
-            const activeCard = document.getElementById(`card-${st.id}`);
-            if (activeCard) activeCard.classList.add('playing');
-            
-            document.getElementById('banner-title').innerText = st.name;
-            document.getElementById('banner-desc').innerText = st.desc;
-            document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
-            document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
-            document.getElementById('live-indicator').classList.remove('stopped');
-
-            document.getElementById('stat-bitrate').innerText = st.quality;
-            document.getElementById('server-status').innerText = "SERVER STATUS: ONLINE";
-            document.getElementById('server-status').style.color = "#22c55e";
-            document.getElementById('status-live-dot').classList.remove('stopped');
-
-            secondsElapsed = 0;
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                secondsElapsed++;
-                const h = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
-                const m = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
-                const s = String(secondsElapsed % 60).padStart(2, '0');
-                document.getElementById('stat-timer').textContent = `${h}:${m}:${s}`;
-            }, 1000);
-
-            document.getElementById('current-icon').innerText = st.icon || '📻';
-            document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
-            document.getElementById('current-genre').innerText = `LIVE • ${st.location} (${st.genre.toUpperCase()})`;
-            document.getElementById('eq-bar').classList.add('active');
-            
-            const player = document.getElementById('main-audio');
             player.src = st.url;
-            player.play().catch(e => console.log("Stream loading..."));
+            player.play().catch(e => {
+                console.log("Stream autoplay check/blocked:", e);
+                setServerStatus("STREAM ERROR / BLOCKED", "#ef4444", true);
+            });
+
+            updateUIForStation(st);
+        }
+
+        function togglePlayPause() {
+            const player = document.getElementById('main-audio');
+            if (!currentStation) {
+                if (stations.length > 0) playStation(stations[0].id);
+                return;
+            }
+
+            if (player.paused) {
+                player.play().then(() => {
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                }).catch(e => console.log("Play error:", e));
+            } else {
+                player.pause();
+            }
         }
 
         function stopStation() {
@@ -678,26 +698,63 @@
             player.src = "";
 
             clearInterval(timerInterval);
+            timerInterval = null;
             document.getElementById('stat-timer').textContent = "00:00:00";
 
             document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('playing'));
             document.getElementById('eq-bar').classList.remove('active');
             
-            document.getElementById('server-status').innerText = "SERVER STATUS: STOPPED";
-            document.getElementById('server-status').style.color = "#f59e0b";
-            document.getElementById('status-live-dot').classList.add('stopped');
-            document.getElementById('live-indicator').classList.add('stopped');
+            setServerStatus("SERVER STATUS: STOPPED", "#f59e0b", false, "stopped");
 
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
             document.getElementById('current-genre').innerText = "Click play or press Play to resume";
+            document.getElementById('btn-main-play').innerText = "▶ PLAY";
+            
+            renderRadios(getFilteredStations());
         }
 
-        function resumeStation() {
-            if (currentStation) {
-                playStation(currentStation.id);
-            } else if (stations.length > 0) {
-                playStation(stations[0].id);
+        function updateUIForStation(st) {
+            document.getElementById('banner-title').innerText = st.name;
+            document.getElementById('banner-desc').innerText = st.desc;
+            document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
+            document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
+            document.getElementById('stat-bitrate').innerText = st.quality;
+
+            document.getElementById('current-icon').innerText = st.icon || '📻';
+            document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
+            document.getElementById('current-genre').innerText = `LIVE • ${st.location} (${st.genre.toUpperCase()})`;
+
+            renderRadios(getFilteredStations());
+        }
+
+        function setServerStatus(text, color, isError = false, dotClass = "") {
+            const statusElem = document.getElementById('server-status');
+            const liveDot = document.getElementById('live-indicator');
+            const statusDot = document.getElementById('status-live-dot');
+            const bannerStatus = document.getElementById('banner-status-text');
+
+            statusElem.innerText = text;
+            statusElem.style.color = color;
+
+            liveDot.className = "live-dot " + dotClass;
+            statusDot.className = "live-dot " + dotClass;
+            if (isError) {
+                liveDot.classList.add('error');
+                statusDot.classList.add('error');
             }
+
+            bannerStatus.innerText = text.replace("SERVER STATUS: ", "");
+        }
+
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const h = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
+                const m = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
+                const s = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('stat-timer').textContent = `${h}:${m}:${s}`;
+            }, 1000);
         }
 
         function filterGenre(genre) {
@@ -712,10 +769,37 @@
             renderRadios(getFilteredStations());
         }
 
-        document.getElementById('main-audio').addEventListener('pause', () => {
-            if(document.getElementById('main-audio').src === "") return;
-            clearInterval(timerInterval);
+        // Audio Events
+        const audioPlayer = document.getElementById('main-audio');
+
+        audioPlayer.addEventListener('play', () => {
+            document.getElementById('btn-main-play').innerText = "⏸ PAUSE";
+            document.getElementById('eq-bar').classList.add('active');
+            setServerStatus("SERVER STATUS: ONLINE", "#22c55e");
+            startTimer();
+            if (currentStation) renderRadios(getFilteredStations());
+        });
+
+        audioPlayer.addEventListener('pause', () => {
+            document.getElementById('btn-main-play').innerText = "▶ PLAY";
             document.getElementById('eq-bar').classList.remove('active');
+            clearInterval(timerInterval);
+            timerInterval = null;
+            if (audioPlayer.src) {
+                setServerStatus("SERVER STATUS: PAUSED", "#f59e0b", false, "stopped");
+            }
+            if (currentStation) renderRadios(getFilteredStations());
+        });
+
+        audioPlayer.addEventListener('waiting', () => {
+            setServerStatus("SERVER STATUS: BUFFERING...", "#f59e0b");
+        });
+
+        audioPlayer.addEventListener('error', () => {
+            setServerStatus("STREAM OFFLINE OR BLOCKED", "#ef4444", true);
+            document.getElementById('eq-bar').classList.remove('active');
+            clearInterval(timerInterval);
+            timerInterval = null;
         });
 
         updateHeaderCount();
