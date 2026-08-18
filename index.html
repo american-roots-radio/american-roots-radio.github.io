@@ -16,9 +16,8 @@
     <meta property="og:title" content="Country Radio Hub — Live US Streams">
     <meta property="og:description" content="Listen to free live country radio stations online. Classic Country, Bluegrass & Modern Hits.">
     <meta property="og:locale" content="en_US">
-</head>
 
-<style>
+    <style>
         :root {
             --bg-color: #0a0a0b;
             --panel-bg: #141416;
@@ -204,13 +203,13 @@
         <!-- Controls & Filters -->
         <div class="controls">
             <div class="filter-buttons">
-                <button id="btn-all" class="btn-filter active" onclick="filterGenre('all')">All Stations</button>
-                <button class="btn-filter" onclick="filterGenre('fav')">⭐ Favorites</button>
-                <button class="btn-filter" onclick="filterGenre('classic')">Classic Country</button>
-                <button class="btn-filter" onclick="filterGenre('texas')">Texas & Red Dirt</button>
-                <button class="btn-filter" onclick="filterGenre('outlaw')">Outlaw & Americana</button>
-                <button class="btn-filter" onclick="filterGenre('pop')">Modern Hits</button>
-                <button class="btn-filter" onclick="filterGenre('bluegrass')">Bluegrass</button>
+                <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Stations</button>
+                <button class="btn-filter" onclick="filterGenre('fav', this)">⭐ Favorites</button>
+                <button class="btn-filter" onclick="filterGenre('classic', this)">Classic Country</button>
+                <button class="btn-filter" onclick="filterGenre('texas', this)">Texas & Red Dirt</button>
+                <button class="btn-filter" onclick="filterGenre('outlaw', this)">Outlaw & Americana</button>
+                <button class="btn-filter" onclick="filterGenre('pop', this)">Modern Hits</button>
+                <button class="btn-filter" onclick="filterGenre('bluegrass', this)">Bluegrass</button>
             </div>
             <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
         </div>
@@ -398,7 +397,6 @@
         let timerInterval = null;
         let secondsElapsed = 0;
 
-        // Met a jour dynamiquement le compteur de radios
         function updateHeaderCount() {
             const count = stations.length;
             document.getElementById('header-count').innerText = `${count} Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits`;
@@ -407,11 +405,11 @@
 
         function setupAudioContext() {
             if (audioCtx) return;
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-            const audioElement = document.getElementById('main-audio');
-            
             try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                const audioElement = document.getElementById('main-audio');
+                
                 audioSource = audioCtx.createMediaElementSource(audioElement);
                 let prevNode = audioSource;
 
@@ -434,13 +432,14 @@
 
                 drawVUMeter();
             } catch (e) {
-                console.log("AudioContext fallback:", e);
+                console.warn("AudioContext / CORS fallback :", e);
             }
         }
 
         function drawVUMeter() {
             requestAnimationFrame(drawVUMeter);
             const canvas = document.getElementById('vu-meter');
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -478,7 +477,8 @@
             const sliderIds = ['eq-60', 'eq-250', 'eq-1000', 'eq-4000', 'eq-12000'];
             
             vals.forEach((v, i) => {
-                document.getElementById(sliderIds[i]).value = v;
+                const el = document.getElementById(sliderIds[i]);
+                if (el) el.value = v;
                 if (filters[i]) filters[i].gain.value = v;
             });
         }
@@ -519,7 +519,7 @@
             list.forEach(st => {
                 const isFav = favorites.includes(st.id);
                 const card = document.createElement('div');
-                card.className = `card-radio`;
+                card.className = `card-radio ${currentStation && currentStation.id === st.id ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
                 
                 card.innerHTML = `
@@ -617,10 +617,10 @@
             }
         }
 
-        function filterGenre(genre) {
+        function filterGenre(genre, btnElement) {
             activeGenre = genre;
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            if (event && event.target) event.target.classList.add('active');
+            if (btnElement) btnElement.classList.add('active');
             
             renderRadios(getFilteredStations());
         }
@@ -630,7 +630,7 @@
         }
 
         document.getElementById('main-audio').addEventListener('pause', () => {
-            if(document.getElementById('main-audio').src === "") return;
+            if (document.getElementById('main-audio').src === "") return;
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
         });
