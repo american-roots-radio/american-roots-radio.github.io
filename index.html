@@ -105,11 +105,14 @@
         .eq-bar:nth-child(4) { height: 80%; animation-delay: 0.4s; }
         @keyframes bounce { 0% { height: 20%; } 100% { height: 100%; } }
 
-        /* Contact Section Box */
+        /* Contact Section Box & Forms */
         .contact-box { background: var(--panel-bg); border: 1px dashed var(--accent); border-radius: 12px; padding: 20px; margin: 40px 0; text-align: center; }
         .contact-box h3 { color: var(--accent); margin-top: 0; font-size: 1.2rem; }
         .contact-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px; }
-        .contact-btn { background: var(--accent); color: #000; font-weight: bold; padding: 8px 18px; border-radius: 6px; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .contact-form { display: flex; flex-direction: column; gap: 10px; max-width: 500px; margin: 0 auto; }
+        .form-input { background: #0a0a0b; border: 1px solid #333; border-radius: 6px; padding: 10px; color: #fff; font-family: var(--font); font-size: 0.9rem; outline: none; }
+        .form-input:focus { border-color: var(--accent); }
+        .contact-btn { background: var(--accent); color: #000; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-decoration: none; display: inline-block; transition: 0.2s; border: none; cursor: pointer; }
         .contact-btn:hover { background: #d97706; }
 
         /* Sticky Bottom Player */
@@ -220,15 +223,16 @@
         <!-- Radios Grid -->
         <div id="radio-grid" class="grid-radios"></div>
 
-       <!-- Contact Box -->
-       <div class="contact-box">
-       <h3>📢 Broken Stream or Want to Suggest a Station?</h3>
-       <form action="https://formsubmit.co/mgennaro0373@gmail.com" method="POST" class="contact-form">
-        <input type="email" name="email" placeholder="Your email address" required class="form-input">
-        <textarea name="message" placeholder="Describe the issue or station name..." rows="3" required class="form-input"></textarea>
-        <button type="submit" class="contact-btn">✉️ Send Report</button>
-       </form>
-       </div>
+        <!-- Contact Box (Option Infaillible Pi-hole / AdBlocker) -->
+        <div class="contact-box">
+            <h3>📢 Broken Stream or Want to Suggest a Station?</h3>
+            <p>Send an email directly (100% compatible Pi-hole & AdBlockers):</p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                <button onclick="copyEmail()" id="copy-btn" class="contact-btn">📋 Copy Email (mgennaro0373@gmail.com)</button>
+                <a href="mailto:mgennaro0373@gmail.com" class="contact-btn" style="background: #25252e; color: var(--text); border: 1px solid var(--accent);">✉️ Open Mail App</a>
+            </div>
+            <span id="copy-msg" style="display: block; margin-top: 10px; color: #22c55e; font-weight: bold; font-size: 0.85rem; height: 18px;"></span>
+        </div>
 
         <footer>
             <p>© 2026 Country Radio Hub — Direct Live Streams Aggregator</p>
@@ -465,6 +469,17 @@
 
         let timerInterval = null;
         let secondsElapsed = 0;
+
+        function copyEmail() {
+            const email = "mgennaro0373@gmail.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const msg = document.getElementById('copy-msg');
+                msg.innerText = "✓ Email copied to clipboard!";
+                setTimeout(() => { msg.innerText = ""; }, 3000);
+            }).catch(() => {
+                prompt("Copy this email address:", email);
+            });
+        }
 
         // Met a jour dynamiquement le compteur de radios
         function updateHeaderCount() {
