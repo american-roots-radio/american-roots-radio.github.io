@@ -830,7 +830,7 @@
             document.getElementById('stat-timer').textContent = "00:00:00";
             document.getElementById('eq-bar').classList.remove('active');
             
-            document.getElementById('server-status').innerText = "SERVER STATUS: STATION HORS LIGNE";
+            document.getElementById('server-status').innerText = "SERVER STATUS: STATION OFFLINE";
             document.getElementById('server-status').style.color = "#ef4444";
             
             document.getElementById('status-live-dot').className = 'live-dot error';
@@ -838,8 +838,8 @@
 
             const name = currentStation ? currentStation.name : "Station";
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
-            document.getElementById('current-genre').innerText = "⚠️ Station hors ligne — Impossible de charger ce flux";
-            document.getElementById('banner-desc').innerText = "⚠️ Le flux en direct est indisponible ou momentanément interrompu.";
+            document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
+            document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
         });
 
         player.addEventListener('pause', () => {
