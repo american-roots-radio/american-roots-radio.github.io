@@ -1,0 +1,15 @@
+{
+  "short_name": "Country Radio",
+  "name": "Country-Radio-Live",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "display": "standalone"
+}
