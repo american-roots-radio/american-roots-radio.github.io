@@ -872,7 +872,7 @@
 
         initApp();
   </script> 
-  <script>  
+  <script>
   let deferredPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -883,7 +883,7 @@
     if (deferredPrompt) {
       deferredPrompt.prompt();
     } else {
-      alert("Pour installer l'app :\n\n• Sur iPhone : appuyez sur 'Partager' puis 'Sur l'écran d'accueil'.\n• Sur PC/Mac : utilisez l'icône d'installation (+) dans la barre d'adresse de votre navigateur.");
+      alert("Pour installer l'app :\n\n• Sur Android : appuyez sur le menu (⋮) puis 'Installer l'application' (ou 'Ajouter à l'écran d'accueil').\n• Sur iPhone : appuyez sur 'Partager' puis 'Sur l'écran d'accueil'.\n• Sur PC/Mac : utilisez l'icône d'installation (+) dans la barre d'adresse.");
     }
   }
 </script>
