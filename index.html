@@ -10,12 +10,28 @@
     <link rel="canonical" href="https://country-radio-live.github.io/">
     <meta name="msvalidate.01" content="F7C8E3E764111B0D04AGB326EBC5FB01" />
 
-    <!-- Open Graph / Social Media -->
+    <!-- Configuration PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f59e0b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Country Radio">
+    <link rel="apple-touch-icon" href="https://country-radio-live.github.io/icon-192.png">
+
+    <!-- Open Graph / Social Media (WhatsApp, iMessage, Facebook) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://country-radio-live.github.io/">
-    <meta property="og:title" content="Country Radio Hub — Live US Streams">
-    <meta property="og:description" content="Listen to free live country radio stations online. Classic Country, Bluegrass & Modern Hits.">
+    <meta property="og:title" content="Country Radio Hub — Live US Streams & Equalizer 🇺🇸">
+    <meta property="og:description" content="Listen to free live country radio stations online. Classic Country, Texas Red Dirt, Bluegrass & Modern Hits with built-in audio equalizer.">
+    <meta property="og:image" content="https://country-radio-live.github.io/og-image.jpg">
     <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Country Radio Hub">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Country Radio Hub — Live US Streams & Equalizer">
+    <meta name="twitter:description" content="Listen to free live country radio stations online with built-in equalizer.">
+    <meta name="twitter:image" content="https://country-radio-live.github.io/og-image.jpg">
 
     <style>
         :root {
@@ -51,6 +67,7 @@
         .status-header h3 { margin: 0; font-size: 0.95rem; color: #fff; display: flex; align-items: center; gap: 8px; }
         .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e; animation: pulse 1.5s infinite; }
         .live-dot.stopped { background: #6b7280; box-shadow: none; animation: none; }
+        .live-dot.error { background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: none; }
         @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
         
         .status-stats { display: flex; flex-wrap: wrap; gap: 12px 30px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
@@ -233,12 +250,12 @@
         <!-- Dynamic Station Banner -->
         <div class="now-playing-banner">
             <div class="banner-info">
-                <span class="banner-tag"><span id="live-indicator" class="live-dot"></span> CURRENTLY PLAYING</span>
-                <h2 id="banner-title" class="banner-title">1.FM — Country Classic</h2>
-                <p id="banner-desc" class="banner-desc">Pure 80s, 90s & Golden Era Country Legends</p>
+                <span class="banner-tag"><span id="live-indicator" class="live-dot stopped"></span> CURRENTLY PLAYING</span>
+                <h2 id="banner-title" class="banner-title">Select a Station</h2>
+                <p id="banner-desc" class="banner-desc">Click play on any radio card or press Space to start listening</p>
                 <div class="banner-meta">
-                    <span id="banner-location">📍 Location: US / Global</span>
-                    <span id="banner-quality">🎛️ Quality: 128 kbps MP3 Stream</span>
+                    <span id="banner-location">📍 Location: --</span>
+                    <span id="banner-quality">🎛️ Quality: --</span>
                 </div>
             </div>
         </div>
@@ -251,7 +268,7 @@
                     <option value="flat">Flat (Off)</option>
                     <option value="acoustic">Acoustic</option>
                     <option value="bass">Bass Booster</option>
-                    <option value="country" selected>Country Warmth</option>
+                    <option value="country">Country Warmth</option>
                     <option value="vocal">Vocal Booster</option>
                     <option value="treble">Treble Booster</option>
                     <option value="rock">Rock</option>
@@ -285,8 +302,8 @@
         <!-- Technical Stream Status & Visualizer Box -->
         <div class="status-box">
             <div class="status-header">
-                <h3><span id="status-live-dot" class="live-dot"></span> STREAM CONNECTOR & AUDIO STATUS</h3>
-                <span id="server-status" style="color: var(--accent); font-weight: bold; font-size: 0.85rem;">SERVER STATUS: STANDBY</span>
+                <h3><span id="status-live-dot" class="live-dot stopped"></span> STREAM CONNECTOR & AUDIO STATUS</h3>
+                <span id="server-status" style="color: var(--text-muted); font-weight: bold; font-size: 0.85rem;">SERVER STATUS: STANDBY</span>
             </div>
             <div class="status-stats">
                 <div class="status-item">Host: <span class="status-val">Local Dashboard Hub</span></div>
@@ -333,13 +350,13 @@
                         <div class="eq-bar"></div>
                     </div>
                 </h4>
-                <p id="current-genre">Click play on any radio card to start direct live stream</p>
+                <p id="current-genre">Click play or press Space to start listening</p>
             </div>
         </div>
         <div class="audio-controls">
             <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
-            <audio id="main-audio" controls autoplay crossorigin="anonymous" preload="none">
+            <audio id="main-audio" controls crossorigin="anonymous" preload="none">
                 <source id="main-source" src="" type="audio/mpeg">
             </audio>
         </div>
@@ -510,12 +527,15 @@
                 audioSource = audioCtx.createMediaElementSource(audioElement);
                 let prevNode = audioSource;
 
+                const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
+                const initialGainVals = presets[savedPreset] || presets.country;
+
                 frequencies.forEach((freq, i) => {
                     const filter = audioCtx.createBiquadFilter();
                     filter.type = 'peaking';
                     filter.frequency.value = freq;
                     filter.Q.value = 1;
-                    filter.gain.value = presets.country[i];
+                    filter.gain.value = initialGainVals[i];
                     filters.push(filter);
 
                     prevNode.connect(filter);
@@ -565,7 +585,6 @@
                 if (isWebAudioActive) {
                     barHeight = (dataArray[i] / 255) * canvas.height;
                 } else {
-                    // Fallback d'animation dynamique sur iPhone / Safari sans CORS
                     const speed = Date.now() / 150;
                     const wave = Math.sin(speed + i * 0.5) * 0.35 + 0.65;
                     const noise = Math.random() * 0.3 + 0.7;
@@ -588,7 +607,7 @@
             }
         }
 
-        function applyPreset(name) {
+        function applyPreset(name, save = true) {
             const vals = presets[name] || presets.flat;
             const sliderIds = ['eq-60', 'eq-250', 'eq-1000', 'eq-4000', 'eq-12000'];
             
@@ -597,6 +616,10 @@
                 if (el) el.value = v;
                 if (filters[i]) filters[i].gain.value = v;
             });
+
+            if (save) {
+                localStorage.setItem('crh_last_preset', name);
+            }
         }
 
         function toggleFav(e, id) {
@@ -664,6 +687,9 @@
             if (!st) return;
             currentStation = st;
 
+            // Enregistrement dans LocalStorage
+            localStorage.setItem('crh_last_station', st.id);
+
             setupAudioContext();
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -678,12 +704,16 @@
             document.getElementById('banner-desc').innerText = st.desc;
             document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
             document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
-            document.getElementById('live-indicator').classList.remove('stopped');
+            
+            const liveIndicator = document.getElementById('live-indicator');
+            liveIndicator.className = 'live-dot';
 
             document.getElementById('stat-bitrate').innerText = st.quality;
             document.getElementById('server-status').innerText = "SERVER STATUS: ONLINE";
             document.getElementById('server-status').style.color = "#22c55e";
-            document.getElementById('status-live-dot').classList.remove('stopped');
+            
+            const statusDot = document.getElementById('status-live-dot');
+            statusDot.className = 'live-dot';
 
             secondsElapsed = 0;
             clearInterval(timerInterval);
@@ -702,7 +732,9 @@
             
             const player = document.getElementById('main-audio');
             player.src = st.url;
-            player.play().catch(e => console.log("Stream loading..."));
+            player.play().catch(e => {
+                console.warn("Autoplay blocked or stream delayed:", e);
+            });
         }
 
         function stopStation() {
@@ -718,18 +750,20 @@
             
             document.getElementById('server-status').innerText = "SERVER STATUS: STOPPED";
             document.getElementById('server-status').style.color = "#f59e0b";
-            document.getElementById('status-live-dot').classList.add('stopped');
-            document.getElementById('live-indicator').classList.add('stopped');
+            
+            document.getElementById('status-live-dot').className = 'live-dot stopped';
+            document.getElementById('live-indicator').className = 'live-dot stopped';
 
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
-            document.getElementById('current-genre').innerText = "Click play or press Play to resume";
+            document.getElementById('current-genre').innerText = "Click play or press Space to resume";
         }
 
         function resumeStation() {
             if (currentStation) {
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
-                playStation(stations[0].id);
+                const savedId = localStorage.getItem('crh_last_station');
+                playStation(savedId ? parseInt(savedId) : stations[0].id);
             }
         }
 
@@ -745,15 +779,94 @@
             renderRadios(getFilteredStations());
         }
 
-        document.getElementById('main-audio').addEventListener('pause', () => {
-            if (document.getElementById('main-audio').src === "") return;
+        // --- GESTION DES ERREURS DE FLUX ---
+        const player = document.getElementById('main-audio');
+        player.addEventListener('error', () => {
+            if (!player.src || player.src === window.location.href) return;
+            
+            clearInterval(timerInterval);
+            document.getElementById('stat-timer').textContent = "00:00:00";
+            document.getElementById('eq-bar').classList.remove('active');
+            
+            document.getElementById('server-status').innerText = "SERVER STATUS: STATION HORS LIGNE";
+            document.getElementById('server-status').style.color = "#ef4444";
+            
+            document.getElementById('status-live-dot').className = 'live-dot error';
+            document.getElementById('live-indicator').className = 'live-dot error';
+
+            const name = currentStation ? currentStation.name : "Station";
+            document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
+            document.getElementById('current-genre').innerText = "⚠️ Station hors ligne — Impossible de charger ce flux";
+            document.getElementById('banner-desc').innerText = "⚠️ Le flux en direct est indisponible ou momentanément interrompu.";
+        });
+
+        player.addEventListener('pause', () => {
+            if (player.src === "") return;
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
         });
 
-        updateHeaderCount();
-        renderRadios(stations);
-        drawVUMeter();
+        // --- RACCOURCIS CLAVIER ---
+        window.addEventListener('keydown', (e) => {
+            const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+            if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
+
+            const visibleList = getFilteredStations();
+            if (visibleList.length === 0) return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (player.paused || !player.src) {
+                    resumeStation();
+                } else {
+                    stopStation();
+                }
+            } else if (e.code === 'ArrowDown') {
+                e.preventDefault();
+                let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
+                let nextIndex = (currentIndex + 1) % visibleList.length;
+                playStation(visibleList[nextIndex].id);
+            } else if (e.code === 'ArrowUp') {
+                e.preventDefault();
+                let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
+                let prevIndex = currentIndex <= 0 ? visibleList.length - 1 : currentIndex - 1;
+                playStation(visibleList[prevIndex].id);
+            }
+        });
+
+        // --- INITIALISATION & RESTAURATION LOCALSTORAGE ---
+        function initApp() {
+            updateHeaderCount();
+            renderRadios(stations);
+            drawVUMeter();
+
+            // Restauration de l'égaliseur
+            const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
+            const presetSelect = document.getElementById('eq-presets');
+            if (presetSelect) presetSelect.value = savedPreset;
+            applyPreset(savedPreset, false);
+
+            // Restauration de la dernière radio sans forcer la lecture automatique (politique navigateur)
+            const savedStationId = localStorage.getItem('crh_last_station');
+            if (savedStationId) {
+                const st = stations.find(s => s.id == savedStationId);
+                if (st) {
+                    currentStation = st;
+                    document.getElementById('banner-title').innerText = st.name;
+                    document.getElementById('banner-desc').innerText = st.desc;
+                    document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
+                    document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
+                    document.getElementById('current-icon').innerText = st.icon || '📻';
+                    document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
+                    document.getElementById('current-genre').innerText = `SAVED • ${st.location} (Press SPACE or Click PLAY to start)`;
+                    
+                    const card = document.getElementById(`card-${st.id}`);
+                    if (card) card.classList.add('playing');
+                }
+            }
+        }
+
+        initApp();
     </script>
 </body>
 </html>
