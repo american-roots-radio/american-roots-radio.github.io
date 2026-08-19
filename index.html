@@ -126,18 +126,22 @@
         .eq-bar:nth-child(4) { height: 80%; animation-delay: 0.4s; }
         @keyframes bounce { 0% { height: 20%; } 100% { height: 100%; } }
 
-        /* Sticky Bottom Player */
-        .bottom-player { position: fixed; bottom: 0; left: 0; right: 0; background: #121215; border-top: 1px solid #2a2a32; padding: 15px 30px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.8); z-index: 1000; }
+        /* Sticky Bottom Player Custom */
+        .bottom-player { position: fixed; bottom: 0; left: 0; right: 0; background: #121215; border-top: 1px solid #2a2a32; padding: 12px 30px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.8); z-index: 1000; }
         
-        .now-playing { display: flex; align-items: center; gap: 15px; min-width: 280px; order: 1; }
+        .now-playing { display: flex; align-items: center; gap: 15px; min-width: 250px; order: 1; }
         .now-playing-icon { font-size: 2.2rem; }
-        .now-playing-info h4 { margin: 0; color: #fff; font-size: 1.1rem; display: flex; align-items: center; }
-        .now-playing-info p { margin: 2px 0 0 0; color: var(--text-muted); font-size: 0.85rem; }
+        .now-playing-info h4 { margin: 0; color: #fff; font-size: 1.05rem; display: flex; align-items: center; }
+        .now-playing-info p { margin: 2px 0 0 0; color: var(--text-muted); font-size: 0.82rem; }
 
-        .audio-controls { flex-grow: 1; max-width: 600px; display: flex; align-items: center; gap: 10px; order: 2; justify-content: flex-end; }
-        audio { flex-grow: 1; outline: none; height: 40px; min-width: 200px; }
-        .btn-player-btn { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 6px; padding: 0 14px; height: 40px; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .audio-controls { display: flex; align-items: center; gap: 12px; order: 2; flex-grow: 1; justify-content: flex-end; }
+        .btn-player-btn { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 6px; padding: 0 16px; height: 38px; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .btn-player-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        /* Volume Control Custom */
+        .volume-control { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); border: 1px solid #333; padding: 4px 12px; border-radius: 20px; height: 30px; }
+        .btn-mute { background: none; border: none; color: var(--accent); font-size: 1.1rem; cursor: pointer; padding: 0; display: flex; align-items: center; }
+        .volume-slider { width: 90px; accent-color: var(--accent); cursor: pointer; }
 
         /* Paypal Saloon Button Style */
         .btn-saloon-paypal {
@@ -179,8 +183,8 @@
         </div>
 
         <div style="text-align: center; margin-bottom: 18px;">
-  <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
-</div>
+          <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
+        </div>
 
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
@@ -340,7 +344,7 @@
         </footer>
     </div>
 
-    <!-- Persistent Bottom Audio Player -->
+    <!-- Persistent Bottom Audio Player Custom -->
     <div class="bottom-player">
         <div class="now-playing">
             <div id="current-icon" class="now-playing-icon">📻</div>
@@ -360,7 +364,13 @@
         <div class="audio-controls">
             <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
-            <audio id="main-audio" controls crossorigin="anonymous" preload="none">
+            
+            <div class="volume-control">
+                <button id="btn-mute" class="btn-mute" onclick="toggleMute()">🔊</button>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+            </div>
+
+            <audio id="main-audio" crossorigin="anonymous" preload="none" style="display: none;">
                 <source id="main-source" src="" type="audio/mpeg">
             </audio>
         </div>
@@ -514,6 +524,34 @@
 
         let timerInterval = null;
         let secondsElapsed = 0;
+        let previousVolume = 1;
+
+        function setVolume(val) {
+            const player = document.getElementById('main-audio');
+            player.volume = val;
+            const btnMute = document.getElementById('btn-mute');
+            if (val == 0) {
+                btnMute.innerText = "🔇";
+            } else if (val < 0.5) {
+                btnMute.innerText = "🔉";
+            } else {
+                btnMute.innerText = "🔊";
+            }
+        }
+
+        function toggleMute() {
+            const player = document.getElementById('main-audio');
+            const slider = document.getElementById('volume-slider');
+            if (player.volume > 0) {
+                previousVolume = player.volume;
+                setVolume(0);
+                slider.value = 0;
+            } else {
+                const targetVol = previousVolume > 0 ? previousVolume : 1;
+                setVolume(targetVol);
+                slider.value = targetVol;
+            }
+        }
 
         function updateHeaderCount() {
             const count = stations.length;
