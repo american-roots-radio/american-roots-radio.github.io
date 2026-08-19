@@ -45,18 +45,63 @@
             --text-muted: #9ca3af;
             --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        body { font-family: var(--font); background-color: var(--bg-color); color: var(--text); margin: 0; padding: 0; padding-bottom: 180px; line-height: 1.5; }
+        body { 
+            font-family: var(--font); 
+            background-color: var(--bg-color); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: 180px; 
+            line-height: 1.5; 
+        }
         
-        header { background: linear-gradient(180deg, #2a1605 0%, #0a0a0b 100%); border-bottom: 1px solid #222; padding: 35px 20px 20px 20px; text-align: center; }
-        header h1 { color: var(--accent); margin: 0; font-size: 2.8rem; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+        header { 
+            background: linear-gradient(180deg, #2a1605 0%, #0a0a0b 100%); 
+            border-bottom: 1px solid #222; 
+            padding: 35px 20px 20px 20px; 
+            text-align: center; 
+        }
+        header h1 { 
+            color: var(--accent); 
+            margin: 0; 
+            font-size: 2.8rem; 
+            letter-spacing: -1px; 
+            text-transform: uppercase; 
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.3); 
+        }
         header p { color: var(--text-muted); margin-top: 6px; font-size: 1.05rem; }
         
         .container { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
 
         /* Dynamic Station Banner */
-        .now-playing-banner { background: linear-gradient(135deg, #231508 0%, #141418 100%); border: 1px solid var(--accent); border-radius: 12px; padding: 22px 28px; margin: 25px 0 20px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 6px 20px var(--accent-glow); transition: all 0.3s ease; }
+        .now-playing-banner { 
+            background: linear-gradient(135deg, #231508 0%, #141418 100%); 
+            border: 1px solid var(--accent); 
+            border-radius: 12px; 
+            padding: 22px 28px; 
+            margin: 25px 0 20px 0; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 20px; 
+            box-shadow: 0 6px 20px var(--accent-glow); 
+            transition: all 0.3s ease; 
+        }
         .banner-info { max-width: 750px; }
-        .banner-tag { background: var(--accent); color: #000; font-weight: bold; font-size: 0.72rem; padding: 3px 9px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; }
+        .banner-tag { 
+            background: var(--accent); 
+            color: #000; 
+            font-weight: bold; 
+            font-size: 0.72rem; 
+            padding: 3px 9px; 
+            border-radius: 4px; 
+            text-transform: uppercase; 
+            margin-bottom: 8px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
         .banner-title { margin: 0 0 6px 0; font-size: 1.6rem; color: #fff; }
         .banner-desc { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
         .banner-meta { display: flex; align-items: center; gap: 20px; margin-top: 12px; font-size: 0.85rem; color: var(--accent); font-weight: 600; }
@@ -179,13 +224,12 @@
         </div>
 
         <div style="text-align: center; margin-bottom: 18px;">
-  <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
-</div>
+            <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
+        </div>
 
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
-                
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
                 <input type="hidden" name="subject" value="Radio Hub — New Message">
 
@@ -691,7 +735,6 @@
             if (!st) return;
             currentStation = st;
 
-            // Enregistrement dans LocalStorage
             localStorage.setItem('crh_last_station', st.id);
 
             setupAudioContext();
@@ -783,7 +826,7 @@
             renderRadios(getFilteredStations());
         }
 
-        // --- GESTION DES ERREURS DE FLUX ---
+        // GESTION DES ERREURS DE FLUX
         const player = document.getElementById('main-audio');
         player.addEventListener('error', () => {
             if (!player.src || player.src === window.location.href) return;
@@ -810,7 +853,7 @@
             document.getElementById('eq-bar').classList.remove('active');
         });
 
-        // --- RACCOURCIS CLAVIER ---
+        // RACCOURCIS CLAVIER (Espace, Flèches Haut / Bas)
         window.addEventListener('keydown', (e) => {
             const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
             if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
@@ -838,19 +881,17 @@
             }
         });
 
-        // --- INITIALISATION & RESTAURATION LOCALSTORAGE ---
+        // INITIALISATION
         function initApp() {
             updateHeaderCount();
             renderRadios(stations);
             drawVUMeter();
 
-            // Restauration de l'égaliseur
             const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
             const presetSelect = document.getElementById('eq-presets');
             if (presetSelect) presetSelect.value = savedPreset;
             applyPreset(savedPreset, false);
 
-            // Restauration de la dernière radio sans forcer la lecture automatique (politique navigateur)
             const savedStationId = localStorage.getItem('crh_last_station');
             if (savedStationId) {
                 const st = stations.find(s => s.id == savedStationId);
@@ -871,21 +912,22 @@
         }
 
         initApp();
-  </script> 
-  <script>
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
+    </script> 
+    
+    <script>
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
 
-  function installApp() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-    } else {
-      alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
-    }
-  }
-</script>
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+            } else {
+                alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
+            }
+        }
+    </script>
 </body>
 </html>
