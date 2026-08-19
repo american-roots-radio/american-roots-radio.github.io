@@ -178,6 +178,10 @@
             </a>
         </div>
 
+        <div style="text-align: center; margin-bottom: 18px;">
+  <button id="installAppBtn" style="display: none; background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Installer l'application</button>
+</div>
+
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
@@ -867,6 +871,30 @@
         }
 
         initApp();
-    </script>
+    </script> 
+    <script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installAppBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.style.display = 'inline-block';
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            installBtn.style.display = 'none';
+          }
+          deferredPrompt = null;
+        });
+      }
+    });
+  }
+</script>
 </body>
 </html>
