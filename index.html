@@ -179,7 +179,7 @@
         </div>
 
         <div style="text-align: center; margin-bottom: 18px;">
-  <button id="installAppBtn" style="display: none; background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Installer l'application</button>
+  <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Installer l'application</button>
 </div>
 
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
@@ -871,29 +871,20 @@
         }
 
         initApp();
-    </script> 
-    <script>
+  </script> 
+  <script>  
   let deferredPrompt;
-  const installBtn = document.getElementById('installAppBtn');
-
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if (installBtn) installBtn.style.display = 'inline-block';
   });
 
-  if (installBtn) {
-    installBtn.addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            installBtn.style.display = 'none';
-          }
-          deferredPrompt = null;
-        });
-      }
-    });
+  function installApp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+    } else {
+      alert("Pour installer l'app :\n\n• Sur iPhone : appuyez sur 'Partager' puis 'Sur l'écran d'accueil'.\n• Sur PC/Mac : utilisez l'icône d'installation (+) dans la barre d'adresse de votre navigateur.");
+    }
   }
 </script>
 </body>
