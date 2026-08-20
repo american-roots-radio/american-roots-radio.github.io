@@ -362,7 +362,7 @@
             </div>
         </div>
         <div class="audio-controls">
-            <button id="bottomPlayBtn" class="btn-player-btn" onclick="toggleBottomPlayer()">▶ PLAY</button>
+            <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
             
             <div class="volume-control">
@@ -525,54 +525,6 @@
         let timerInterval = null;
         let secondsElapsed = 0;
         let previousVolume = 1;
-
-        function updateUI() {
-            const player = document.getElementById('main-audio');
-            const isPlaying = player && !player.paused && player.src !== "";
-
-            // Mise à jour du bouton du lecteur du bas
-            const bottomBtn = document.getElementById('bottomPlayBtn');
-            if (bottomBtn) {
-                bottomBtn.innerHTML = isPlaying ? "❚❚ PAUSED" : "▶ PLAY";
-            }
-
-            // Mise à jour de tous les boutons de cartes
-            document.querySelectorAll('.card-radio').forEach(card => {
-                const cardId = parseInt(card.getAttribute('data-id'));
-                const playBtn = card.querySelector('.btn-play-card');
-                if (playBtn) {
-                    if (currentStation && currentStation.id === cardId && isPlaying) {
-                        playBtn.innerHTML = "❚❚ Paused";
-                        card.classList.add('playing');
-                    } else {
-                        playBtn.innerHTML = "▶ Play";
-                        card.classList.remove('playing');
-                    }
-                }
-            });
-        }
-
-        function toggleStation(id) {
-            const player = document.getElementById('main-audio');
-            if (currentStation && currentStation.id === id && !player.paused) {
-                stopStation();
-            } else {
-                playStation(id);
-            }
-        }
-
-        function toggleBottomPlayer() {
-            const player = document.getElementById('main-audio');
-            if (!currentStation) {
-                resumeStation();
-                return;
-            }
-            if (!player.paused && player.src) {
-                stopStation();
-            } else {
-                playStation(currentStation.id);
-            }
-        }
 
         function setVolume(val) {
             const player = document.getElementById('main-audio');
@@ -750,7 +702,6 @@
                 const card = document.createElement('div');
                 card.className = `card-radio ${currentStation && currentStation.id === st.id ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
-                card.setAttribute('data-id', st.id);
                 
                 card.innerHTML = `
                     <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${st.id})">★</span>
@@ -765,13 +716,12 @@
                         <div class="station-desc">${st.desc}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="toggleStation(${st.id})">▶ Play</div>
+                        <div class="btn-play-card" onclick="playStation(${st.id})">▶ Play</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
-            updateUI();
         }
 
         function playStation(id) {
@@ -824,17 +774,14 @@
             
             const player = document.getElementById('main-audio');
             player.src = st.url;
-            player.play().then(() => {
-                updateUI();
-            }).catch(e => {
+            player.play().catch(e => {
                 console.warn("Autoplay blocked or stream delayed:", e);
-                updateUI();
             });
         }
 
         function stopStation() {
             const player = document.getElementById('main-audio');
-            player.paused();
+            player.pause();
             player.src = "";
 
             clearInterval(timerInterval);
@@ -851,7 +798,6 @@
 
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
             document.getElementById('current-genre').innerText = "Click play or press Space to resume";
-            updateUI();
         }
 
         function resumeStation() {
@@ -875,7 +821,7 @@
             renderRadios(getFilteredStations());
         }
 
-        // --- GESTION DES ERREURS ET EVENEMENTS DE FLUX ---
+        // --- GESTION DES ERREURS DE FLUX ---
         const player = document.getElementById('main-audio');
         player.addEventListener('error', () => {
             if (!player.src || player.src === window.location.href) return;
@@ -894,18 +840,12 @@
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
             document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
-            updateUI();
         });
 
-        player.addEventListener('paused', () => {
+        player.addEventListener('pause', () => {
             if (player.src === "") return;
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
-            updateUI();
-        });
-
-        player.addEventListener('play', () => {
-            updateUI();
         });
 
         // --- RACCOURCIS CLAVIER ---
