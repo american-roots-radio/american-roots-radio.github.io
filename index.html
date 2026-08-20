@@ -731,37 +731,38 @@
         }
 
         function renderRadios(list) {
-            const grid = document.getElementById('radio-grid');
-            grid.innerHTML = '';
-            
-            list.forEach(st => {
-                const isFav = favorites.includes(st.id);
-                const card = document.createElement('div');
-                card.className = `card-radio ${currentStation && currentStation.id === st.id ? 'playing' : ''}`;
-                card.id = `card-${st.id}`;
-                
-                card.innerHTML = `
-                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${st.id})">★</span>
-                    <div>
-                        <div class="card-top">
-                            <div class="station-icon">${st.icon || '📻'}</div>
-                            <div class="station-meta">
-                                <h3>${st.name}</h3>
-                                <span>${st.location}</span>
-                            </div>
-                        </div>
-                        <div class="station-desc">${st.desc}</div>
+    const grid = document.getElementById('radio-grid');
+    grid.innerHTML = '';
+    
+    list.forEach(st => {
+        const isFav = favorites.includes(st.id);
+        const isPlaying = currentStation && currentStation.id === st.id;
+        const card = document.createElement('div');
+        card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
+        card.id = `card-${st.id}`;
+        
+        card.innerHTML = `
+            <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${st.id})">★</span>
+            <div>
+                <div class="card-top">
+                    <div class="station-icon">${st.icon || '📻'}</div>
+                    <div class="station-meta">
+                        <h3>${st.name}</h3>
+                        <span>${st.location}</span>
                     </div>
-                    <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation(${st.id})">▶ Play</div>
-                        <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+                </div>
+                <div class="station-desc">${st.desc}</div>
+            </div>
+            <div class="card-actions">
+                <div class="btn-play-card" onclick="playStation(${st.id})">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
+                <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
 
-        function playStation(id) {
+function playStation(id) {
             const st = stations.find(s => s.id === id);
             if (!st) return;
             currentStation = st;
@@ -774,23 +775,21 @@
                 audioCtx.resume();
             }
 
-            document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('playing'));
-            
-            const activeCard = document.getElementById(`card-${st.id}`);
-            if (activeCard) activeCard.classList.add('playing');
-            
+            // Rafraîchir les vignettes pour afficher "⏸ Pause" sur la carte active
+            renderRadios(getFilteredStations());
+
             document.getElementById('banner-title').innerText = st.name;
             document.getElementById('banner-desc').innerText = st.desc;
             document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
             document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
-            
+
             const liveIndicator = document.getElementById('live-indicator');
             liveIndicator.className = 'live-dot';
 
             document.getElementById('stat-bitrate').innerText = st.quality;
             document.getElementById('server-status').innerText = "SERVER STATUS: ONLINE";
             document.getElementById('server-status').style.color = "#22c55e";
-            
+
             const statusDot = document.getElementById('status-live-dot');
             statusDot.className = 'live-dot';
 
@@ -808,7 +807,11 @@
             document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
             document.getElementById('current-genre').innerText = `LIVE • ${st.location} (${st.genre.toUpperCase()})`;
             document.getElementById('eq-bar').classList.add('active');
-            
+
+            // Passer le bouton du lecteur du bas en PAUSE
+            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            if (bottomPlayBtn) bottomPlayBtn.innerHTML = '⏸ PAUSE';
+
             const player = document.getElementById('main-audio');
             player.src = st.url;
             player.play().catch(e => {
@@ -824,17 +827,24 @@
             clearInterval(timerInterval);
             document.getElementById('stat-timer').textContent = "00:00:00";
 
-            document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('playing'));
             document.getElementById('eq-bar').classList.remove('active');
-            
+
             document.getElementById('server-status').innerText = "SERVER STATUS: STOPPED";
             document.getElementById('server-status').style.color = "#f59e0b";
-            
+
             document.getElementById('status-live-dot').className = 'live-dot stopped';
             document.getElementById('live-indicator').className = 'live-dot stopped';
 
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
             document.getElementById('current-genre').innerText = "Click play or press Space to resume";
+
+            // Remettre le bouton du bas en PLAY
+            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
+
+            // Remettre toutes les vignettes en PLAY
+            currentStation = null;
+            renderRadios(getFilteredStations());
         }
 
         function resumeStation() {
@@ -850,7 +860,7 @@
             activeGenre = genre;
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
-            
+
             renderRadios(getFilteredStations());
         }
 
@@ -862,14 +872,14 @@
         const player = document.getElementById('main-audio');
         player.addEventListener('error', () => {
             if (!player.src || player.src === window.location.href) return;
-            
+
             clearInterval(timerInterval);
             document.getElementById('stat-timer').textContent = "00:00:00";
             document.getElementById('eq-bar').classList.remove('active');
-            
+
             document.getElementById('server-status').innerText = "SERVER STATUS: STATION OFFLINE";
             document.getElementById('server-status').style.color = "#ef4444";
-            
+
             document.getElementById('status-live-dot').className = 'live-dot error';
             document.getElementById('live-indicator').className = 'live-dot error';
 
@@ -877,12 +887,20 @@
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
             document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
+
+            // Remettre le bouton du bas en PLAY
+            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
         });
 
         player.addEventListener('pause', () => {
             if (player.src === "") return;
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
+
+            // Remettre le bouton du bas en PLAY
+            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
         });
 
         // --- RACCOURCIS CLAVIER ---
@@ -938,7 +956,7 @@
                     document.getElementById('current-icon').innerText = st.icon || '📻';
                     document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
                     document.getElementById('current-genre').innerText = `SAVED • ${st.location} (Press SPACE or Click PLAY to start)`;
-                    
+
                     const card = document.getElementById(`card-${st.id}`);
                     if (card) card.classList.add('playing');
                 }
@@ -948,19 +966,19 @@
         initApp();
   </script> 
   <script>
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
 
-  function installApp() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-    } else {
-      alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
+    function installApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+        } else {
+            alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
+        }
     }
-  }
-</script>
+  </script>
 </body>
 </html>
