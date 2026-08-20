@@ -18,7 +18,7 @@
     <meta name="apple-mobile-web-app-title" content="Country Radio">
     <link rel="apple-touch-icon" href="https://country-radio-live.github.io/icon-192.png">
 
-    <!-- Open Graph / Social Media (WhatsApp, iMessage, Facebook) -->
+    <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://country-radio-live.github.io/">
     <meta property="og:title" content="Country Radio Hub — Live US Streams & Equalizer 🇺🇸">
@@ -45,16 +45,41 @@
             --text-muted: #9ca3af;
             --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        body { font-family: var(--font); background-color: var(--bg-color); color: var(--text); margin: 0; padding: 0; padding-bottom: 180px; line-height: 1.5; }
+
+        /* Thème Vintage Amp */
+        body[data-theme="vintage"] {
+            --bg-color: #140d07;
+            --panel-bg: #22160d;
+            --card-bg: #2c1d12;
+            --card-hover: #3a281a;
+            --accent: #e58e26;
+            --accent-glow: rgba(229, 142, 38, 0.3);
+            --text: #f5e6d3;
+            --text-muted: #b39b82;
+        }
+
+        /* Thème Neon OLED */
+        body[data-theme="oled"] {
+            --bg-color: #000000;
+            --panel-bg: #090a0f;
+            --card-bg: #10121a;
+            --card-hover: #181b28;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.3);
+            --text: #e0f7fa;
+            --text-muted: #78909c;
+        }
+
+        body { font-family: var(--font); background-color: var(--bg-color); color: var(--text); margin: 0; padding: 0; padding-bottom: 180px; line-height: 1.5; transition: background-color 0.3s, color 0.3s; }
         
-        header { background: linear-gradient(180deg, #2a1605 0%, #0a0a0b 100%); border-bottom: 1px solid #222; padding: 35px 20px 20px 20px; text-align: center; }
-        header h1 { color: var(--accent); margin: 0; font-size: 2.8rem; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+        header { background: linear-gradient(180deg, #2a1605 0%, var(--bg-color) 100%); border-bottom: 1px solid #222; padding: 35px 20px 20px 20px; text-align: center; }
+        header h1 { color: var(--accent); margin: 0; font-size: 2.8rem; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
         header p { color: var(--text-muted); margin-top: 6px; font-size: 1.05rem; }
         
         .container { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
 
         /* Dynamic Station Banner */
-        .now-playing-banner { background: linear-gradient(135deg, #231508 0%, #141418 100%); border: 1px solid var(--accent); border-radius: 12px; padding: 22px 28px; margin: 25px 0 20px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 6px 20px var(--accent-glow); transition: all 0.3s ease; }
+        .now-playing-banner { background: linear-gradient(135deg, #231508 0%, var(--panel-bg) 100%); border: 1px solid var(--accent); border-radius: 12px; padding: 22px 28px; margin: 25px 0 20px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 6px 20px var(--accent-glow); transition: all 0.3s ease; }
         .banner-info { max-width: 750px; }
         .banner-tag { background: var(--accent); color: #000; font-weight: bold; font-size: 0.72rem; padding: 3px 9px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; }
         .banner-title { margin: 0 0 6px 0; font-size: 1.6rem; color: #fff; }
@@ -76,7 +101,7 @@
         canvas#vu-meter { width: 100%; height: 50px; background: #09090b; border-radius: 6px; border: 1px solid #22222a; display: block; }
 
         /* SoundSource Equalizer Panel */
-        .eq-panel { background: #18181c; border: 1px solid #33333d; border-radius: 12px; padding: 18px 22px; margin-bottom: 30px; box-shadow: inset 0 1px 3px rgba(255,255,255,0.05); }
+        .eq-panel { background: var(--panel-bg); border: 1px solid #33333d; border-radius: 12px; padding: 18px 22px; margin-bottom: 30px; box-shadow: inset 0 1px 3px rgba(255,255,255,0.05); }
         .eq-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .eq-header h3 { margin: 0; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
         .eq-preset-select { background: #25252e; color: var(--text); border: 1px solid var(--accent); border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 0.88rem; outline: none; cursor: pointer; }
@@ -100,7 +125,29 @@
             margin-bottom: 25px;
         }
 
-        /* Masquage Égaliseur + Volume sur Mobile (<= 768px) */
+        /* Formulaire Custom Stream Panel */
+        .custom-stream-panel {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+        .custom-stream-panel summary {
+            font-weight: bold;
+            color: var(--accent);
+            cursor: pointer;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        .custom-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
         @media (max-width: 768px) {
             .eq-panel,
             .volume-control {
@@ -117,29 +164,31 @@
         .btn-filter { background: var(--panel-bg); color: var(--text); border: 1px solid #333; padding: 8px 16px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-filter:hover, .btn-filter.active { background: var(--accent); color: #000; border-color: var(--accent); }
         
-        .search-box { background: var(--panel-bg); border: 1px solid #333; border-radius: 20px; padding: 8px 16px; color: #fff; outline: none; font-size: 0.9rem; width: 230px; }
+        .search-box { background: var(--panel-bg); border: 1px solid #333; border-radius: 20px; padding: 8px 16px; color: #fff; outline: none; font-size: 0.9rem; width: 200px; }
         .search-box:focus { border-color: var(--accent); }
 
         /* Radio Cards Grid */
         .grid-radios { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
         .card-radio { background: var(--card-bg); border: 1px solid #282830; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; position: relative; }
         .card-radio:hover { background: var(--card-hover); border-color: var(--accent); transform: translateY(-3px); }
-        .card-radio.playing { border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow); background: #201a14; }
+        .card-radio.playing { border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow); background: var(--card-hover); }
         
-        .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding-right: 25px; }
+        .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding-right: 45px; }
         .station-icon { font-size: 1.8rem; background: #282522; padding: 8px 12px; border-radius: 8px; border: 1px solid #3d352e; }
         .station-meta h3 { margin: 0; font-size: 1.05rem; color: #fff; }
         .station-meta span { font-size: 0.75rem; color: var(--accent); font-weight: bold; text-transform: uppercase; }
-        .station-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.4; }
+        .station-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.4; word-break: break-all; }
         
         /* Action buttons on card */
         .card-actions { display: flex; gap: 8px; margin-top: 10px; }
         .btn-play-card, .btn-stop-card { flex: 1; background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid #444; border-radius: 8px; padding: 8px; text-align: center; font-weight: bold; font-size: 0.82rem; transition: 0.2s; cursor: pointer; }
         .btn-play-card:hover, .btn-stop-card:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 
-        /* Favorite Star Button */
+        /* Favorite Star & Delete Button */
         .fav-star { position: absolute; top: 15px; right: 15px; font-size: 1.3rem; color: #444; transition: 0.2s; cursor: pointer; }
         .fav-star.active, .fav-star:hover { color: var(--accent); }
+        .btn-delete-custom { position: absolute; top: 15px; right: 40px; font-size: 1rem; cursor: pointer; opacity: 0.7; transition: 0.2s; }
+        .btn-delete-custom:hover { opacity: 1; transform: scale(1.1); }
 
         /* Animated Equalizer Icon in Player */
         .equalizer { display: none; align-items: flex-end; gap: 3px; height: 18px; margin-left: 10px; }
@@ -186,13 +235,12 @@
         .btn-mute { background: none; border: none; color: var(--accent); font-size: 1.1rem; cursor: pointer; padding: 0; display: flex; align-items: center; }
         .volume-slider { width: 90px; accent-color: var(--accent); cursor: pointer; }
 
-        /* Adaptation spécifique Mobile Uniquement */
         @media (max-width: 768px) {
-        header h1 { font-size: 1.6rem !important; line-height: 1.3; }
-        .now-playing { flex: 1 1 100%; }
-        .audio-controls { width: 100%; justify-content: center; margin-top: 5px; flex-wrap: wrap; }
-        .btn-player-btn, .sleep-timer-select { flex: 1; max-width: 140px; justify-content: center; }
-       }
+            header h1 { font-size: 1.6rem !important; line-height: 1.3; }
+            .now-playing { flex: 1 1 100%; }
+            .audio-controls { width: 100%; justify-content: center; margin-top: 5px; flex-wrap: wrap; }
+            .btn-player-btn, .sleep-timer-select { flex: 1; max-width: 140px; justify-content: center; }
+        }
 
         /* Paypal Saloon Button Style */
         .btn-saloon-paypal {
@@ -234,13 +282,12 @@
         </div>
 
         <div style="text-align: center; margin-bottom: 18px;">
-          <button id="installAppBtn" onclick="installApp()" style="background-color: #ff9900; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
+          <button id="installAppBtn" onclick="installApp()" style="background-color: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
         </div>
 
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
-                
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
                 <input type="hidden" name="subject" value="Radio Hub — New Message">
 
@@ -251,7 +298,7 @@
                           style="background: #111111; border: 1px solid #444444; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; resize: vertical;"></textarea>
 
                 <button type="submit" id="submit-btn" 
-                        style="color: #000000; background-color: #ff9900; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
+                        style="color: #000000; background-color: var(--accent); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
                     ✉️ Send Message
                 </button>
             </form>
@@ -270,15 +317,12 @@
                 const json = JSON.stringify(object);
 
                 result.style.display = "block";
-                result.style.color = "#ff9900";
+                result.style.color = "var(--accent)";
                 result.innerHTML = "Sending...";
 
                 fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: json
                 })
                 .then(async (response) => {
@@ -297,9 +341,7 @@
                 })
                 .then(function() {
                     form.reset();
-                    setTimeout(() => {
-                        result.style.display = "none";
-                    }, 5000);
+                    setTimeout(() => { result.style.display = "none"; }, 5000);
                 });
             });
         </script>
@@ -378,7 +420,25 @@
             <canvas id="vu-meter" width="800" height="50"></canvas>
         </div>
 
-        <!-- Controls & Filters -->
+        <!-- Bloc d'ajout de Flux Personnalisé -->
+        <details class="custom-stream-panel">
+            <summary>➕ Add Your Own Custom Radio Stream (Saved locally)</summary>
+            <form id="custom-form" class="custom-form" onsubmit="addCustomStation(event)">
+                <input type="text" id="cust-name" placeholder="Radio Name" required class="search-box" style="flex: 1; min-width: 150px;">
+                <input type="url" id="cust-url" placeholder="Stream URL (https://...)" required class="search-box" style="flex: 2; min-width: 220px;">
+                <input type="text" id="cust-location" placeholder="Location (ex: My Favorite / Paris)" class="search-box" style="flex: 1; min-width: 140px;">
+                <select id="cust-genre" class="eq-preset-select" style="height: 36px;">
+                    <option value="classic">Classic Country</option>
+                    <option value="texas">Texas & Red Dirt</option>
+                    <option value="outlaw">Outlaw & Americana</option>
+                    <option value="pop">Modern Hits</option>
+                    <option value="bluegrass">Bluegrass</option>
+                </select>
+                <button type="submit" class="btn-player-btn" style="background: var(--accent); color: #000; border: none;">+ Save Radio</button>
+            </form>
+        </details>
+
+        <!-- Controls, Theme & Filters -->
         <div class="controls">
             <div class="filter-buttons">
                 <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Stations</button>
@@ -389,7 +449,15 @@
                 <button class="btn-filter" onclick="filterGenre('pop', this)">Modern Hits</button>
                 <button class="btn-filter" onclick="filterGenre('bluegrass', this)">Bluegrass</button>
             </div>
-            <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <!-- Theme Switcher Dropdown -->
+                <select id="theme-select" class="eq-preset-select" onchange="changeTheme(this.value)">
+                    <option value="default">🎨 Theme: Modern Dark</option>
+                    <option value="vintage">🎨 Theme: Vintage Amp</option>
+                    <option value="oled">🎨 Theme: Neon OLED</option>
+                </select>
+                <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
+            </div>
         </div>
 
         <!-- Radios Grid -->
@@ -441,7 +509,7 @@
     </div>
 
     <script>
-      const stations = [
+      const defaultStations = [
             { id: 1, name: "1.FM Country Classic", genre: "classic", location: "US / Global", desc: "Pure 80s, 90s & Golden Era Country Legends", icon: "📻", quality: "128 kbps MP3", url: "https://strm112.1.fm/ccountry_mobile_mp3" },
             { id: 2, name: "GotRadio Classic Country", genre: "classic", location: "California, USA", desc: "Johnny Cash, Willie Nelson, Waylon & George Strait", icon: "🎸", quality: "64 kbps AAC", url: "https://pureplay.cdnstream1.com/6014_64.aac" },
             { id: 3, name: "SomaFM Boot Liquor", genre: "outlaw", location: "San Francisco, USA", desc: "Americana, Alt-Country & Outlaw Road Songs", icon: "🪕", quality: "128 kbps MP3", url: "https://ice1.somafm.com/bootliquor-128-mp3" },
@@ -568,6 +636,9 @@
             { id: 124, name: "98.1 KVET Austin Favorites", genre: "texas", location: "Texas, USA", desc: "Austin's All Time Country Favorites", icon: "🌵", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc2185/40_17myik2dwnota02/playlist.m3u8" }
         ];
 
+        let customStations = JSON.parse(localStorage.getItem('crh_custom_stations') || '[]');
+        let stations = [...defaultStations, ...customStations];
+
         let activeGenre = 'all';
         let favorites = JSON.parse(localStorage.getItem('crh_favorites') || '[]');
         let currentStation = null;
@@ -590,6 +661,59 @@
         let secondsElapsed = 0;
         let previousVolume = 1;
         let sleepTimerTimeout = null;
+
+        // --- GESTION DES THÈMES CSS ---
+        function changeTheme(themeName) {
+            if (themeName === 'default') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', themeName);
+            }
+            localStorage.setItem('crh_theme', themeName);
+        }
+
+        // --- GESTION DES FLUX PERSONNALISÉS ---
+        function addCustomStation(e) {
+            e.preventDefault();
+            const name = document.getElementById('cust-name').value.trim();
+            const url = document.getElementById('cust-url').value.trim();
+            const location = document.getElementById('cust-location').value.trim() || 'Custom Stream';
+            const genre = document.getElementById('cust-genre').value;
+
+            if (!name || !url) return;
+
+            const newStation = {
+                id: 'custom_' + Date.now(),
+                name: name,
+                genre: genre,
+                location: location,
+                desc: 'User Added Custom Stream',
+                icon: '📡',
+                quality: 'Live Stream',
+                url: url,
+                isCustom: true
+            };
+
+            customStations.push(newStation);
+            localStorage.setItem('crh_custom_stations', JSON.stringify(customStations));
+            stations = [...defaultStations, ...customStations];
+
+            document.getElementById('custom-form').reset();
+            updateHeaderCount();
+            renderRadios(getFilteredStations());
+        }
+
+        function deleteCustomStation(e, id) {
+            e.stopPropagation();
+            if (!confirm('Delete this custom station?')) return;
+
+            customStations = customStations.filter(s => s.id !== id);
+            localStorage.setItem('crh_custom_stations', JSON.stringify(customStations));
+            stations = [...defaultStations, ...customStations];
+
+            updateHeaderCount();
+            renderRadios(getFilteredStations());
+        }
 
         function startSleepTimer(minutes) {
             if (sleepTimerTimeout) {
@@ -785,7 +909,8 @@
                 card.id = `card-${st.id}`;
                 
                 card.innerHTML = `
-                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${st.id})">★</span>
+                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${st.id}')">🗑️</span>` : ''}
+                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${st.id}')">★</span>
                     <div>
                         <div class="card-top">
                             <div class="station-icon">${st.icon || '📻'}</div>
@@ -797,7 +922,7 @@
                         <div class="station-desc">${st.desc}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation(${st.id})">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
+                        <div class="btn-play-card" onclick="playStation('${st.id}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
@@ -864,7 +989,7 @@
                 console.warn("Autoplay blocked or stream delayed:", e);
             });
 
-            // --- 1. Intégration MediaSession API (Écran de verrouillage iOS / macOS / Android) ---
+            // MediaSession API
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: st.name,
@@ -1019,6 +1144,12 @@
             updateHeaderCount();
             renderRadios(stations);
             drawVUMeter();
+
+            // Restauration du thème
+            const savedTheme = localStorage.getItem('crh_theme') || 'default';
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
 
             const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
             const presetSelect = document.getElementById('eq-presets');
