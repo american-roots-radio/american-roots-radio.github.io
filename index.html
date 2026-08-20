@@ -168,6 +168,13 @@
         .btn-mute { background: none; border: none; color: var(--accent); font-size: 1.1rem; cursor: pointer; padding: 0; display: flex; align-items: center; }
         .volume-slider { width: 90px; accent-color: var(--accent); cursor: pointer; }
 
+        /* Adaptation spécifique Mobile Uniquement */
+        @media (max-width: 768px) {
+        .now-playing { flex: 1 1 100%; }
+        .audio-controls { width: 100%; justify-content: center; margin-top: 5px; }
+        .btn-player-btn { flex: 1; max-width: 140px; justify-content: center; }
+       }
+
         /* Paypal Saloon Button Style */
         .btn-saloon-paypal {
             display: inline-flex;
