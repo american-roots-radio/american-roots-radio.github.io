@@ -362,7 +362,7 @@
             </div>
         </div>
         <div class="audio-controls">
-            <button id="btn-main-play" class="btn-player-btn" onclick="togglePlayPause()">▶ PLAY</button>
+            <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
             
             <div class="volume-control">
@@ -697,13 +697,8 @@
             const grid = document.getElementById('radio-grid');
             grid.innerHTML = '';
             
-            const player = document.getElementById('main-audio');
-            const isPlaying = player && !player.paused && player.src;
-
             list.forEach(st => {
                 const isFav = favorites.includes(st.id);
-                const isThisPlaying = currentStation && currentStation.id === st.id && isPlaying;
-                
                 const card = document.createElement('div');
                 card.className = `card-radio ${currentStation && currentStation.id === st.id ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
@@ -721,63 +716,12 @@
                         <div class="station-desc">${st.desc}</div>
                     </div>
                     <div class="card-actions">
-                        <div id="btn-play-${st.id}" class="btn-play-card" onclick="togglePlayStation(${st.id})">${isThisPlaying ? '⏸ PAUSED' : '▶ PLAY'}</div>
-                        <div class="btn-stop-card" onclick="stopStation()">⏹ STOP</div>
+                        <div class="btn-play-card" onclick="playStation(${st.id})">▶ Play</div>
+                        <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
-        }
-
-        function updatePlayButtonsUI() {
-            const player = document.getElementById('main-audio');
-            const isPlaying = player && !player.paused && player.src && player.src !== window.location.href;
-
-            const mainPlayBtn = document.getElementById('btn-main-play');
-            if (mainPlayBtn) {
-                mainPlayBtn.innerText = isPlaying ? '⏸ PAUSED' : '▶ PLAY';
-            }
-
-            stations.forEach(st => {
-                const btn = document.getElementById(`btn-play-${st.id}`);
-                if (btn) {
-                    if (currentStation && currentStation.id === st.id && isPlaying) {
-                        btn.innerText = '⏸ PAUSED';
-                    } else {
-                        btn.innerText = '▶ PLAY';
-                    }
-                }
-            });
-        }
-
-        function togglePlayStation(id) {
-            const player = document.getElementById('main-audio');
-            if (currentStation && currentStation.id === id) {
-                if (player.paused) {
-                    player.play().catch(e => console.warn(e));
-                } else {
-                    player.pause();
-                }
-            } else {
-                playStation(id);
-            }
-        }
-
-        function togglePlayPause() {
-            const player = document.getElementById('main-audio');
-            if (!currentStation && !player.src) {
-                resumeStation();
-                return;
-            }
-            if (player.paused) {
-                if (!player.src) {
-                    resumeStation();
-                } else {
-                    player.play().catch(e => console.warn(e));
-                }
-            } else {
-                player.pause();
-            }
         }
 
         function playStation(id) {
@@ -785,6 +729,7 @@
             if (!st) return;
             currentStation = st;
 
+            // Enregistrement dans LocalStorage
             localStorage.setItem('crh_last_station', st.id);
 
             setupAudioContext();
@@ -851,10 +796,8 @@
             document.getElementById('status-live-dot').className = 'live-dot stopped';
             document.getElementById('live-indicator').className = 'live-dot stopped';
 
-            document.getElementById('current-title').childNodes[0].nodeValue = "STATION STOPPED ";
+            document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
             document.getElementById('current-genre').innerText = "Click play or press Space to resume";
-            
-            updatePlayButtonsUI();
         }
 
         function resumeStation() {
@@ -878,20 +821,8 @@
             renderRadios(getFilteredStations());
         }
 
-        // --- GESTION ÉVÉNEMENTIELLE DE L'AUDIO ET DES BOUTONS ---
+        // --- GESTION DES ERREURS DE FLUX ---
         const player = document.getElementById('main-audio');
-
-        player.addEventListener('play', () => {
-            updatePlayButtonsUI();
-            document.getElementById('eq-bar').classList.add('active');
-        });
-
-        player.addEventListener('pause', () => {
-            updatePlayButtonsUI();
-            clearInterval(timerInterval);
-            document.getElementById('eq-bar').classList.remove('active');
-        });
-
         player.addEventListener('error', () => {
             if (!player.src || player.src === window.location.href) return;
             
@@ -909,8 +840,12 @@
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
             document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
-            
-            updatePlayButtonsUI();
+        });
+
+        player.addEventListener('pause', () => {
+            if (player.src === "") return;
+            clearInterval(timerInterval);
+            document.getElementById('eq-bar').classList.remove('active');
         });
 
         // --- RACCOURCIS CLAVIER ---
@@ -923,7 +858,11 @@
 
             if (e.code === 'Space') {
                 e.preventDefault();
-                togglePlayPause();
+                if (player.paused || !player.src) {
+                    resumeStation();
+                } else {
+                    stopStation();
+                }
             } else if (e.code === 'ArrowDown') {
                 e.preventDefault();
                 let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
@@ -949,7 +888,7 @@
             if (presetSelect) presetSelect.value = savedPreset;
             applyPreset(savedPreset, false);
 
-            // Restauration de la dernière radio
+            // Restauration de la dernière radio sans forcer la lecture automatique (politique navigateur)
             const savedStationId = localStorage.getItem('crh_last_station');
             if (savedStationId) {
                 const st = stations.find(s => s.id == savedStationId);
