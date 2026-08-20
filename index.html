@@ -762,7 +762,15 @@
     });
 }
 
-function playStation(id) {
+        function playStation(id) {
+            const player = document.getElementById('main-audio');
+
+            // Si la radio cliquée est DEJÀ en lecture, on la met en pause
+            if (currentStation && currentStation.id === id && !player.paused && player.src !== "") {
+                stopStation();
+                return;
+            }
+
             const st = stations.find(s => s.id === id);
             if (!st) return;
             currentStation = st;
@@ -812,7 +820,6 @@ function playStation(id) {
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '⏸ PAUSE';
 
-            const player = document.getElementById('main-audio');
             player.src = st.url;
             player.play().catch(e => {
                 console.warn("Autoplay blocked or stream delayed:", e);
@@ -848,6 +855,14 @@ function playStation(id) {
         }
 
         function resumeStation() {
+            const player = document.getElementById('main-audio');
+
+            // Si la musique joue déjà, basculer en PAUSE
+            if (!player.paused && player.src !== "") {
+                stopStation();
+                return;
+            }
+
             if (currentStation) {
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
@@ -913,11 +928,7 @@ function playStation(id) {
 
             if (e.code === 'Space') {
                 e.preventDefault();
-                if (player.paused || !player.src) {
-                    resumeStation();
-                } else {
-                    stopStation();
-                }
+                resumeStation();
             } else if (e.code === 'ArrowDown') {
                 e.preventDefault();
                 let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
