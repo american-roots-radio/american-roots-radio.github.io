@@ -762,16 +762,16 @@
     });
 }
 
-        function playStation(id) {
+function playStation(id) {
             const player = document.getElementById('main-audio');
 
-            // Si la radio cliquée est DEJÀ en lecture, on la met en pause
-            if (currentStation && currentStation.id === id && !player.paused && player.src !== "") {
+            // Si la radio cliquée est déjà en cours de lecture, un clic la met en pause (comparaison souple ==)
+            if (currentStation && currentStation.id == id && !player.paused && player.src && player.src !== window.location.href) {
                 stopStation();
                 return;
             }
 
-            const st = stations.find(s => s.id === id);
+            const st = stations.find(s => s.id == id);
             if (!st) return;
             currentStation = st;
 
@@ -849,16 +849,18 @@
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
 
-            // Remettre toutes les vignettes en PLAY
+            // Mettre à jour l'affichage des vignettes sans perdre la station en mémoire
+            const memoryStation = currentStation;
             currentStation = null;
             renderRadios(getFilteredStations());
+            currentStation = memoryStation;
         }
 
         function resumeStation() {
             const player = document.getElementById('main-audio');
 
             // Si la musique joue déjà, basculer en PAUSE
-            if (!player.paused && player.src !== "") {
+            if (!player.paused && player.src && player.src !== window.location.href) {
                 stopStation();
                 return;
             }
@@ -867,7 +869,7 @@
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
                 const savedId = localStorage.getItem('crh_last_station');
-                playStation(savedId ? parseInt(savedId) : stations[0].id);
+                playStation(savedId ? savedId : stations[0].id);
             }
         }
 
@@ -931,12 +933,12 @@
                 resumeStation();
             } else if (e.code === 'ArrowDown') {
                 e.preventDefault();
-                let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
+                let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
                 let nextIndex = (currentIndex + 1) % visibleList.length;
                 playStation(visibleList[nextIndex].id);
             } else if (e.code === 'ArrowUp') {
                 e.preventDefault();
-                let currentIndex = currentStation ? visibleList.findIndex(s => s.id === currentStation.id) : -1;
+                let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
                 let prevIndex = currentIndex <= 0 ? visibleList.length - 1 : currentIndex - 1;
                 playStation(visibleList[prevIndex].id);
             }
@@ -954,7 +956,7 @@
             if (presetSelect) presetSelect.value = savedPreset;
             applyPreset(savedPreset, false);
 
-            // Restauration de la dernière radio sans forcer la lecture automatique (politique navigateur)
+            // Restauration de la dernière radio sans forcer la lecture automatique
             const savedStationId = localStorage.getItem('crh_last_station');
             if (savedStationId) {
                 const st = stations.find(s => s.id == savedStationId);
@@ -975,8 +977,8 @@
         }
 
         initApp();
-  </script> 
-  <script>
+</script> 
+<script>
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -990,6 +992,6 @@
             alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
         }
     }
-  </script>
+</script>
 </body>
 </html>
