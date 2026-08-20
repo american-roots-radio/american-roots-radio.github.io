@@ -533,7 +533,7 @@
             // Mise à jour du bouton du lecteur du bas
             const bottomBtn = document.getElementById('bottomPlayBtn');
             if (bottomBtn) {
-                bottomBtn.innerHTML = isPlaying ? "❚❚ PAUSE" : "▶ PLAY";
+                bottomBtn.innerHTML = isPlaying ? "❚❚ PAUSED" : "▶ PLAY";
             }
 
             // Mise à jour de tous les boutons de cartes
@@ -542,7 +542,7 @@
                 const playBtn = card.querySelector('.btn-play-card');
                 if (playBtn) {
                     if (currentStation && currentStation.id === cardId && isPlaying) {
-                        playBtn.innerHTML = "❚❚ Pause";
+                        playBtn.innerHTML = "❚❚ Paused";
                         card.classList.add('playing');
                     } else {
                         playBtn.innerHTML = "▶ Play";
@@ -834,7 +834,7 @@
 
         function stopStation() {
             const player = document.getElementById('main-audio');
-            player.pause();
+            player.paused();
             player.src = "";
 
             clearInterval(timerInterval);
@@ -897,7 +897,7 @@
             updateUI();
         });
 
-        player.addEventListener('pause', () => {
+        player.addEventListener('paused', () => {
             if (player.src === "") return;
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
