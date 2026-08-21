@@ -993,6 +993,15 @@
         }
 
         // --- GESTION DES FLUX PERSONNALISÉS ---
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function addCustomStation(e) {
             e.preventDefault();
             const name = document.getElementById('cust-name').value.trim();
@@ -1001,6 +1010,17 @@
             const genre = document.getElementById('cust-genre').value;
 
             if (!name || !url) return;
+
+            try {
+                const parsedUrl = new URL(url);
+                if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+                    alert('Please use an HTTP or HTTPS stream URL.');
+                    return;
+                }
+            } catch (_) {
+                alert('Please enter a valid stream URL.');
+                return;
+            }
 
             const newStation = {
                 id: 'custom_' + Date.now(),
@@ -1127,10 +1147,10 @@
 
             list.innerHTML = recentStations.map(st => `
                 <button class="history-item" type="button" onclick="playFromHistory('${String(st.id).replace(/'/g, "\\'")}')">
-                    <span class="history-item-icon">${st.icon || '📻'}</span>
+                    <span class="history-item-icon">${escapeHtml(st.icon || '📻')}</span>
                     <span class="history-item-main">
-                        <span class="history-item-name">${st.name}</span>
-                        <span class="history-item-meta">${st.location} • ${st.genre.toUpperCase()}</span>
+                        <span class="history-item-name">${escapeHtml(st.name)}</span>
+                        <span class="history-item-meta">${escapeHtml(st.location)} • ${escapeHtml(String(st.genre).toUpperCase())}</span>
                     </span>
                     <span class="history-item-play">▶</span>
                 </button>`).join('');
@@ -1339,21 +1359,22 @@
                 card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
                 
+                const safeId = String(st.id).replace(/'/g, "\\'");
                 card.innerHTML = `
-                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${st.id}')">🗑️</span>` : ''}
-                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${st.id}')">★</span>
+                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${safeId}')">🗑️</span>` : ''}
+                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${safeId}')">★</span>
                     <div>
                         <div class="card-top">
-                            <div class="station-icon">${st.icon || '📻'}</div>
+                            <div class="station-icon">${escapeHtml(st.icon || '📻')}</div>
                             <div class="station-meta">
-                                <h3>${st.name}</h3>
-                                <span>${st.location}</span>
+                                <h3>${escapeHtml(st.name)}</h3>
+                                <span>${escapeHtml(st.location)}</span>
                             </div>
                         </div>
-                        <div class="station-desc">${st.desc}</div>
+                        <div class="station-desc">${escapeHtml(st.desc)}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation('${st.id}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
+                        <div class="btn-play-card" onclick="playStation('${safeId}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
