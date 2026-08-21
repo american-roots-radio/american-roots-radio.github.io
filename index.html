@@ -737,7 +737,7 @@
             { id: 13, name: "1.FM Absolute Country Hits", genre: "classic", location: "US / Global", desc: "Top Hits from Today and Yesteryear", icon: "⭐", quality: "128 kbps MP3", url: "http://strm112.1.fm/acountry_mobile_mp3" },
             { id: 14, name: "Radio Country Live New York", genre: "outlaw", location: "New York, USA", desc: "Live Country Stream Direct from NY", icon: "🗽", quality: "128 kbps MP3", url: "https://streaming.radiostreamlive.com/radiocountrylive_devices" },
             { id: 15, name: "1.FM Country One Radio", genre: "pop", location: "US / Global", desc: "Number One Hits in Modern Country", icon: "🤠", quality: "128 kbps MP3", url: "http://strm112.1.fm/country_mobile_mp3" },
-            { id: 16, name: "Country Radio CZ", genre: "classic", location: "Czech Republic", desc: "European Country Music Network", icon: "🌍", quality: "128 kbps MP3", url: "http://icecast4.play.cz/country128.mp3" },
+            { id: 16, name: "Country Radio CZ", genre: "classic", location: "Czech Republic", desc: "European Country Music Network", icon: "🌍", quality: "128 kbps MP3", url: "https://icecast4.play.cz/country128.mp3" },
             { id: 17, name: "Best Net Radio Country Oldies", genre: "classic", location: "USA", desc: "Non-stop Old School Country Anthems", icon: "🌾", quality: "128 kbps MP3", url: "http://bigrradio.cdnstream1.com/5158_128" },
             { id: 18, name: "Big R Radio Country Gold", genre: "classic", location: "USA", desc: "Golden Oldies and Country Anthems", icon: "🏆", quality: "128 kbps MP3", url: "http://bigrradio.cdnstream1.com/5195_128" },
             { id: 19, name: "Big R Radio Country Mix", genre: "pop", location: "USA", desc: "The Ultimate Mix of Today & Yesterday", icon: "🎸", quality: "128 kbps MP3", url: "http://bigrradio.cdnstream1.com/5196_128" },
@@ -763,9 +763,9 @@
             { id: 39, name: "Cruisin Country 93.5", genre: "classic", location: "USA", desc: "Roadtrip Driving Country Songs", icon: "🚘", quality: "128 kbps MP3", url: "https://stream.radio.co/s4867e9e93/listen" },
             { id: 40, name: "Radio Disney Country", genre: "pop", location: "USA", desc: "Family Friendly Country Pop Hits", icon: "⭐", quality: "128 kbps MP3", url: "https://listen.radioking.com/radio/453221/stream/508076" },
             { id: 41, name: "Country 107.3 WRWD", genre: "pop", location: "New York, USA", desc: "Hudson Valley's Country Leader", icon: "🗽", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc1497" },
-            { id: 42, name: "CKDK 103.9 Country 104", genre: "pop", location: "Ontario, Canada", desc: "Woodstock's Modern Country", icon: "🇨🇦", quality: "128 kbps MP3", url: "http://live.leanstream.co/CKDKFM-MP3" },
+            { id: 42, name: "CKDK 103.9 Country 104", genre: "pop", location: "Ontario, Canada", desc: "Woodstock's Modern Country", icon: "🇨🇦", quality: "128 kbps MP3", url: "https://live.leanstream.co/CKDKFM-MP3" },
             { id: 43, name: "iHeartCountry Radio", genre: "pop", location: "USA", desc: "America's Official iHeart Country Channel", icon: "❤️", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc4418" },
-            { id: 44, name: "iHeartCountry Classics", genre: "classic", location: "USA", desc: "Timeless Country Legends Stream", icon: "❤️", quality: "128 kbps MP3", url: "http://stream.revma.ihrhls.com/zc4435" },
+            { id: 44, name: "iHeartCountry Classics", genre: "classic", location: "USA", desc: "Timeless Country Legends Stream", icon: "❤️", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc4435" },
             { id: 45, name: "CISN Country 103.9", genre: "pop", location: "Edmonton, Canada", desc: "Edmonton's #1 Country Hits", icon: "🇨🇦", quality: "128 kbps MP3", url: "http://live.leanstream.co/CISNFM-MP3" },
             { id: 46, name: "Buckeye Country 94.3", genre: "pop", location: "Ohio, USA", desc: "Ohio's Country Radio Leader", icon: "🌰", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc3973" },
             { id: 47, name: "Radio Rouge Country Hits", genre: "pop", location: "Europe", desc: "Non-stop Modern Country Stream", icon: "🔴", quality: "128 kbps MP3", url: "https://uk1.streamingpulse.com/ssl/RadioRougeCountry" },
@@ -1024,31 +1024,24 @@
                 .map(id => stations.find(st => String(st.id) === String(id)))
                 .filter(Boolean);
 
-            recentStationIds = recentStations.map(st => String(st.id)).slice(0, MAX_RECENT_STATIONS);
+            recentStationIds = recentStations.map(st => String(st.id));
             localStorage.setItem('crh_recent_stations', JSON.stringify(recentStationIds));
-            if (badge) badge.textContent = String(recentStationIds.length);
+            if (badge) badge.textContent = String(recentStations.length);
 
-            if (!recentStationIds.length) {
+            if (!recentStations.length) {
                 list.innerHTML = '<div class="history-empty">Aucune radio récente.<br>Commence à écouter une station pour la retrouver ici.</div>';
                 return;
             }
 
-            list.innerHTML = recentStations.slice(0, MAX_RECENT_STATIONS).map(st => {
-                const safeIcon = escapeHtml(st.icon || '📻');
-                const safeName = escapeHtml(st.name);
-                const safeLocation = escapeHtml(st.location);
-                const safeGenre = escapeHtml(String(st.genre || '').toUpperCase());
-
-                return `
-                    <button class="history-item" type="button" onclick="playFromHistory('${String(st.id)}')">
-                        <span class="history-item-icon">${safeIcon}</span>
-                        <span class="history-item-main">
-                            <span class="history-item-name">${safeName}</span>
-                            <span class="history-item-meta">${safeLocation} • ${safeGenre}</span>
-                        </span>
-                        <span class="history-item-play">▶</span>
-                    </button>`;
-            }).join('');
+            list.innerHTML = recentStations.map(st => `
+                <button class="history-item" type="button" onclick="playFromHistory('${String(st.id).replace(/'/g, "\\'")}')">
+                    <span class="history-item-icon">${st.icon || '📻'}</span>
+                    <span class="history-item-main">
+                        <span class="history-item-name">${st.name}</span>
+                        <span class="history-item-meta">${st.location} • ${st.genre.toUpperCase()}</span>
+                    </span>
+                    <span class="history-item-play">▶</span>
+                </button>`).join('');
         }
 
         function playFromHistory(id) {
@@ -1242,49 +1235,33 @@
             });
         }
 
-        // Sécurise l'affichage des données saisies par l'utilisateur avant insertion dans innerHTML.
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
         function renderRadios(list) {
             const grid = document.getElementById('radio-grid');
             grid.innerHTML = '';
-
+            
             list.forEach(st => {
                 const isFav = favorites.some(fId => String(fId) === String(st.id));
+                // MODIFICATION : Utilisation de isStationPlaying(st.id) pour vérifier si la radio est REELLEMENT en lecture
                 const isPlaying = isStationPlaying(st.id);
                 const card = document.createElement('div');
                 card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
-
-                // Les données de station (notamment celles ajoutées par l'utilisateur)
-                // sont échappées avant insertion dans innerHTML.
-                const safeIcon = escapeHtml(st.icon || '📻');
-                const safeName = escapeHtml(st.name);
-                const safeLocation = escapeHtml(st.location);
-                const safeDesc = escapeHtml(st.desc);
-
+                
                 card.innerHTML = `
-                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${String(st.id)}')">🗑️</span>` : ''}
-                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${String(st.id)}')">★</span>
+                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${st.id}')">🗑️</span>` : ''}
+                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${st.id}')">★</span>
                     <div>
                         <div class="card-top">
-                            <div class="station-icon">${safeIcon}</div>
+                            <div class="station-icon">${st.icon || '📻'}</div>
                             <div class="station-meta">
-                                <h3>${safeName}</h3>
-                                <span>${safeLocation}</span>
+                                <h3>${st.name}</h3>
+                                <span>${st.location}</span>
                             </div>
                         </div>
-                        <div class="station-desc">${safeDesc}</div>
+                        <div class="station-desc">${st.desc}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation('${String(st.id)}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
+                        <div class="btn-play-card" onclick="playStation('${st.id}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
