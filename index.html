@@ -1024,24 +1024,31 @@
                 .map(id => stations.find(st => String(st.id) === String(id)))
                 .filter(Boolean);
 
-            recentStationIds = recentStations.map(st => String(st.id));
+            recentStationIds = recentStations.map(st => String(st.id)).slice(0, MAX_RECENT_STATIONS);
             localStorage.setItem('crh_recent_stations', JSON.stringify(recentStationIds));
-            if (badge) badge.textContent = String(recentStations.length);
+            if (badge) badge.textContent = String(recentStationIds.length);
 
-            if (!recentStations.length) {
+            if (!recentStationIds.length) {
                 list.innerHTML = '<div class="history-empty">Aucune radio récente.<br>Commence à écouter une station pour la retrouver ici.</div>';
                 return;
             }
 
-            list.innerHTML = recentStations.map(st => `
-                <button class="history-item" type="button" onclick="playFromHistory('${String(st.id).replace(/'/g, "\\'")}')">
-                    <span class="history-item-icon">${st.icon || '📻'}</span>
-                    <span class="history-item-main">
-                        <span class="history-item-name">${st.name}</span>
-                        <span class="history-item-meta">${st.location} • ${st.genre.toUpperCase()}</span>
-                    </span>
-                    <span class="history-item-play">▶</span>
-                </button>`).join('');
+            list.innerHTML = recentStations.slice(0, MAX_RECENT_STATIONS).map(st => {
+                const safeIcon = escapeHtml(st.icon || '📻');
+                const safeName = escapeHtml(st.name);
+                const safeLocation = escapeHtml(st.location);
+                const safeGenre = escapeHtml(String(st.genre || '').toUpperCase());
+
+                return `
+                    <button class="history-item" type="button" onclick="playFromHistory('${String(st.id)}')">
+                        <span class="history-item-icon">${safeIcon}</span>
+                        <span class="history-item-main">
+                            <span class="history-item-name">${safeName}</span>
+                            <span class="history-item-meta">${safeLocation} • ${safeGenre}</span>
+                        </span>
+                        <span class="history-item-play">▶</span>
+                    </button>`;
+            }).join('');
         }
 
         function playFromHistory(id) {
@@ -1235,33 +1242,49 @@
             });
         }
 
+        // Sécurise l'affichage des données saisies par l'utilisateur avant insertion dans innerHTML.
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function renderRadios(list) {
             const grid = document.getElementById('radio-grid');
             grid.innerHTML = '';
-            
+
             list.forEach(st => {
                 const isFav = favorites.some(fId => String(fId) === String(st.id));
-                // MODIFICATION : Utilisation de isStationPlaying(st.id) pour vérifier si la radio est REELLEMENT en lecture
                 const isPlaying = isStationPlaying(st.id);
                 const card = document.createElement('div');
                 card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
-                
+
+                // Les données de station (notamment celles ajoutées par l'utilisateur)
+                // sont échappées avant insertion dans innerHTML.
+                const safeIcon = escapeHtml(st.icon || '📻');
+                const safeName = escapeHtml(st.name);
+                const safeLocation = escapeHtml(st.location);
+                const safeDesc = escapeHtml(st.desc);
+
                 card.innerHTML = `
-                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${st.id}')">🗑️</span>` : ''}
-                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${st.id}')">★</span>
+                    ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${String(st.id)}')">🗑️</span>` : ''}
+                    <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${String(st.id)}')">★</span>
                     <div>
                         <div class="card-top">
-                            <div class="station-icon">${st.icon || '📻'}</div>
+                            <div class="station-icon">${safeIcon}</div>
                             <div class="station-meta">
-                                <h3>${st.name}</h3>
-                                <span>${st.location}</span>
+                                <h3>${safeName}</h3>
+                                <span>${safeLocation}</span>
                             </div>
                         </div>
-                        <div class="station-desc">${st.desc}</div>
+                        <div class="station-desc">${safeDesc}</div>
                     </div>
                     <div class="card-actions">
-                        <div class="btn-play-card" onclick="playStation('${st.id}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
+                        <div class="btn-play-card" onclick="playStation('${String(st.id)}')">${isPlaying ? '⏸ Pause' : '▶ Play'}</div>
                         <div class="btn-stop-card" onclick="stopStation()">⏹ Stop</div>
                     </div>
                 `;
