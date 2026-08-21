@@ -70,6 +70,91 @@
             --text-muted: #78909c;
         }
 
+        /* Thème Rust Saloon */
+        body[data-theme="rust"] {
+            --bg-color: #120b08;
+            --panel-bg: #1d1210;
+            --card-bg: #261816;
+            --card-hover: #35201b;
+            --accent: #c2410c;
+            --accent-glow: rgba(194, 65, 12, 0.28);
+            --text: #fff3e8;
+            --text-muted: #c6a7ad;
+        }
+
+        /* Thème Midnight Blue */
+        body[data-theme="midnight"] {
+            --bg-color: #070c16;
+            --panel-bg: #0d1422;
+            --card-bg: #121b2c;
+            --card-hover: #19263c;
+            --accent: #4da3ff;
+            --accent-glow: rgba(77, 163, 255, 0.28);
+            --text: #eaf3ff;
+            --text-muted: #93a7bf;
+        }
+
+        /* Thème Country Forest */
+        body[data-theme="forest"] {
+            --bg-color: #08130d;
+            --panel-bg: #102017;
+            --card-bg: #172b1f;
+            --card-hover: #20402d;
+            --accent: #d4b05a;
+            --accent-glow: rgba(212, 176, 90, 0.28);
+            --text: #eef7ef;
+            --text-muted: #9bb0a0;
+        }
+
+
+        /* Thème Forest Green */
+        body[data-theme="forestgreen"] {
+            --bg-color: #08140d;
+            --panel-bg: #102319;
+            --card-bg: #173024;
+            --card-hover: #214331;
+            --accent: #6fbf73;
+            --accent-glow: rgba(111, 191, 115, 0.28);
+            --text: #eef9f0;
+            --text-muted: #9bb5a0;
+        }
+
+        /* Thème Deep Purple */
+        body[data-theme="purple"] {
+            --bg-color: #0f0a16;
+            --panel-bg: #181125;
+            --card-bg: #211934;
+            --card-hover: #2c2445;
+            --accent: #a78bfa;
+            --accent-glow: rgba(167, 139, 250, 0.28);
+            --text: #f4efff;
+            --text-muted: #b6a9cc;
+        }
+
+        /* Thème Arctic Blue */
+        body[data-theme="arctic"] {
+            --bg-color: #081016;
+            --panel-bg: #0e1b24;
+            --card-bg: #142632;
+            --card-hover: #1b3442;
+            --accent: #67d7e8;
+            --accent-glow: rgba(103, 215, 232, 0.28);
+            --text: #edfaff;
+            --text-muted: #91b1bd;
+        }
+
+        /* Thème Mocha */
+        body[data-theme="mocha"] {
+            --bg-color: #120e0b;
+            --panel-bg: #1d1612;
+            --card-bg: #282019;
+            --card-hover: #362a21;
+            --accent: #d6b38a;
+            --accent-glow: rgba(214, 179, 138, 0.25);
+            --text: #f7eee5;
+            --text-muted: #b9a596;
+        }
+
         body { font-family: var(--font); background-color: var(--bg-color); color: var(--text); margin: 0; padding: 0; padding-bottom: 180px; line-height: 1.5; transition: background-color 0.3s, color 0.3s; }
         
         header { background: linear-gradient(180deg, #2a1605 0%, var(--bg-color) 100%); border-bottom: 1px solid #222; padding: 35px 20px 20px 20px; text-align: center; }
@@ -643,6 +728,13 @@
                     <option value="default">🎨 Theme: Modern Dark</option>
                     <option value="vintage">🎨 Theme: Vintage Amp</option>
                     <option value="oled">🎨 Theme: Neon OLED</option>
+                    <option value="rust">🔥 Theme: Rust Saloon</option>
+                    <option value="midnight">🌌 Theme: Midnight Blue</option>
+                    <option value="forest">🌲 Theme: Country Forest</option>
+                    <option value="forestgreen">🌿 Theme: Forest Green</option>
+                    <option value="purple">🟣 Theme: Deep Purple</option>
+                    <option value="arctic">❄️ Theme: Arctic Blue</option>
+                    <option value="mocha">🤎 Theme: Mocha</option>
                 </select>
                 <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
             </div>
