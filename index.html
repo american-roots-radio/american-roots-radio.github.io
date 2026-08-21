@@ -535,6 +535,50 @@
 
         footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
+        /* Live Now Playing metadata — fixed height, marquee only when needed */
+        .now-playing-meta {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            line-height: 1.35;
+            min-height: 18px;
+        }
+        .now-playing-meta .now-playing-label {
+            flex: 0 0 auto;
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
+        }
+        .now-playing-meta .now-playing-viewport {
+            min-width: 0;
+            flex: 1 1 auto;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .now-playing-meta .now-playing-track {
+            display: inline-block;
+            white-space: nowrap;
+            will-change: transform;
+        }
+        .now-playing-meta .now-playing-track.scrolling {
+            animation-name: nowPlayingMarquee;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        @keyframes nowPlayingMarquee {
+            0%, 12% { transform: translateX(0); }
+            88%, 100% { transform: translateX(calc(-1 * var(--scroll-distance))); }
+        }
+
 
         /* Custom PWA Install Help Modal */
         .install-modal-overlay {
@@ -942,7 +986,12 @@
                         <div class="eq-bar"></div>
                     </div>
                 </h4>
-                <p id="current-genre">Click play or press Space to start listening</p>
+                <p id="current-genre" class="now-playing-meta">
+                    <span id="now-playing-label" class="now-playing-label">LIVE</span>
+                    <span id="now-playing-viewport" class="now-playing-viewport">
+                        <span id="now-playing-track" class="now-playing-track">Click play or press Space to start listening</span>
+                    </span>
+                </p>
             </div>
         </div>
         <div class="audio-controls">
@@ -1630,6 +1679,203 @@
             });
         }
 
+
+        // --- LIVE NOW PLAYING METADATA ---
+        const metadataCandidateIds = new Set([1,4,5,6,7,10,11,13,14,15,16,19,20,21,23,25,27,30,32,33,38,40,42,45,47,48,50,51,53,54,55,56,57,59,60,64,67,68,73,74,76,78,80,81,86,97,98,99,100,101,102,103,104,108,110,113,115,117,118,119,122,123]);
+        let metadataAbortController = null;
+        let metadataReaderToken = 0;
+        let currentNowPlaying = null;
+
+        function stopMetadataReader() {
+            metadataReaderToken += 1;
+            if (metadataAbortController) {
+                try { metadataAbortController.abort(); } catch (_) {}
+            }
+            metadataAbortController = null;
+        }
+
+        function setNowPlayingLine(label, text, shouldScroll = false) {
+            const labelEl = document.getElementById('now-playing-label');
+            const viewport = document.getElementById('now-playing-viewport');
+            const track = document.getElementById('now-playing-track');
+            const container = document.getElementById('current-genre');
+            if (!labelEl || !viewport || !track || !container) return;
+
+            labelEl.textContent = label;
+            track.textContent = text;
+            track.classList.remove('scrolling');
+            track.style.removeProperty('--scroll-distance');
+            track.style.removeProperty('animation-duration');
+
+            requestAnimationFrame(() => {
+                if (!shouldScroll) return;
+                const distance = Math.ceil(track.scrollWidth - viewport.clientWidth);
+                if (distance > 8) {
+                    track.style.setProperty('--scroll-distance', `${distance}px`);
+                    track.style.animationDuration = `${Math.max(9, Math.min(22, distance / 28))}s`;
+                    track.classList.add('scrolling');
+                }
+            });
+        }
+
+        function clearNowPlayingLine(st = currentStation) {
+            currentNowPlaying = null;
+            if (!st) {
+                setNowPlayingLine('LIVE', 'Click play or press Space to start listening');
+                return;
+            }
+            setNowPlayingLine('LIVE', `LIVE • ${st.location} (${st.genre.toUpperCase()})`);
+        }
+
+        function parseTrackMetadata(raw) {
+            if (!raw) return null;
+            let text = String(raw).replace(/\0/g, '').trim();
+            if (!text) return null;
+
+            // iHeart-style structured metadata sometimes arrives inside StreamTitle.
+            const structuredTitle = text.match(/title="([^"]+)"/i);
+            const structuredArtist = text.match(/artist="([^"]+)"/i);
+            if (structuredTitle && structuredArtist) {
+                const artist = structuredArtist[1].trim();
+                const title = structuredTitle[1].trim();
+                if (artist && title) return { artist, title };
+            }
+
+            // Common ICY format: Artist - Title
+            text = text.replace(/^\s*[\.\-]+\s*/, '').trim();
+            const match = text.match(/^(.{2,100}?)\s+-\s+(.{2,220})$/);
+            if (!match) return null;
+
+            const artist = match[1].trim();
+            const title = match[2].trim();
+            const combined = `${artist} - ${title}`.toLowerCase();
+
+            const blocked = [
+                'promo', 'we’ll be right back', "we'll be right back",
+                'station id', 'station will continue', 'shop local',
+                'stingray-loop', 'adwtag_', 'liner', 'radio bob - country',
+                'the wolf - hannover', 'star fm country rock', 'classic kickin'
+            ];
+            if (blocked.some(term => combined.includes(term))) return null;
+
+            if (artist.length < 2 || title.length < 2) return null;
+            return { artist, title };
+        }
+
+        async function readExactly(reader, count, token) {
+            const chunks = [];
+            let total = 0;
+            while (total < count && token === metadataReaderToken) {
+                const { value, done } = await reader.read();
+                if (done) return null;
+                if (!value || value.length === 0) continue;
+                chunks.push(value);
+                total += value.length;
+            }
+            if (token !== metadataReaderToken) return null;
+
+            const merged = new Uint8Array(total);
+            let offset = 0;
+            for (const chunk of chunks) {
+                merged.set(chunk, offset);
+                offset += chunk.length;
+            }
+            return merged;
+        }
+
+        function bytesToUtf8(bytes) {
+            try {
+                return new TextDecoder('utf-8').decode(bytes);
+            } catch (_) {
+                let out = '';
+                for (const b of bytes) out += String.fromCharCode(b);
+                return out;
+            }
+        }
+
+        function updateMediaSessionForNowPlaying(st, meta) {
+            if (!('mediaSession' in navigator) || !st) return;
+            try {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: meta ? meta.title : st.name,
+                    artist: meta ? meta.artist : `${st.location} • ${st.genre.toUpperCase()}`,
+                    album: meta ? st.name : 'Country Radio Hub',
+                    artwork: [
+                        { src: 'https://country-radio-live.github.io/icon-192.png', sizes: '192x192', type: 'image/png' },
+                        { src: 'https://country-radio-live.github.io/og-image.jpg', sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+            } catch (_) {}
+        }
+
+        async function startMetadataReader(st) {
+            stopMetadataReader();
+            if (!st || !metadataCandidateIds.has(Number(st.id))) return;
+
+            const token = metadataReaderToken;
+            const controller = new AbortController();
+            metadataAbortController = controller;
+
+            try {
+                const response = await fetch(st.url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-store',
+                    headers: {
+                        'Icy-MetaData': '1',
+                        'Accept': '*/*'
+                    },
+                    signal: controller.signal
+                });
+
+                if (!response.ok || !response.body) return;
+
+                const metaintHeader = response.headers.get('icy-metaint');
+                if (!metaintHeader) return;
+
+                const metaint = parseInt(metaintHeader, 10);
+                if (!Number.isFinite(metaint) || metaint <= 0 || metaint > 262144) return;
+
+                const reader = response.body.getReader();
+
+                // Discard audio until the first metadata block.
+                let audioBytesUntilMeta = metaint;
+                while (token === metadataReaderToken) {
+                    const audioChunk = await readExactly(reader, audioBytesUntilMeta, token);
+                    if (!audioChunk) break;
+
+                    const lenByte = await readExactly(reader, 1, token);
+                    if (!lenByte) break;
+
+                    const metadataLength = lenByte[0] * 16;
+                    if (metadataLength > 0) {
+                        const metaBytes = await readExactly(reader, metadataLength, token);
+                        if (!metaBytes) break;
+
+                        const raw = bytesToUtf8(metaBytes).replace(/\0+$/g, '').trim();
+                        const meta = parseTrackMetadata(raw);
+
+                        if (meta && currentStation && String(currentStation.id) === String(st.id) && token === metadataReaderToken) {
+                            const changed = !currentNowPlaying ||
+                                currentNowPlaying.artist !== meta.artist ||
+                                currentNowPlaying.title !== meta.title;
+
+                            if (changed) {
+                                currentNowPlaying = meta;
+                                setNowPlayingLine('🎵 NOW PLAYING', `${meta.artist} — ${meta.title}`, true);
+                                updateMediaSessionForNowPlaying(st, meta);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                // CORS or stream restrictions are expected for some stations.
+                if (err && err.name !== 'AbortError') console.debug('Metadata unavailable for station:', st.name);
+            } finally {
+                if (metadataAbortController === controller) metadataAbortController = null;
+            }
+        }
+
         function playStation(id) {
             const player = document.getElementById('main-audio');
 
@@ -1641,6 +1887,8 @@
 
             const st = stations.find(s => String(s.id) === String(id));
             if (!st) return;
+            stopMetadataReader();
+            currentNowPlaying = null;
             currentStation = st;
             stationStatus[String(st.id)] = 'online';
             saveRecentStation(st);
@@ -1656,6 +1904,7 @@
             player.play().catch(e => {
                 console.warn("Autoplay blocked or stream delayed:", e);
             });
+            startMetadataReader(st);
 
             // Met à jour la grille des radios pour refléter l'état de lecture réel
             renderRadios(getFilteredStations());
@@ -1695,7 +1944,7 @@
 
             document.getElementById('current-icon').innerText = st.icon || '📻';
             document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
-            document.getElementById('current-genre').innerText = `LIVE • ${st.location} (${st.genre.toUpperCase()})`;
+            clearNowPlayingLine(st);
             document.getElementById('eq-bar').classList.add('active');
 
             const bottomPlayBtn = document.getElementById('player-play-btn');
@@ -1703,15 +1952,7 @@
 
             // MediaSession API
             if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: st.name,
-                    artist: `${st.location} • ${st.genre.toUpperCase()}`,
-                    album: 'Country Radio Hub',
-                    artwork: [
-                        { src: 'https://country-radio-live.github.io/icon-192.png', sizes: '192x192', type: 'image/png' },
-                        { src: 'https://country-radio-live.github.io/og-image.jpg', sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
+                updateMediaSessionForNowPlaying(st, null);
                 navigator.mediaSession.playbackState = "playing";
 
                 navigator.mediaSession.setActionHandler('play', () => { resumeStation(); });
@@ -1735,6 +1976,7 @@
         }
 
         function stopStation() {
+            stopMetadataReader();
             const player = document.getElementById('main-audio');
             player.pause();
             player.src = "";
@@ -1755,7 +1997,7 @@
             document.getElementById('live-indicator').className = 'live-dot stopped';
 
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
-            document.getElementById('current-genre').innerText = "Click play or press Space to resume";
+            setNowPlayingLine('LIVE', 'Click play or press Space to resume');
 
             const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
@@ -1779,6 +2021,7 @@
                 setupAudioContext();
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 player.play().catch(e => console.warn('Resume blocked or stream delayed:', e));
+                startMetadataReader(currentStation);
             } else if (currentStation) {
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
@@ -1803,6 +2046,7 @@
         const player = document.getElementById('main-audio');
         player.addEventListener('error', () => {
             if (!player.src || player.src === window.location.href) return;
+            stopMetadataReader();
 
             clearInterval(timerInterval);
             document.getElementById('stat-timer').textContent = "00:00:00";
@@ -1818,7 +2062,7 @@
             if (currentStation) stationStatus[String(currentStation.id)] = 'offline';
             updateResumeLastButton();
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
-            document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
+            setNowPlayingLine('⚠️ OFFLINE', 'Unable to load this stream');
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
 
             const bottomPlayBtn = document.getElementById('player-play-btn');
@@ -1829,6 +2073,7 @@
 
         player.addEventListener('pause', () => {
             if (player.src === "") return;
+            stopMetadataReader();
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
 
@@ -1838,9 +2083,11 @@
             document.getElementById('server-status').innerText = 'SERVER STATUS: PAUSED';
             document.getElementById('server-status').style.color = 'var(--accent)';
             updateResumeLastButton();
-            document.getElementById('current-genre').innerText = currentStation
-                ? `PAUSED • ${currentStation.location} (${currentStation.genre.toUpperCase()})`
-                : 'Paused';
+            if (currentStation) {
+                setNowPlayingLine('⏸ PAUSED', `${currentStation.location} (${currentStation.genre.toUpperCase()})`);
+            } else {
+                setNowPlayingLine('⏸ PAUSED', 'Paused');
+            }
 
             renderRadios(getFilteredStations());
         });
