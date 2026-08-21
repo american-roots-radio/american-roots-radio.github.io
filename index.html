@@ -534,6 +534,104 @@
         }
 
         footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+
+
+        /* Custom PWA Install Help Modal */
+        .install-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.68);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+        .install-modal-overlay.open { display: flex; }
+        .install-modal {
+            width: min(520px, 100%);
+            background: var(--panel-bg);
+            color: var(--text);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55), 0 0 30px var(--accent-glow);
+            overflow: hidden;
+            animation: installModalIn 0.18s ease-out;
+        }
+        @keyframes installModalIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .install-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #2b2b32;
+            background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(255,255,255,0.02));
+        }
+        .install-modal-title {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .install-modal-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .install-modal-close:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .install-modal-body { padding: 18px; }
+        .install-modal-intro {
+            margin: 0 0 14px 0;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+        .install-modal-step {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 11px 12px;
+            margin-top: 9px;
+        }
+        .install-modal-step strong {
+            display: block;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+        .install-modal-step span {
+            color: var(--text-muted);
+            font-size: 0.86rem;
+        }
+        .install-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 18px 18px;
+        }
+        .install-modal-ok {
+            background: var(--accent);
+            color: #000;
+            border: 1px solid var(--accent);
+            border-radius: 9px;
+            padding: 9px 17px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .install-modal-ok:hover { filter: brightness(1.08); }
+
     </style>
 </head>
 <body>
@@ -798,6 +896,36 @@
         <footer>  
             <p>© 2026 Country Radio Hub — Direct Live Streams Aggregator</p>
         </footer>
+    </div>
+
+
+
+    <!-- Custom installation help dialog (replaces browser alert fallback) -->
+    <div id="install-help-overlay" class="install-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="install-help-title" onclick="closeInstallHelp(event)">
+        <div class="install-modal" onclick="event.stopPropagation()">
+            <div class="install-modal-header">
+                <h3 id="install-help-title" class="install-modal-title">🤠 Install Country Radio Hub</h3>
+                <button class="install-modal-close" type="button" onclick="closeInstallHelp()" aria-label="Close">✕</button>
+            </div>
+            <div class="install-modal-body">
+                <p class="install-modal-intro">Install the app on your device:</p>
+                <div class="install-modal-step">
+                    <strong>📱 Android</strong>
+                    <span>Open the browser menu (⋮), then choose “Install app” or “Add to Home screen”.</span>
+                </div>
+                <div class="install-modal-step">
+                    <strong>🍎 iPhone / iPad</strong>
+                    <span>Tap “Share”, then choose “Add to Home Screen”.</span>
+                </div>
+                <div class="install-modal-step">
+                    <strong>💻 PC / Mac</strong>
+                    <span>Use the install icon (+) in your browser’s address bar.</span>
+                </div>
+            </div>
+            <div class="install-modal-footer">
+                <button class="install-modal-ok" type="button" onclick="closeInstallHelp()">OK</button>
+            </div>
+        </div>
     </div>
 
     <!-- Persistent Bottom Audio Player Custom -->
@@ -1821,10 +1949,34 @@
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-        } else {
-            alert("To install the app:\n\n• On Android: tap the menu (⋮) then 'Install app' (or 'Add to Home screen').\n• On iPhone: tap 'Share' then 'Add to Home Screen'.\n• On PC/Mac: use the install icon (+) in your browser address bar.");
+            deferredPrompt.userChoice.finally(() => {
+                deferredPrompt = null;
+            });
+            return;
+        }
+
+        const overlay = document.getElementById('install-help-overlay');
+        if (overlay) {
+            overlay.classList.add('open');
+            const closeBtn = overlay.querySelector('.install-modal-close');
+            if (closeBtn) closeBtn.focus();
         }
     }
+
+    function closeInstallHelp(event) {
+        if (event && event.target && event.target.id !== 'install-help-overlay') return;
+        const overlay = document.getElementById('install-help-overlay');
+        if (overlay) overlay.classList.remove('open');
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('install-help-overlay');
+            if (overlay && overlay.classList.contains('open')) {
+                closeInstallHelp();
+            }
+        }
+    });
 </script>
 </body>
 </html>
