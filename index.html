@@ -580,6 +580,115 @@
         }
 
 
+        /* Optional Saloon Support Modal */
+        .support-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.68);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2100;
+            backdrop-filter: blur(4px);
+        }
+        .support-modal-overlay.open { display: flex; }
+        .support-modal {
+            width: min(520px, 100%);
+            background: var(--panel-bg);
+            color: var(--text);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55), 0 0 30px var(--accent-glow);
+            overflow: hidden;
+            animation: supportModalIn 0.18s ease-out;
+        }
+        @keyframes supportModalIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .support-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #2b2b32;
+            background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(255,255,255,0.02));
+        }
+        .support-modal-title {
+            margin: 0;
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .support-modal-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .support-modal-close:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .support-modal-body { padding: 18px; }
+        .support-modal-intro {
+            margin: 0 0 12px 0;
+            color: var(--text);
+            font-size: 0.96rem;
+        }
+        .support-modal-note {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+        }
+        .support-amounts {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .support-amount-btn {
+            flex: 1 1 80px;
+            min-width: 70px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .support-amount-btn:hover,
+        .support-amount-btn.selected {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .support-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 18px 18px;
+        }
+        .support-donate-btn {
+            background: var(--accent);
+            color: #000;
+            border: 1px solid var(--accent);
+            border-radius: 9px;
+            padding: 10px 17px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .support-donate-btn:hover { filter: brightness(1.08); }
+
         /* Custom PWA Install Help Modal */
         .install-modal-overlay {
             position: fixed;
@@ -685,9 +794,9 @@
         
         <!-- BOUTON PAYPAL SALOON -->
         <div style="margin-top: 18px; margin-bottom: 18px; text-align: center;">
-            <a href="https://paypal.me/gennaromac" target="_blank" rel="noopener noreferrer" class="btn-saloon-paypal">
+            <button type="button" class="btn-saloon-paypal" onclick="openSupportModal()">
                 🍻 Buy me a drink at the Saloon 🍻
-            </a>
+            </button>
         </div>
 
         <div style="text-align: center; margin-bottom: 18px;">
@@ -943,6 +1052,29 @@
     </div>
 
 
+
+    <!-- Optional Saloon Support Modal -->
+    <div id="support-modal-overlay" class="support-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="support-modal-title" onclick="closeSupportModal(event)">
+        <div class="support-modal" onclick="event.stopPropagation()">
+            <div class="support-modal-header">
+                <h3 id="support-modal-title" class="support-modal-title">🤠 Keep the Saloon Open</h3>
+                <button class="support-modal-close" type="button" onclick="closeSupportModal()" aria-label="Close">✕</button>
+            </div>
+            <div class="support-modal-body">
+                <p class="support-modal-intro">Country Radio Hub is free and ad-free.</p>
+                <p class="support-modal-note">Enjoying the site? If you want to support the project, you can buy me a drink. Totally optional.</p>
+                <div class="support-amounts" id="support-amounts">
+                    <button type="button" class="support-amount-btn" data-amount="3" onclick="selectSupportAmount(this)">$3</button>
+                    <button type="button" class="support-amount-btn selected" data-amount="5" onclick="selectSupportAmount(this)">$5</button>
+                    <button type="button" class="support-amount-btn" data-amount="10" onclick="selectSupportAmount(this)">$10</button>
+                    <button type="button" class="support-amount-btn" data-amount="custom" onclick="openCustomSupport()">Custom</button>
+                </div>
+            </div>
+            <div class="support-modal-footer">
+                <button type="button" class="support-donate-btn" onclick="sendSupportPayment()">🍻 Buy me a drink</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom installation help dialog (replaces browser alert fallback) -->
     <div id="install-help-overlay" class="install-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="install-help-title" onclick="closeInstallHelp(event)">
@@ -2221,6 +2353,52 @@
         deferredPrompt = e;
     });
 
+    let selectedSupportAmount = '5';
+
+    function openSupportModal() {
+        const overlay = document.getElementById('support-modal-overlay');
+        if (!overlay) return;
+        selectedSupportAmount = '5';
+        document.querySelectorAll('.support-amount-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.amount === '5');
+        });
+        overlay.classList.add('open');
+        const closeBtn = overlay.querySelector('.support-modal-close');
+        if (closeBtn) closeBtn.focus();
+    }
+
+    function closeSupportModal(event) {
+        if (event && event.target && event.target.id !== 'support-modal-overlay') return;
+        const overlay = document.getElementById('support-modal-overlay');
+        if (overlay) overlay.classList.remove('open');
+    }
+
+    function selectSupportAmount(button) {
+        selectedSupportAmount = button.dataset.amount;
+        document.querySelectorAll('.support-amount-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn === button);
+        });
+    }
+
+    function openCustomSupport() {
+        selectedSupportAmount = 'custom';
+        document.querySelectorAll('.support-amount-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.amount === 'custom');
+        });
+        // PayPal.Me lets the visitor enter their own amount on the payment page.
+        window.open('https://paypal.me/gennaromac', '_blank', 'noopener,noreferrer');
+    }
+
+    function sendSupportPayment() {
+        const baseUrl = 'https://paypal.me/gennaromac';
+        const amount = selectedSupportAmount;
+        const url = amount === '3' || amount === '5' || amount === '10'
+            ? `${baseUrl}/${amount}`
+            : baseUrl;
+        closeSupportModal();
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
@@ -2243,6 +2421,15 @@
         const overlay = document.getElementById('install-help-overlay');
         if (overlay) overlay.classList.remove('open');
     }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('support-modal-overlay');
+            if (overlay && overlay.classList.contains('open')) {
+                closeSupportModal();
+            }
+        }
+    });
 
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
