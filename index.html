@@ -662,6 +662,18 @@
         let previousVolume = 1;
         let sleepTimerTimeout = null;
 
+        // --- FONCTIONS DE VÉRIFICATION DE LECTURE (FIX BUGS BOUTON PLAY/PAUSE) ---
+        // Vérifie si l'élément audio HTML5 joue réellement du son
+        function isAudioPlaying() {
+            const player = document.getElementById('main-audio');
+            return player && !player.paused && player.src && player.src !== "" && player.src !== window.location.href;
+        }
+
+        // Vérifie si une station spécifique est actuellement en train de jouer
+        function isStationPlaying(id) {
+            return isAudioPlaying() && currentStation && String(currentStation.id) === String(id);
+        }
+
         // --- GESTION DES THÈMES CSS ---
         function changeTheme(themeName) {
             if (themeName === 'default') {
@@ -903,7 +915,8 @@
             
             list.forEach(st => {
                 const isFav = favorites.some(fId => String(fId) === String(st.id));
-                const isPlaying = currentStation && String(currentStation.id) === String(st.id);
+                // MODIFICATION : Utilisation de isStationPlaying(st.id) pour vérifier si la radio est REELLEMENT en lecture
+                const isPlaying = isStationPlaying(st.id);
                 const card = document.createElement('div');
                 card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
@@ -933,7 +946,8 @@
         function playStation(id) {
             const player = document.getElementById('main-audio');
 
-            if (currentStation && String(currentStation.id) === String(id) && !player.paused && player.src && player.src !== window.location.href) {
+            // MODIFICATION : Si la station cliquée est DEJA en cours de lecture réelle, on bascule en STOP
+            if (currentStation && String(currentStation.id) === String(id) && isAudioPlaying()) {
                 stopStation();
                 return;
             }
@@ -949,6 +963,12 @@
                 audioCtx.resume();
             }
 
+            player.src = st.url;
+            player.play().catch(e => {
+                console.warn("Autoplay blocked or stream delayed:", e);
+            });
+
+            // Met à jour la grille des radios pour refléter l'état de lecture réel
             renderRadios(getFilteredStations());
 
             document.getElementById('banner-title').innerText = st.name;
@@ -983,11 +1003,6 @@
 
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '⏸ PAUSE';
-
-            player.src = st.url;
-            player.play().catch(e => {
-                console.warn("Autoplay blocked or stream delayed:", e);
-            });
 
             // MediaSession API
             if ('mediaSession' in navigator) {
@@ -1048,16 +1063,14 @@
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
 
-            const memoryStation = currentStation;
-            currentStation = null;
+            // MODIFICATION : Réinitialisation propre des cartes de la grille sans le hack de contournement
             renderRadios(getFilteredStations());
-            currentStation = memoryStation;
         }
 
         function resumeStation() {
             const player = document.getElementById('main-audio');
 
-            if (!player.paused && player.src && player.src !== window.location.href) {
+            if (isAudioPlaying()) {
                 stopStation();
                 return;
             }
@@ -1104,6 +1117,8 @@
 
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
+
+            renderRadios(getFilteredStations());
         });
 
         player.addEventListener('pause', () => {
@@ -1113,6 +1128,8 @@
 
             const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
+
+            renderRadios(getFilteredStations());
         });
 
         // --- RACCOURCIS CLAVIER ---
@@ -1142,7 +1159,6 @@
         // --- INITIALISATION & RESTAURATION LOCALSTORAGE ---
         function initApp() {
             updateHeaderCount();
-            renderRadios(stations);
             drawVUMeter();
 
             // Restauration du thème
@@ -1168,11 +1184,10 @@
                     document.getElementById('current-icon').innerText = st.icon || '📻';
                     document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
                     document.getElementById('current-genre').innerText = `SAVED • ${st.location} (Press SPACE or Click PLAY to start)`;
-
-                    const card = document.getElementById(`card-${st.id}`);
-                    if (card) card.classList.add('playing');
                 }
             }
+
+            renderRadios(stations);
         }
 
         initApp();
