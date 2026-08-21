@@ -636,7 +636,7 @@
                         result.innerHTML = "✅ Message sent successfully! Thank you.";
                     } else {
                         result.style.color = "#dc3545";
-                        result.innerHTML = res.message;
+                        result.textContent = res.message;
                     }
                 })
                 .catch(error => {
