@@ -433,6 +433,22 @@
         .search-box { background: var(--panel-bg); border: 1px solid #333; border-radius: 20px; padding: 8px 16px; color: #fff; outline: none; font-size: 0.9rem; width: 200px; }
         .search-box:focus { border-color: var(--accent); }
 
+        .search-wrap { position: relative; display: inline-flex; align-items: center; }
+        .search-wrap .search-box { padding-right: 82px; }
+        .search-clear-btn {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            display: none; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.05); color: var(--text-muted);
+            border: 1px solid #444; border-radius: 14px; padding: 3px 8px;
+            font-size: 0.68rem; font-weight: 800; line-height: 1; cursor: pointer;
+            transition: 0.2s; white-space: nowrap;
+        }
+        .search-clear-btn.visible { display: inline-flex; }
+        .search-clear-btn:hover {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+
         /* Radio Cards Grid */
         .grid-radios { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
         .card-radio { background: var(--card-bg); border: 1px solid #282830; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; position: relative; }
@@ -1024,7 +1040,10 @@
                     <option value="arctic">❄️ Theme: Arctic Blue</option>
                     <option value="mocha">🤎 Theme: Mocha</option>
                 </select>
-                <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
+                <div class="search-wrap">
+                    <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
+                    <button id="search-clear-btn" class="search-clear-btn" type="button" onclick="clearSearch()" aria-label="Clear search">↺ Clear</button>
+                </div>
                 <button id="resume-last-btn" class="btn-resume-last" type="button" onclick="resumeLastStation()" style="display:none;">↩️ Resume last station</button>
                 <button id="share-station-btn" class="btn-share-station" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
             </div>
@@ -2180,15 +2199,38 @@
             }
         }
 
+        function updateSearchClearButton() {
+            const input = document.getElementById('search');
+            const clearBtn = document.getElementById('search-clear-btn');
+            if (!input || !clearBtn) return;
+            clearBtn.classList.toggle('visible', input.value.trim().length > 0);
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('search');
+            if (!input) return;
+            input.value = '';
+            updateSearchClearButton();
+            renderRadios(getFilteredStations());
+            input.focus();
+        }
+
         function filterGenre(genre, btnElement) {
             activeGenre = genre;
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
 
+            if (genre === 'all') {
+                const input = document.getElementById('search');
+                if (input) input.value = '';
+                updateSearchClearButton();
+            }
+
             renderRadios(getFilteredStations());
         }
 
         function searchRadio() {
+            updateSearchClearButton();
             renderRadios(getFilteredStations());
         }
 
@@ -2340,6 +2382,7 @@
         }
 
         initApp();
+        updateSearchClearButton();
         setTimeout(syncPlaybackUi, 0);
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeHistory();
