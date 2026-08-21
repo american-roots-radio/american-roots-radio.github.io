@@ -394,7 +394,40 @@
         .filter-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-filter { background: var(--panel-bg); color: var(--text); border: 1px solid #333; padding: 8px 16px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-filter:hover, .btn-filter.active { background: var(--accent); color: #000; border-color: var(--accent); }
-        
+        .btn-random-station, .btn-resume-last, .btn-share-station {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid #444;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .btn-random-station:hover, .btn-resume-last:hover, .btn-share-station:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .btn-random-station:disabled, .btn-resume-last:disabled, .btn-share-station:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .offline-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 999px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 0 10px rgba(239,68,68,0.35);
+        }
         .search-box { background: var(--panel-bg); border: 1px solid #333; border-radius: 20px; padding: 8px 16px; color: #fff; outline: none; font-size: 0.9rem; width: 200px; }
         .search-box:focus { border-color: var(--accent); }
 
@@ -471,6 +504,7 @@
             .now-playing { flex: 1 1 100%; }
             .audio-controls { width: 100%; justify-content: center; margin-top: 5px; flex-wrap: wrap; }
             .btn-player-btn, .sleep-timer-select { flex: 1; max-width: 140px; justify-content: center; }
+            .btn-random-station, .btn-resume-last, .btn-share-station { flex: 1 1 auto; }
         }
 
         /* Paypal Saloon Button Style */
@@ -715,7 +749,8 @@
         <div class="controls">
             <div class="filter-buttons">
                 <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Stations</button>
-                <button class="btn-filter" onclick="filterGenre('fav', this)">⭐ Favorites</button>
+                <button id="favorites-filter-btn" class="btn-filter" onclick="filterGenre('fav', this)">⭐ Favorites (0)</button>
+                <button class="btn-random-station" type="button" onclick="randomStation()">🎲 Random Station</button>
                 <button class="btn-filter" onclick="filterGenre('classic', this)">Classic Country</button>
                 <button class="btn-filter" onclick="filterGenre('texas', this)">Texas & Red Dirt</button>
                 <button class="btn-filter" onclick="filterGenre('outlaw', this)">Outlaw & Americana</button>
@@ -737,6 +772,8 @@
                     <option value="mocha">🤎 Theme: Mocha</option>
                 </select>
                 <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
+                <button id="resume-last-btn" class="btn-resume-last" type="button" onclick="resumeLastStation()" style="display:none;">↩️ Resume last station</button>
+                <button id="share-station-btn" class="btn-share-station" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
             </div>
         </div>
 
@@ -946,6 +983,7 @@
         let activeGenre = 'all';
         let favorites = JSON.parse(localStorage.getItem('crh_favorites') || '[]');
         let currentStation = null;
+        let stationStatus = {}; // transient UI status: online/offline for the last attempted station
         let recentStationIds = JSON.parse(localStorage.getItem('crh_recent_stations') || '[]');
         const MAX_RECENT_STATIONS = 10;
         let normalizerEnabled = localStorage.getItem('crh_normalizer') !== 'off';
@@ -990,6 +1028,83 @@
                 document.body.setAttribute('data-theme', themeName);
             }
             localStorage.setItem('crh_theme', themeName);
+        }
+
+        function updateFavoritesButton() {
+            const btn = document.getElementById('favorites-filter-btn');
+            if (btn) btn.textContent = `⭐ Favorites (${favorites.length})`;
+        }
+
+        function getStationShareUrl(station) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('station', String(station.id));
+            return url.toString();
+        }
+
+        function showShareFeedback(message) {
+            const btn = document.getElementById('share-station-btn');
+            if (!btn) return;
+            const original = btn.dataset.originalText || '🔗 Share';
+            btn.textContent = message;
+            clearTimeout(btn._feedbackTimer);
+            btn._feedbackTimer = setTimeout(() => {
+                btn.textContent = original;
+            }, 1800);
+        }
+
+        async function shareCurrentStation() {
+            if (!currentStation) return;
+            const shareUrl = getStationShareUrl(currentStation);
+            const shareData = {
+                title: currentStation.name,
+                text: `Listen to ${currentStation.name} on Country Radio Hub`,
+                url: shareUrl
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                    return;
+                }
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(shareUrl);
+                    showShareFeedback('✅ Link copied');
+                    return;
+                }
+            } catch (error) {
+                if (error && error.name === 'AbortError') return;
+            }
+
+            showShareFeedback('🔗 Share unavailable');
+        }
+
+        function updateResumeLastButton() {
+            const btn = document.getElementById('resume-last-btn');
+            if (!btn) return;
+            const savedId = localStorage.getItem('crh_last_station');
+            const savedStation = savedId ? stations.find(s => String(s.id) === String(savedId)) : null;
+            const shouldShow = !!savedStation && !isAudioPlaying();
+            btn.style.display = shouldShow ? 'inline-flex' : 'none';
+            btn.textContent = shouldShow ? `↩️ Resume ${savedStation.name}` : '↩️ Resume last station';
+            btn.title = shouldShow ? `Resume ${savedStation.name}` : 'Resume the last station';
+        }
+
+        function resumeLastStation() {
+            const savedId = localStorage.getItem('crh_last_station');
+            if (!savedId) return;
+            playStation(savedId);
+        }
+
+        function randomStation() {
+            const visibleStations = getFilteredStations();
+            if (!visibleStations.length) return;
+            let choices = visibleStations;
+            if (visibleStations.length > 1 && currentStation) {
+                const withoutCurrent = visibleStations.filter(st => String(st.id) !== String(currentStation.id));
+                if (withoutCurrent.length) choices = withoutCurrent;
+            }
+            const picked = choices[Math.floor(Math.random() * choices.length)];
+            playStation(picked.id);
         }
 
         // --- GESTION DES FLUX PERSONNALISÉS ---
@@ -1330,6 +1445,7 @@
             }
             
             localStorage.setItem('crh_favorites', JSON.stringify(favorites));
+            updateFavoritesButton();
             renderRadios(getFilteredStations());
         }
 
@@ -1360,7 +1476,9 @@
                 card.id = `card-${st.id}`;
                 
                 const safeId = String(st.id).replace(/'/g, "\\'");
+                const isOffline = stationStatus[String(st.id)] === 'offline';
                 card.innerHTML = `
+                    ${isOffline ? '<span class="offline-badge">🔴 OFFLINE</span>' : ''}
                     ${st.isCustom ? `<span class="btn-delete-custom" title="Delete custom station" onclick="deleteCustomStation(event, '${safeId}')">🗑️</span>` : ''}
                     <span class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${safeId}')">★</span>
                     <div>
@@ -1394,6 +1512,7 @@
             const st = stations.find(s => String(s.id) === String(id));
             if (!st) return;
             currentStation = st;
+            stationStatus[String(st.id)] = 'online';
             saveRecentStation(st);
 
             localStorage.setItem('crh_last_station', st.id);
@@ -1415,6 +1534,14 @@
             document.getElementById('banner-desc').innerText = st.desc;
             document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
             document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
+
+            const shareBtn = document.getElementById('share-station-btn');
+            if (shareBtn) {
+                shareBtn.style.display = 'inline-flex';
+                shareBtn.dataset.originalText = '🔗 Share';
+                shareBtn.textContent = '🔗 Share';
+            }
+            updateResumeLastButton();
 
             const liveIndicator = document.getElementById('live-indicator');
             liveIndicator.className = 'live-dot';
@@ -1504,6 +1631,7 @@
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
 
             // MODIFICATION : Réinitialisation propre des cartes de la grille sans le hack de contournement
+            updateResumeLastButton();
             renderRadios(getFilteredStations());
         }
 
@@ -1557,6 +1685,8 @@
             document.getElementById('live-indicator').className = 'live-dot error';
 
             const name = currentStation ? currentStation.name : "Station";
+            if (currentStation) stationStatus[String(currentStation.id)] = 'offline';
+            updateResumeLastButton();
             document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
             document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
@@ -1577,6 +1707,7 @@
 
             document.getElementById('server-status').innerText = 'SERVER STATUS: PAUSED';
             document.getElementById('server-status').style.color = 'var(--accent)';
+            updateResumeLastButton();
             document.getElementById('current-genre').innerText = currentStation
                 ? `PAUSED • ${currentStation.location} (${currentStation.genre.toUpperCase()})`
                 : 'Paused';
@@ -1630,9 +1761,29 @@
             if (boostSlider) boostSlider.value = boostDb;
             setBoostDb(boostDb, false);
             renderHistory();
+            updateFavoritesButton();
+
+            const sharedStationId = new URLSearchParams(window.location.search).get('station');
+            let sharedStationLoaded = false;
+            if (sharedStationId) {
+                const sharedStation = stations.find(s => String(s.id) === String(sharedStationId));
+                if (sharedStation) {
+                    sharedStationLoaded = true;
+                    currentStation = sharedStation;
+                    document.getElementById('banner-title').innerText = sharedStation.name;
+                    document.getElementById('banner-desc').innerText = sharedStation.desc;
+                    document.getElementById('banner-location').innerText = `📍 Location: ${sharedStation.location}`;
+                    document.getElementById('banner-quality').innerText = `🎛️ Quality: ${sharedStation.quality}`;
+                    document.getElementById('current-icon').innerText = sharedStation.icon || '📻';
+                    document.getElementById('current-title').childNodes[0].nodeValue = sharedStation.name + ' ';
+                    document.getElementById('current-genre').innerText = `READY • ${sharedStation.location} (Press SPACE or Click PLAY to start)`;
+                    const shareBtn = document.getElementById('share-station-btn');
+                    if (shareBtn) shareBtn.style.display = 'inline-flex';
+                }
+            }
 
             const savedStationId = localStorage.getItem('crh_last_station');
-            if (savedStationId) {
+            if (!sharedStationLoaded && savedStationId) {
                 const st = stations.find(s => String(s.id) === String(savedStationId));
                 if (st) {
                     currentStation = st;
@@ -1643,10 +1794,13 @@
                     document.getElementById('current-icon').innerText = st.icon || '📻';
                     document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
                     document.getElementById('current-genre').innerText = `SAVED • ${st.location} (Press SPACE or Click PLAY to start)`;
+                    const shareBtn = document.getElementById('share-station-btn');
+                    if (shareBtn) shareBtn.style.display = 'inline-flex';
                 }
             }
 
             renderRadios(stations);
+            updateResumeLastButton();
         }
 
         initApp();
