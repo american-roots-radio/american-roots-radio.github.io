@@ -148,6 +148,151 @@
             align-items: center;
         }
 
+        /* Historique d'écoute + normalisation audio */
+        .history-toggle-btn {
+            position: relative;
+        }
+        .history-badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.68rem;
+            line-height: 18px;
+            font-weight: 800;
+            box-sizing: border-box;
+        }
+
+        .history-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            z-index: 1200;
+        }
+        .history-overlay.open { opacity: 1; visibility: visible; }
+
+        .history-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(390px, 92vw);
+            height: 100vh;
+            background: var(--panel-bg);
+            border-left: 1px solid #333;
+            box-shadow: -10px 0 35px rgba(0,0,0,0.45);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            z-index: 1201;
+            display: flex;
+            flex-direction: column;
+        }
+        .history-drawer.open { transform: translateX(0); }
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #2b2b32;
+        }
+        .history-header h3 { margin: 0; font-size: 1rem; color: #fff; }
+        .history-header-actions { display: flex; align-items: center; gap: 8px; }
+        .history-clear, .history-close {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid #444;
+            border-radius: 7px;
+            padding: 6px 9px;
+            cursor: pointer;
+        }
+        .history-clear:hover, .history-close:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .history-list { padding: 12px; overflow-y: auto; flex: 1; }
+        .history-empty {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 35px 15px;
+            font-size: 0.9rem;
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid #2b2b32;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+        }
+        .history-item:hover { border-color: var(--accent); background: var(--card-hover); }
+        .history-item-icon {
+            width: 38px; height: 38px; flex: 0 0 38px;
+            display: grid; place-items: center;
+            background: #282522; border-radius: 8px;
+        }
+        .history-item-main { min-width: 0; flex: 1; }
+        .history-item-name { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item-meta { color: var(--text-muted); font-size: 0.72rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item-play { color: var(--accent); font-size: 0.9rem; font-weight: 800; }
+
+        .normalizer-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            padding: 4px 10px;
+            border-radius: 20px;
+            height: 30px;
+        }
+        .normalizer-toggle {
+            appearance: none;
+            width: 34px; height: 19px;
+            border-radius: 12px;
+            background: #333;
+            border: 1px solid #555;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+        }
+        .normalizer-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 13px; height: 13px;
+            border-radius: 50%;
+            background: #aaa;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .normalizer-toggle:checked { background: var(--accent); border-color: var(--accent); }
+        .normalizer-toggle:checked::after { transform: translateX(15px); background: #000; }
+        .normalizer-label { font-size: 0.74rem; font-weight: 700; white-space: nowrap; color: var(--text); }
+        .boost-slider { width: 72px; accent-color: var(--accent); cursor: pointer; }
+        .boost-value { width: 38px; text-align: right; font-size: 0.72rem; color: var(--accent); font-weight: 800; }
+
+        @media (max-width: 768px) {
+            .normalizer-control {
+                flex: 1 1 100%;
+                justify-content: center;
+                height: 34px;
+            }
+            .boost-slider { width: 120px; }
+        }
+
         @media (max-width: 768px) {
             .eq-panel,
             .volume-control {
@@ -463,6 +608,19 @@
         <!-- Radios Grid -->
         <div id="radio-grid" class="grid-radios"></div>
 
+        <!-- Tiroir Historique d'écoute -->
+        <div id="history-overlay" class="history-overlay" onclick="closeHistory()"></div>
+        <aside id="history-drawer" class="history-drawer" aria-label="Recently Played">
+            <div class="history-header">
+                <h3>🕘 Recently Played</h3>
+                <div class="history-header-actions">
+                    <button class="history-clear" type="button" onclick="clearHistory()">Clear</button>
+                    <button class="history-close" type="button" onclick="closeHistory()" aria-label="Close">✕</button>
+                </div>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </aside>
+
         <footer>  
             <p>© 2026 Country Radio Hub — Direct Live Streams Aggregator</p>
         </footer>
@@ -486,6 +644,9 @@
             </div>
         </div>
         <div class="audio-controls">
+            <!-- Recently Played: toujours présent, indépendant du bouton PLAY/PAUSE -->
+            <button class="btn-player-btn history-toggle-btn" type="button" onclick="toggleHistory()">🕘 History <span id="history-badge" class="history-badge">0</span></button>
+
             <!-- Sleep Timer -->
             <select id="sleep-timer" class="sleep-timer-select" onchange="startSleepTimer(this.value)">
                 <option value="0" style="background:#121215; color:#fff;">⏱️ Sleep Timer : Off</option>
@@ -494,12 +655,20 @@
                 <option value="60" style="background:#121215; color:#fff;">⏱️ 60 min</option>
             </select>
 
-            <button class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
+            <button id="player-play-btn" class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
             <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
             
             <div class="volume-control">
                 <button id="btn-mute" class="btn-mute" onclick="toggleMute()">🔊</button>
                 <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+            </div>
+
+            <!-- Normalisation dynamique / Boost -->
+            <div class="normalizer-control" title="Réduit les écarts de niveau entre les streams avec une compression dynamique, puis applique le boost choisi.">
+                <span class="normalizer-label">AUTO LEVEL</span>
+                <input id="normalizer-toggle" class="normalizer-toggle" type="checkbox" onchange="setNormalizer(this.checked)">
+                <input id="boost-slider" class="boost-slider" type="range" min="0" max="6" value="0" step="0.5" oninput="setBoostDb(this.value)" aria-label="Volume boost en décibels">
+                <span id="boost-value" class="boost-value">+0 dB</span>
             </div>
 
             <audio id="main-audio" crossorigin="anonymous" preload="none" style="display: none;">
@@ -642,8 +811,12 @@
         let activeGenre = 'all';
         let favorites = JSON.parse(localStorage.getItem('crh_favorites') || '[]');
         let currentStation = null;
+        let recentStationIds = JSON.parse(localStorage.getItem('crh_recent_stations') || '[]');
+        const MAX_RECENT_STATIONS = 10;
+        let normalizerEnabled = localStorage.getItem('crh_normalizer') !== 'off';
+        let boostDb = parseFloat(localStorage.getItem('crh_boost_db') || '0');
 
-        let audioCtx, audioSource, analyser, filters = [];
+        let audioCtx, audioSource, analyser, gainNode, compressorNode, filters = [];
         const frequencies = [60, 250, 1000, 4000, 12000];
         
         const presets = {
@@ -744,15 +917,116 @@
 
         function setVolume(val) {
             const player = document.getElementById('main-audio');
-            player.volume = val;
+            player.volume = Math.max(0, Math.min(1, parseFloat(val)));
             const btnMute = document.getElementById('btn-mute');
-            if (val == 0) {
+            if (player.volume === 0) {
                 btnMute.innerText = "🔇";
-            } else if (val < 0.5) {
+            } else if (player.volume < 0.5) {
                 btnMute.innerText = "🔉";
             } else {
                 btnMute.innerText = "🔊";
             }
+        }
+
+        function applyBoostGain() {
+            if (!gainNode) return;
+            gainNode.gain.value = Math.pow(10, boostDb / 20);
+        }
+
+        function setBoostDb(value, save = true) {
+            boostDb = Math.max(0, Math.min(6, parseFloat(value) || 0));
+            const slider = document.getElementById('boost-slider');
+            const label = document.getElementById('boost-value');
+            if (slider) slider.value = boostDb;
+            if (label) label.textContent = `+${boostDb % 1 === 0 ? boostDb.toFixed(0) : boostDb.toFixed(1)} dB`;
+            applyBoostGain();
+            if (save) localStorage.setItem('crh_boost_db', String(boostDb));
+        }
+
+        function setNormalizer(enabled, save = true) {
+            normalizerEnabled = !!enabled;
+            if (compressorNode) {
+                if (normalizerEnabled) {
+                    compressorNode.threshold.value = -18;
+                    compressorNode.knee.value = 12;
+                    compressorNode.ratio.value = 4;
+                    compressorNode.attack.value = 0.003;
+                    compressorNode.release.value = 0.25;
+                } else {
+                    compressorNode.threshold.value = 0;
+                    compressorNode.knee.value = 0;
+                    compressorNode.ratio.value = 1;
+                    compressorNode.attack.value = 0.003;
+                    compressorNode.release.value = 0.25;
+                }
+            }
+            const toggle = document.getElementById('normalizer-toggle');
+            if (toggle) toggle.checked = normalizerEnabled;
+            if (save) localStorage.setItem('crh_normalizer', normalizerEnabled ? 'on' : 'off');
+        }
+
+        function saveRecentStation(station) {
+            const id = String(station.id);
+            recentStationIds = [id, ...recentStationIds.filter(existingId => String(existingId) !== id)].slice(0, MAX_RECENT_STATIONS);
+            localStorage.setItem('crh_recent_stations', JSON.stringify(recentStationIds));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const badge = document.getElementById('history-badge');
+            if (!list) return;
+
+            const recentStations = recentStationIds
+                .map(id => stations.find(st => String(st.id) === String(id)))
+                .filter(Boolean);
+
+            recentStationIds = recentStations.map(st => String(st.id));
+            localStorage.setItem('crh_recent_stations', JSON.stringify(recentStationIds));
+            if (badge) badge.textContent = String(recentStations.length);
+
+            if (!recentStations.length) {
+                list.innerHTML = '<div class="history-empty">Aucune radio récente.<br>Commence à écouter une station pour la retrouver ici.</div>';
+                return;
+            }
+
+            list.innerHTML = recentStations.map(st => `
+                <button class="history-item" type="button" onclick="playFromHistory('${String(st.id).replace(/'/g, "\\'")}')">
+                    <span class="history-item-icon">${st.icon || '📻'}</span>
+                    <span class="history-item-main">
+                        <span class="history-item-name">${st.name}</span>
+                        <span class="history-item-meta">${st.location} • ${st.genre.toUpperCase()}</span>
+                    </span>
+                    <span class="history-item-play">▶</span>
+                </button>`).join('');
+        }
+
+        function playFromHistory(id) {
+            closeHistory();
+            playStation(id);
+        }
+
+        function toggleHistory() {
+            const drawer = document.getElementById('history-drawer');
+            const overlay = document.getElementById('history-overlay');
+            if (!drawer || !overlay) return;
+            const open = !drawer.classList.contains('open');
+            drawer.classList.toggle('open', open);
+            overlay.classList.toggle('open', open);
+            if (open) renderHistory();
+        }
+
+        function closeHistory() {
+            const drawer = document.getElementById('history-drawer');
+            const overlay = document.getElementById('history-overlay');
+            if (drawer) drawer.classList.remove('open');
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        function clearHistory() {
+            recentStationIds = [];
+            localStorage.removeItem('crh_recent_stations');
+            renderHistory();
         }
 
         function toggleMute() {
@@ -800,10 +1074,19 @@
                     prevNode = filter;
                 });
 
+                gainNode = audioCtx.createGain();
+                prevNode.connect(gainNode);
+
+                compressorNode = audioCtx.createDynamicsCompressor();
+                gainNode.connect(compressorNode);
+
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 64;
-                prevNode.connect(analyser);
+                compressorNode.connect(analyser);
                 analyser.connect(audioCtx.destination);
+
+                setBoostDb(boostDb, false);
+                setNormalizer(normalizerEnabled, false);
             } catch (e) {
                 console.warn("AudioContext fallback active (iOS/CORS) :", e);
             }
@@ -946,15 +1229,16 @@
         function playStation(id) {
             const player = document.getElementById('main-audio');
 
-            // MODIFICATION : Si la station cliquée est DEJA en cours de lecture réelle, on bascule en STOP
+            // Si la même station est déjà en lecture, le bouton de la carte agit comme PAUSE.
             if (currentStation && String(currentStation.id) === String(id) && isAudioPlaying()) {
-                stopStation();
+                document.getElementById('main-audio').pause();
                 return;
             }
 
             const st = stations.find(s => String(s.id) === String(id));
             if (!st) return;
             currentStation = st;
+            saveRecentStation(st);
 
             localStorage.setItem('crh_last_station', st.id);
 
@@ -1001,7 +1285,7 @@
             document.getElementById('current-genre').innerText = `LIVE • ${st.location} (${st.genre.toUpperCase()})`;
             document.getElementById('eq-bar').classList.add('active');
 
-            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '⏸ PAUSE';
 
             // MediaSession API
@@ -1018,7 +1302,7 @@
                 navigator.mediaSession.playbackState = "playing";
 
                 navigator.mediaSession.setActionHandler('play', () => { resumeStation(); });
-                navigator.mediaSession.setActionHandler('pause', () => { stopStation(); });
+                navigator.mediaSession.setActionHandler('pause', () => { document.getElementById('main-audio').pause(); });
                 navigator.mediaSession.setActionHandler('stop', () => { stopStation(); });
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
                     const visibleList = getFilteredStations();
@@ -1060,7 +1344,7 @@
             document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
             document.getElementById('current-genre').innerText = "Click play or press Space to resume";
 
-            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
 
             // MODIFICATION : Réinitialisation propre des cartes de la grille sans le hack de contournement
@@ -1070,12 +1354,18 @@
         function resumeStation() {
             const player = document.getElementById('main-audio');
 
+            // Le bouton principal est un vrai PLAY / PAUSE : il ne doit jamais ouvrir
+            // l'historique et ne doit pas faire un STOP complet.
             if (isAudioPlaying()) {
-                stopStation();
+                player.pause();
                 return;
             }
 
-            if (currentStation) {
+            if (currentStation && player.src) {
+                setupAudioContext();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                player.play().catch(e => console.warn('Resume blocked or stream delayed:', e));
+            } else if (currentStation) {
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
                 const savedId = localStorage.getItem('crh_last_station');
@@ -1115,7 +1405,7 @@
             document.getElementById('current-genre').innerText = "⚠️ Station offline — Unable to load this stream";
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
 
-            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
 
             renderRadios(getFilteredStations());
@@ -1126,8 +1416,14 @@
             clearInterval(timerInterval);
             document.getElementById('eq-bar').classList.remove('active');
 
-            const bottomPlayBtn = document.querySelector('.audio-controls .btn-player-btn');
+            const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
+
+            document.getElementById('server-status').innerText = 'SERVER STATUS: PAUSED';
+            document.getElementById('server-status').style.color = 'var(--accent)';
+            document.getElementById('current-genre').innerText = currentStation
+                ? `PAUSED • ${currentStation.location} (${currentStation.genre.toUpperCase()})`
+                : 'Paused';
 
             renderRadios(getFilteredStations());
         });
@@ -1172,6 +1468,13 @@
             if (presetSelect) presetSelect.value = savedPreset;
             applyPreset(savedPreset, false);
 
+            const normalizerToggle = document.getElementById('normalizer-toggle');
+            if (normalizerToggle) normalizerToggle.checked = normalizerEnabled;
+            const boostSlider = document.getElementById('boost-slider');
+            if (boostSlider) boostSlider.value = boostDb;
+            setBoostDb(boostDb, false);
+            renderHistory();
+
             const savedStationId = localStorage.getItem('crh_last_station');
             if (savedStationId) {
                 const st = stations.find(s => String(s.id) === String(savedStationId));
@@ -1191,6 +1494,9 @@
         }
 
         initApp();
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeHistory();
+        });
 </script> 
 <script>
     let deferredPrompt;
