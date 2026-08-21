@@ -872,7 +872,7 @@
         </div>
 
         <!-- Bloc d'ajout de Flux Personnalisé -->
-        <details class="custom-stream-panel">
+        <details class="custom-stream-panel" open>
             <summary>➕ Add Your Own Custom Radio Stream (Saved locally)</summary>
             <form id="custom-form" class="custom-form" onsubmit="addCustomStation(event)">
                 <input type="text" id="cust-name" placeholder="Radio Name" required class="search-box" style="flex: 1; min-width: 150px;">
@@ -904,9 +904,9 @@
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <!-- Theme Switcher Dropdown -->
                 <select id="theme-select" class="eq-preset-select" onchange="changeTheme(this.value)">
-                    <option value="default">🎨 Theme: Modern Dark</option>
-                    <option value="vintage">🎨 Theme: Vintage Amp</option>
-                    <option value="oled">🎨 Theme: Neon OLED</option>
+                    <option value="default">🌑 Theme: Modern Dark</option>
+                    <option value="vintage">📻 Theme: Vintage Amp</option>
+                    <option value="oled">⚡ Theme: Neon OLED</option>
                     <option value="rust">🔥 Theme: Rust Saloon</option>
                     <option value="midnight">🌌 Theme: Midnight Blue</option>
                     <option value="forest">🌲 Theme: Country Forest</option>
@@ -1904,7 +1904,8 @@
             player.play().catch(e => {
                 console.warn("Autoplay blocked or stream delayed:", e);
             });
-            startMetadataReader(st);
+            // Metadata reader intentionally disabled here: browser CORS blocks many radio ICY streams.
+            // It will be re-enabled when the server-side metadata proxy is integrated.
 
             // Met à jour la grille des radios pour refléter l'état de lecture réel
             renderRadios(getFilteredStations());
@@ -2007,6 +2008,23 @@
             renderRadios(getFilteredStations());
         }
 
+        function syncPlaybackUi() {
+            const player = document.getElementById('main-audio');
+            const playing = isAudioPlaying();
+
+            const bottomPlayBtn = document.getElementById('player-play-btn');
+            if (bottomPlayBtn) bottomPlayBtn.innerHTML = playing ? '⏸ PAUSE' : '▶ PLAY';
+
+            document.querySelectorAll('.card-radio').forEach(card => {
+                const id = card.id ? card.id.replace('card-', '') : '';
+                const btn = card.querySelector('.btn-play-card');
+                const isCurrent = currentStation && String(currentStation.id) === id;
+                const isPlaying = isCurrent && playing;
+                card.classList.toggle('playing', isPlaying);
+                if (btn) btn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+            });
+        }
+
         function resumeStation() {
             const player = document.getElementById('main-audio');
 
@@ -2021,7 +2039,7 @@
                 setupAudioContext();
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 player.play().catch(e => console.warn('Resume blocked or stream delayed:', e));
-                startMetadataReader(currentStation);
+                // Metadata reader intentionally disabled here; waiting for the server-side proxy.
             } else if (currentStation) {
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
@@ -2071,6 +2089,14 @@
             renderRadios(getFilteredStations());
         });
 
+        player.addEventListener('play', () => {
+            if (player.src === "") return;
+            document.getElementById('eq-bar').classList.add('active');
+            document.getElementById('server-status').innerText = 'SERVER STATUS: ONLINE';
+            document.getElementById('server-status').style.color = '#22c55e';
+            syncPlaybackUi();
+        });
+
         player.addEventListener('pause', () => {
             if (player.src === "") return;
             stopMetadataReader();
@@ -2090,6 +2116,7 @@
             }
 
             renderRadios(getFilteredStations());
+            syncPlaybackUi();
         });
 
         // --- RACCOURCIS CLAVIER ---
@@ -2181,6 +2208,7 @@
         }
 
         initApp();
+        setTimeout(syncPlaybackUi, 0);
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeHistory();
         });
