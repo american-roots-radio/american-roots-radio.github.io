@@ -707,7 +707,7 @@
             e.stopPropagation();
             if (!confirm('Delete this custom station?')) return;
 
-            customStations = customStations.filter(s => s.id !== id);
+            customStations = customStations.filter(s => String(s.id) !== String(id));
             localStorage.setItem('crh_custom_stations', JSON.stringify(customStations));
             stations = [...defaultStations, ...customStations];
 
@@ -870,25 +870,25 @@
 
         function toggleFav(e, id) {
             e.stopPropagation();
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(fId => fId !== id);
-            } else {
-                favorites.push(id);
-            }
-            localStorage.setItem('crh_favorites', JSON.stringify(favorites));
+            const strId = String(id);
+            const index = favorites.findIndex(fId => String(fId) === strId);
             
-            if (activeGenre === 'fav') {
-                filterGenre('fav');
+            if (index !== -1) {
+                favorites.splice(index, 1);
             } else {
-                renderRadios(getFilteredStations());
+                favorites.push(strId);
             }
+            
+            localStorage.setItem('crh_favorites', JSON.stringify(favorites));
+            renderRadios(getFilteredStations());
         }
 
         function getFilteredStations() {
             const query = document.getElementById('search').value.toLowerCase();
             return stations.filter(s => {
+                const isFav = favorites.some(fId => String(fId) === String(s.id));
                 const matchesGenre = (activeGenre === 'all') || 
-                                     (activeGenre === 'fav' && favorites.includes(s.id)) || 
+                                     (activeGenre === 'fav' && isFav) || 
                                      (s.genre === activeGenre);
                 const matchesSearch = s.name.toLowerCase().includes(query) || 
                                       s.location.toLowerCase().includes(query) || 
@@ -902,8 +902,8 @@
             grid.innerHTML = '';
             
             list.forEach(st => {
-                const isFav = favorites.includes(st.id);
-                const isPlaying = currentStation && currentStation.id === st.id;
+                const isFav = favorites.some(fId => String(fId) === String(st.id));
+                const isPlaying = currentStation && String(currentStation.id) === String(st.id);
                 const card = document.createElement('div');
                 card.className = `card-radio ${isPlaying ? 'playing' : ''}`;
                 card.id = `card-${st.id}`;
@@ -933,12 +933,12 @@
         function playStation(id) {
             const player = document.getElementById('main-audio');
 
-            if (currentStation && currentStation.id == id && !player.paused && player.src && player.src !== window.location.href) {
+            if (currentStation && String(currentStation.id) === String(id) && !player.paused && player.src && player.src !== window.location.href) {
                 stopStation();
                 return;
             }
 
-            const st = stations.find(s => s.id == id);
+            const st = stations.find(s => String(s.id) === String(id));
             if (!st) return;
             currentStation = st;
 
@@ -1008,14 +1008,14 @@
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
                     const visibleList = getFilteredStations();
                     if (visibleList.length === 0) return;
-                    let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
+                    let currentIndex = currentStation ? visibleList.findIndex(s => String(s.id) === String(currentStation.id)) : -1;
                     let prevIndex = currentIndex <= 0 ? visibleList.length - 1 : currentIndex - 1;
                     playStation(visibleList[prevIndex].id);
                 });
                 navigator.mediaSession.setActionHandler('nexttrack', () => {
                     const visibleList = getFilteredStations();
                     if (visibleList.length === 0) return;
-                    let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
+                    let currentIndex = currentStation ? visibleList.findIndex(s => String(s.id) === String(currentStation.id)) : -1;
                     let nextIndex = (currentIndex + 1) % visibleList.length;
                     playStation(visibleList[nextIndex].id);
                 });
@@ -1128,12 +1128,12 @@
                 resumeStation();
             } else if (e.code === 'ArrowDown') {
                 e.preventDefault();
-                let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
+                let currentIndex = currentStation ? visibleList.findIndex(s => String(s.id) === String(currentStation.id)) : -1;
                 let nextIndex = (currentIndex + 1) % visibleList.length;
                 playStation(visibleList[nextIndex].id);
             } else if (e.code === 'ArrowUp') {
                 e.preventDefault();
-                let currentIndex = currentStation ? visibleList.findIndex(s => s.id == currentStation.id) : -1;
+                let currentIndex = currentStation ? visibleList.findIndex(s => String(s.id) === String(currentStation.id)) : -1;
                 let prevIndex = currentIndex <= 0 ? visibleList.length - 1 : currentIndex - 1;
                 playStation(visibleList[prevIndex].id);
             }
@@ -1158,7 +1158,7 @@
 
             const savedStationId = localStorage.getItem('crh_last_station');
             if (savedStationId) {
-                const st = stations.find(s => s.id == savedStationId);
+                const st = stations.find(s => String(s.id) === String(savedStationId));
                 if (st) {
                     currentStation = st;
                     document.getElementById('banner-title').innerText = st.name;
