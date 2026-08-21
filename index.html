@@ -443,6 +443,9 @@
                 <textarea name="message" placeholder="Report a broken stream or suggest a station..." rows="2" required 
                           style="background: #111111; border: 1px solid #444444; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; resize: vertical;"></textarea>
 
+                <!-- hCaptcha anti-spam protection (Web3Forms zero-config) -->
+                <div class="h-captcha" data-captcha="true" data-theme="dark" data-size="normal"></div>
+
                 <button type="submit" id="submit-btn" 
                         style="color: #000000; background-color: var(--accent); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
                     ✉️ Send Message
@@ -458,6 +461,15 @@
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+
+                const captchaResponse = form.querySelector('textarea[name="h-captcha-response"]');
+                if (!captchaResponse || !captchaResponse.value) {
+                    result.style.display = "block";
+                    result.style.color = "var(--accent)";
+                    result.innerHTML = "🛡️ Please complete the anti-spam verification.";
+                    return;
+                }
+
                 const formData = new FormData(form);
                 const object = Object.fromEntries(formData);
                 const json = JSON.stringify(object);
@@ -1499,6 +1511,7 @@
             if (e.key === 'Escape') closeHistory();
         });
 </script> 
+<script src="https://web3forms.com/client/script.js" async defer></script>
 <script>
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
