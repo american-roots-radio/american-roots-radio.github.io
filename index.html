@@ -444,7 +444,9 @@
                           style="background: #111111; border: 1px solid #444444; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; resize: vertical;"></textarea>
 
                 <!-- hCaptcha anti-spam protection (Web3Forms zero-config) -->
-                <div class="h-captcha" data-captcha="true" data-theme="dark" data-size="normal"></div>
+                <div id="captcha-wrap">
+                    <div class="h-captcha" data-captcha="true" data-theme="dark" data-size="normal"></div>
+                </div>
 
                 <button type="submit" id="submit-btn" 
                         style="color: #000000; background-color: var(--accent); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
@@ -458,6 +460,31 @@
         <script>
             const form = document.getElementById('contact-form');
             const result = document.getElementById('form-result');
+            const captchaWrap = document.getElementById('captcha-wrap');
+            const emailField = form.querySelector('input[name="email"]');
+            const messageField = form.querySelector('textarea[name="message"]');
+
+            function showCaptcha() {
+                if (captchaWrap) captchaWrap.style.display = 'block';
+            }
+
+            function resetCaptcha() {
+                if (window.hcaptcha && typeof window.hcaptcha.reset === 'function') {
+                    try { window.hcaptcha.reset(); } catch (_) {}
+                }
+            }
+
+            function scheduleSuccessCleanup() {
+                setTimeout(() => {
+                    result.style.display = 'none';
+                    if (captchaWrap) captchaWrap.style.display = 'none';
+                    resetCaptcha();
+                }, 5000);
+            }
+
+            [emailField, messageField].forEach(field => {
+                if (field) field.addEventListener('focus', showCaptcha);
+            });
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -498,8 +525,11 @@
                     result.innerHTML = "Something went wrong!";
                 })
                 .then(function() {
+                    const wasSuccessful = result.innerHTML.includes('✅ Message sent successfully! Thank you.');
                     form.reset();
-                    setTimeout(() => { result.style.display = "none"; }, 5000);
+                    if (wasSuccessful) {
+                        scheduleSuccessCleanup();
+                    }
                 });
             });
         </script>
