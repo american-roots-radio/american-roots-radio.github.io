@@ -525,28 +525,77 @@
             .btn-random-station, .btn-resume-last, .btn-share-station { flex: 1 1 auto; }
         }
 
-        /* Paypal Saloon Button Style */
+        /* 🍻 SALOON SIGN — independent of the selected site theme */
         .btn-saloon-paypal {
+            position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #000000;
-            font-weight: 800;
-            font-size: 0.95rem;
-            padding: 10px 22px;
-            border-radius: 25px;
+            min-width: 300px;
+            min-height: 50px;
+            padding: 11px 28px;
+            box-sizing: border-box;
+            background:
+                linear-gradient(180deg, rgba(88, 55, 30, 0.98) 0%, rgba(48, 28, 17, 0.99) 48%, rgba(34, 20, 13, 0.99) 100%);
+            color: #f6ecd8;
+            font-weight: 900;
+            font-size: 0.96rem;
+            letter-spacing: 0.15px;
+            border: 2px solid #9c7a42;
+            border-radius: 7px;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
-            transition: all 0.2s ease-in-out;
-            border: 1px solid #fbbf24;
+            cursor: pointer;
+            box-shadow:
+                0 0 0 3px #24150d,
+                0 0 0 5px rgba(126, 94, 45, 0.95),
+                0 8px 18px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 238, 192, 0.18),
+                inset 0 -8px 16px rgba(0, 0, 0, 0.24);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            overflow: visible;
+        }
+        .btn-saloon-paypal::before {
+            content: '★  S A L O O N  ★';
+            position: absolute;
+            left: 50%;
+            top: -11px;
+            transform: translateX(-50%);
+            padding: 2px 10px 3px;
+            background: #2a180f;
+            color: #d7b46b;
+            border: 1px solid #8e6b35;
+            border-radius: 5px;
+            font-size: 0.55rem;
+            font-weight: 900;
+            letter-spacing: 1.8px;
+            line-height: 1;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,.35);
+            pointer-events: none;
+        }
+        .btn-saloon-paypal::after {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid rgba(218, 184, 107, 0.42);
+            border-radius: 4px;
+            pointer-events: none;
         }
         .btn-saloon-paypal:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #000000;
+            filter: brightness(1.08);
+            box-shadow:
+                0 0 0 3px #24150d,
+                0 0 0 5px #b08a49,
+                0 11px 24px rgba(0, 0, 0, 0.52),
+                0 0 22px rgba(193, 151, 74, 0.20),
+                inset 0 1px 0 rgba(255, 238, 192, 0.25),
+                inset 0 -8px 16px rgba(0, 0, 0, 0.18);
+        }
+        .btn-saloon-paypal:focus-visible {
+            outline: 2px solid #d7b46b;
+            outline-offset: 4px;
         }
 
         footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
@@ -802,6 +851,193 @@
         .install-modal-ok:hover { filter: brightness(1.08); }
 
     </style>
+
+<style id="crh-eq10-player-v1">
+/* Experimental 10-band EQ layout */
+.eq-bands-10 { display: grid !important; grid-template-columns: repeat(10, minmax(0, 1fr)); align-items: end; gap: 8px; padding: 12px 10px !important; }
+.eq-bands-10 .eq-band-col { min-width: 0; }
+.eq-bands-10 .eq-band-col span { font-size: 0.66rem; }
+.eq-bands-10 .eq-slider { height: 74px; width: 16px; }
+
+/* Experimental complete bottom player redesign — same IDs and same functions */
+.bottom-player {
+  padding: 8px 18px !important;
+  gap: 8px !important;
+  background: linear-gradient(180deg, #101116 0%, #0b0c10 100%) !important;
+  border-top: 1px solid #3a3a44 !important;
+  box-shadow: 0 -8px 28px rgba(0,0,0,.75) !important;
+}
+.bottom-player .player-shell { display:flex; align-items:center; gap:14px; width:100%; }
+.bottom-player .player-brand { display:flex; align-items:center; gap:10px; min-width:220px; }
+.bottom-player .player-status-dot { width:8px; height:8px; border-radius:50%; background:#6b7280; box-shadow:none; flex:0 0 auto; }
+.bottom-player .player-brand-main { min-width:0; }
+.bottom-player .player-brand-line { display:flex; align-items:center; gap:8px; }
+.bottom-player .player-live-label { font-size:.63rem; font-weight:900; color:var(--accent); letter-spacing:.7px; }
+.bottom-player .player-station { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px; }
+.bottom-player .player-sub { font-size:.70rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bottom-player .audio-controls { width:auto; min-width:0; flex:1 1 auto; justify-content:flex-end; gap:8px !important; }
+.bottom-player .btn-player-btn { height:34px !important; padding:0 12px !important; border-radius:8px !important; }
+.bottom-player .sleep-timer-select { height:34px !important; }
+.bottom-player .volume-control { height:28px !important; padding:3px 10px !important; }
+.bottom-player .normalizer-control { height:28px !important; padding:3px 9px !important; }
+.bottom-player .player-control-group { display:flex; align-items:center; gap:6px; }
+.bottom-player .player-divider { width:1px; height:26px; background:#2f3038; margin:0 2px; }
+.bottom-player #main-audio { display:none; }
+@media (max-width: 1050px) {
+  .eq-bands-10 { grid-template-columns: repeat(5, minmax(0, 1fr)); row-gap:12px; }
+  .bottom-player .player-shell { flex-wrap:wrap; }
+  .bottom-player .player-brand { min-width:0; flex:1 1 100%; }
+  .bottom-player .audio-controls { width:100%; justify-content:center; }
+}
+@media (max-width: 768px) {
+  .eq-bands-10 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .bottom-player { padding:8px 10px !important; }
+  .bottom-player .player-station { max-width:180px; }
+  .bottom-player .audio-controls { gap:6px !important; }
+}
+</style>
+
+
+<style id="crh-header-install-western-v2">
+/* 🤠 COUNTRY RADIO HUB — aged western sign, clean lettering */
+header h1 {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 10px 28px 12px;
+    color: #eadbbd !important;
+    font-family: var(--font);
+    font-size: clamp(2rem, 4.4vw, 3.15rem) !important;
+    font-weight: 950;
+    letter-spacing: 1.05px;
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow:
+        0 1px 0 rgba(255,241,203,.62),
+        0 2px 0 #6a4727,
+        0 4px 0 #24150c,
+        0 7px 10px rgba(0,0,0,.52),
+        0 0 10px rgba(195,165,103,.10);
+    background:
+        linear-gradient(180deg, rgba(86,55,31,.97) 0%, rgba(47,29,17,.99) 52%, rgba(28,17,11,1) 100%);
+    border: 2px solid #9a7d4d;
+    border-radius: 9px;
+    box-shadow:
+        0 0 0 3px #21140c,
+        0 0 0 5px rgba(99,73,38,.92),
+        inset 0 2px 0 rgba(255,238,190,.12),
+        inset 0 -10px 16px rgba(0,0,0,.32),
+        0 9px 22px rgba(0,0,0,.44);
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+header h1:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+    box-shadow:
+        0 0 0 3px #21140c,
+        0 0 0 5px #a28451,
+        inset 0 2px 0 rgba(255,238,190,.16),
+        inset 0 -10px 16px rgba(0,0,0,.24),
+        0 12px 26px rgba(0,0,0,.48),
+        0 0 18px rgba(194,167,108,.14);
+}
+@media (max-width: 768px) {
+    header h1 { padding-inline: 20px; letter-spacing: .8px; }
+}
+</style>
+
+<style id="crh-install-premium-final">
+/* 📲 Install App: own premium badge, not tied to --accent/theme */
+#installAppBtn {
+    position: relative;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    min-height: 42px;
+    padding: 9px 18px !important;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #3a5265 0%, #233543 52%, #17252e 100%) !important;
+    color: #eef6fb !important;
+    border: 1px solid #8da7b8 !important;
+    border-radius: 7px !important;
+    box-shadow:
+        0 0 0 2px rgba(25,36,44,.85),
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -5px 10px rgba(0,0,0,.22),
+        0 5px 14px rgba(0,0,0,.30);
+    font-weight: 800 !important;
+    cursor: pointer;
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+#installAppBtn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow:
+        0 0 0 2px rgba(25,36,44,.85),
+        0 7px 18px rgba(0,0,0,.38),
+        0 0 16px rgba(141,167,184,.18),
+        inset 0 1px 0 rgba(255,255,255,.20),
+        inset 0 -5px 10px rgba(0,0,0,.18);
+}
+#installAppBtn:focus-visible {
+    outline: 2px solid #d7b66f;
+    outline-offset: 4px;
+}
+
+@media (max-width: 768px) {
+    header h1 { padding-inline: 22px; letter-spacing: .8px; }
+    #installAppBtn { min-width: 124px; min-height: 40px; }
+}
+</style>
+
+
+<style id="crh-approved-send-message-final">
+/* ✉️ Send Message — same approved metal/steel finish as Install App */
+#submit-btn {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    min-height: 42px;
+    padding: 9px 18px !important;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #3a5265 0%, #233543 52%, #17252e 100%) !important;
+    color: #eef6fb !important;
+    border: 1px solid #8da7b8 !important;
+    border-radius: 7px !important;
+    box-shadow:
+        0 0 0 2px rgba(25,36,44,.85),
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -5px 10px rgba(0,0,0,.22),
+        0 5px 14px rgba(0,0,0,.30);
+    font-weight: 800 !important;
+    cursor: pointer;
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+#submit-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow:
+        0 0 0 2px rgba(25,36,44,.85),
+        0 7px 18px rgba(0,0,0,.38),
+        0 0 16px rgba(141,167,184,.18),
+        inset 0 1px 0 rgba(255,255,255,.20),
+        inset 0 -5px 10px rgba(0,0,0,.18);
+}
+</style>
+<style id="crh-approved-install-final">
+#installAppBtn {
+position:relative!important;display:inline-flex!important;align-items:center;justify-content:center;
+min-width:132px;min-height:42px;padding:9px 18px!important;box-sizing:border-box;
+background:linear-gradient(180deg,#3a5265 0%,#233543 52%,#17252e 100%)!important;
+color:#eef6fb!important;border:1px solid #8da7b8!important;border-radius:7px!important;
+box-shadow:0 0 0 2px rgba(25,36,44,.85),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -5px 10px rgba(0,0,0,.22),0 5px 14px rgba(0,0,0,.30);
+font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+}
+#installAppBtn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 0 0 2px rgba(25,36,44,.85),0 7px 18px rgba(0,0,0,.38),0 0 16px rgba(141,167,184,.18),inset 0 1px 0 rgba(255,255,255,.20),inset 0 -5px 10px rgba(0,0,0,.18);}
+</style>
 </head>
 <body>
     <header>
@@ -955,29 +1191,29 @@
                     <option value="treble">Treble Booster</option>
                     <option value="rock">Rock</option>
                     <option value="pop">Pop</option>
+                    <option value="nashville">Nashville Studio</option>
+                    <option value="road">Country Road</option>
+                    <option value="honkytonk">Honky Tonk</option>
+                    <option value="southern">Southern Rock</option>
+                    <option value="vinyl">Classic Vinyl</option>
+                    <option value="tube">Warm Tube</option>
+                    <option value="wide">Wide Open</option>
+                    <option value="deep">Deep Country</option>
+                    <option value="night">Night Drive</option>
+                    <option value="guitar">Acoustic Guitar</option>
                 </select>
             </div>
-            <div class="eq-bands">
-                <div class="eq-band-col">
-                    <input type="range" class="eq-slider" id="eq-60" min="-12" max="12" value="4" oninput="updateBand(0, this.value)">
-                    <span>60Hz</span>
-                </div>
-                <div class="eq-band-col">
-                    <input type="range" class="eq-slider" id="eq-250" min="-12" max="12" value="2" oninput="updateBand(1, this.value)">
-                    <span>250Hz</span>
-                </div>
-                <div class="eq-band-col">
-                    <input type="range" class="eq-slider" id="eq-1000" min="-12" max="12" value="0" oninput="updateBand(2, this.value)">
-                    <span>1kHz</span>
-                </div>
-                <div class="eq-band-col">
-                    <input type="range" class="eq-slider" id="eq-4000" min="-12" max="12" value="3" oninput="updateBand(3, this.value)">
-                    <span>4kHz</span>
-                </div>
-                <div class="eq-band-col">
-                    <input type="range" class="eq-slider" id="eq-12000" min="-12" max="12" value="2" oninput="updateBand(4, this.value)">
-                    <span>12kHz</span>
-                </div>
+            <div class="eq-bands eq-bands-10">
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-31" min="-12" max="12" value="0" oninput="updateBand(0, this.value)"><span>31Hz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-62" min="-12" max="12" value="0" oninput="updateBand(1, this.value)"><span>62Hz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-125" min="-12" max="12" value="0" oninput="updateBand(2, this.value)"><span>125Hz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-250" min="-12" max="12" value="0" oninput="updateBand(3, this.value)"><span>250Hz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-500" min="-12" max="12" value="0" oninput="updateBand(4, this.value)"><span>500Hz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-1000" min="-12" max="12" value="0" oninput="updateBand(5, this.value)"><span>1kHz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-2000" min="-12" max="12" value="0" oninput="updateBand(6, this.value)"><span>2kHz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-4000" min="-12" max="12" value="0" oninput="updateBand(7, this.value)"><span>4kHz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-8000" min="-12" max="12" value="0" oninput="updateBand(8, this.value)"><span>8kHz</span></div>
+                <div class="eq-band-col"><input type="range" class="eq-slider" id="eq-16000" min="-12" max="12" value="0" oninput="updateBand(9, this.value)"><span>16kHz</span></div>
             </div>
         </div>
 
@@ -1123,60 +1359,56 @@
         </div>
     </div>
 
-    <!-- Persistent Bottom Audio Player Custom -->
+    <!-- Persistent Bottom Audio Player Custom — experimental redesign, same controls/functions -->
     <div class="bottom-player">
-        <div class="now-playing">
-            <div id="current-icon" class="now-playing-icon">📻</div>
-            <div class="now-playing-info">
-                <h4 id="current-title">
-                    Select a Station
-                    <div id="eq-bar" class="equalizer">
-                        <div class="eq-bar"></div>
-                        <div class="eq-bar"></div>
-                        <div class="eq-bar"></div>
-                        <div class="eq-bar"></div>
+        <div class="player-shell">
+            <div class="player-brand">
+                <div id="player-status-dot" class="player-status-dot"></div>
+                <div class="now-playing-icon" id="current-icon">📻</div>
+                <div class="player-brand-main">
+                    <div class="player-brand-line">
+                        <span class="player-live-label">NOW PLAYING</span>
+                        <div id="eq-bar" class="equalizer">
+                            <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        </div>
                     </div>
-                </h4>
-                <p id="current-genre" class="now-playing-meta">
-                    <span id="now-playing-label" class="now-playing-label">LIVE</span>
-                    <span id="now-playing-viewport" class="now-playing-viewport">
-                        <span id="now-playing-track" class="now-playing-track">Click play or press Space to start listening</span>
-                    </span>
-                </p>
+                    <div id="current-title" class="player-station">Select a Station</div>
+                    <div class="player-sub" id="current-genre">LIVE • Click PLAY or press SPACE to start</div>
+                </div>
+                <div class="now-playing" style="display:none;"><div class="now-playing-info"><h4></h4><p></p></div></div>
+            </div>
+            <div class="player-divider"></div>
+            <div class="audio-controls">
+                <div class="player-control-group">
+                    <button class="btn-player-btn history-toggle-btn" type="button" onclick="toggleHistory()">🕘 History <span id="history-badge" class="history-badge">0</span></button>
+                    <select id="sleep-timer" class="sleep-timer-select" onchange="startSleepTimer(this.value)">
+                        <option value="0" style="background:#121215; color:#fff;">⏱️ Sleep Timer : Off</option>
+                        <option value="15" style="background:#121215; color:#fff;">⏱️ 15 min</option>
+                        <option value="30" style="background:#121215; color:#fff;">⏱️ 30 min</option>
+                        <option value="60" style="background:#121215; color:#fff;">⏱️ 60 min</option>
+                    </select>
+                </div>
+                <div class="player-divider"></div>
+                <div class="player-control-group">
+                    <button id="player-play-btn" class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
+                    <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
+                </div>
+                <div class="player-divider"></div>
+                <div class="volume-control">
+                    <button id="btn-mute" class="btn-mute" onclick="toggleMute()">🔊</button>
+                    <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                </div>
+                <div class="normalizer-control" title="Réduit les écarts de niveau entre les streams avec une compression dynamique, puis applique le boost choisi.">
+                    <span class="normalizer-label">AUTO LEVEL</span>
+                    <input id="normalizer-toggle" class="normalizer-toggle" type="checkbox" onchange="setNormalizer(this.checked)">
+                    <input id="boost-slider" class="boost-slider" type="range" min="0" max="6" value="0" step="0.5" oninput="setBoostDb(this.value)" aria-label="Volume boost en décibels">
+                    <span id="boost-value" class="boost-value">+0 dB</span>
+                </div>
             </div>
         </div>
-        <div class="audio-controls">
-            <!-- Recently Played: toujours présent, indépendant du bouton PLAY/PAUSE -->
-            <button class="btn-player-btn history-toggle-btn" type="button" onclick="toggleHistory()">🕘 History <span id="history-badge" class="history-badge">0</span></button>
-
-            <!-- Sleep Timer -->
-            <select id="sleep-timer" class="sleep-timer-select" onchange="startSleepTimer(this.value)">
-                <option value="0" style="background:#121215; color:#fff;">⏱️ Sleep Timer : Off</option>
-                <option value="15" style="background:#121215; color:#fff;">⏱️ 15 min</option>
-                <option value="30" style="background:#121215; color:#fff;">⏱️ 30 min</option>
-                <option value="60" style="background:#121215; color:#fff;">⏱️ 60 min</option>
-            </select>
-
-            <button id="player-play-btn" class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
-            <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
-            
-            <div class="volume-control">
-                <button id="btn-mute" class="btn-mute" onclick="toggleMute()">🔊</button>
-                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-            </div>
-
-            <!-- Normalisation dynamique / Boost -->
-            <div class="normalizer-control" title="Réduit les écarts de niveau entre les streams avec une compression dynamique, puis applique le boost choisi.">
-                <span class="normalizer-label">AUTO LEVEL</span>
-                <input id="normalizer-toggle" class="normalizer-toggle" type="checkbox" onchange="setNormalizer(this.checked)">
-                <input id="boost-slider" class="boost-slider" type="range" min="0" max="6" value="0" step="0.5" oninput="setBoostDb(this.value)" aria-label="Volume boost en décibels">
-                <span id="boost-value" class="boost-value">+0 dB</span>
-            </div>
-
-            <audio id="main-audio" crossorigin="anonymous" preload="none" style="display: none;">
-                <source id="main-source" src="" type="audio/mpeg">
-            </audio>
-        </div>
+        <audio id="main-audio" crossorigin="anonymous" preload="none" style="display: none;">
+            <source id="main-source" src="" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
@@ -1320,17 +1552,27 @@
         let boostDb = parseFloat(localStorage.getItem('crh_boost_db') || '0');
 
         let audioCtx, audioSource, analyser, gainNode, compressorNode, filters = [];
-        const frequencies = [60, 250, 1000, 4000, 12000];
+        const frequencies = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
         
         const presets = {
-            flat: [0, 0, 0, 0, 0],
-            acoustic: [3, 2, -1, 2, 3],
-            bass: [6, 4, 0, -1, -2],
-            country: [4, 2, 0, 3, 2],
-            vocal: [-2, 1, 4, 3, 0],
-            treble: [-2, 0, 2, 5, 6],
-            rock: [5, 3, -2, 2, 4],
-            pop: [2, 4, 3, 1, -1]
+            flat:        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            acoustic:    [2, 3, 4, 2, 0, -1, 1, 3, 4, 3],
+            bass:        [6, 6, 5, 3, 1, 0, -1, -2, -2, -1],
+            country:     [4, 5, 4, 2, 0, 0, 2, 4, 3, 2],
+            vocal:      [-2, -1, 0, 2, 4, 5, 4, 3, 1, 0],
+            treble:     [-2, -1, 0, 1, 2, 3, 5, 6, 6, 5],
+            rock:       [5, 5, 4, 2, -1, -2, 2, 4, 5, 4],
+            pop:        [2, 3, 4, 2, 1, 2, 3, 2, 1, 0],
+            nashville:  [3, 4, 3, 1, 0, 1, 3, 4, 2, 1],
+            road:       [4, 5, 4, 2, 0, -1, 1, 3, 3, 2],
+            honkytonk:  [5, 4, 2, 1, -1, 0, 2, 5, 4, 2],
+            southern:   [5, 4, 3, 1, 0, -1, 2, 4, 5, 4],
+            vinyl:      [3, 2, 1, 0, 0, -1, 0, 2, 2, 1],
+            tube:       [4, 3, 2, 1, 0, 1, 2, 3, 3, 2],
+            wide:       [3, 2, 1, 0, -1, 0, 1, 3, 4, 4],
+            deep:       [5, 5, 4, 2, 0, 0, 1, 2, 2, 1],
+            night:      [2, 3, 3, 1, 0, 0, 1, 2, 3, 2],
+            guitar:     [1, 2, 4, 3, 2, 2, 3, 4, 3, 2]
         };
 
         let timerInterval = null;
@@ -1750,7 +1992,7 @@
 
         function applyPreset(name, save = true) {
             const vals = presets[name] || presets.flat;
-            const sliderIds = ['eq-60', 'eq-250', 'eq-1000', 'eq-4000', 'eq-12000'];
+            const sliderIds = ['eq-31', 'eq-62', 'eq-125', 'eq-250', 'eq-500', 'eq-1000', 'eq-2000', 'eq-4000', 'eq-8000', 'eq-16000'];
             
             vals.forEach((v, i) => {
                 const el = document.getElementById(sliderIds[i]);
@@ -1872,7 +2114,7 @@
         function clearNowPlayingLine(st = currentStation) {
             currentNowPlaying = null;
             if (!st) {
-                setNowPlayingLine('LIVE', 'Click play or press Space to start listening');
+                setNowPlayingLine('LIVE', 'Click PLAY or press SPACE to start');
                 return;
             }
             setNowPlayingLine('LIVE', `LIVE • ${st.location} (${st.genre.toUpperCase()})`);
@@ -2076,6 +2318,8 @@
 
             const liveIndicator = document.getElementById('live-indicator');
             liveIndicator.className = 'live-dot';
+            const playerStatusDot = document.getElementById('player-status-dot');
+            if (playerStatusDot) { playerStatusDot.style.background = '#22c55e'; playerStatusDot.style.boxShadow = '0 0 8px #22c55e'; }
 
             document.getElementById('stat-bitrate').innerText = st.quality;
             document.getElementById('server-status').innerText = "SERVER STATUS: ONLINE";
@@ -2095,7 +2339,7 @@
             }, 1000);
 
             document.getElementById('current-icon').innerText = st.icon || '📻';
-            document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
+            document.getElementById('current-title').textContent = st.name;
             clearNowPlayingLine(st);
             document.getElementById('eq-bar').classList.add('active');
 
@@ -2147,9 +2391,11 @@
 
             document.getElementById('status-live-dot').className = 'live-dot stopped';
             document.getElementById('live-indicator').className = 'live-dot stopped';
+            const playerStatusDot = document.getElementById('player-status-dot');
+            if (playerStatusDot) { playerStatusDot.style.background = '#6b7280'; playerStatusDot.style.boxShadow = 'none'; }
 
-            document.getElementById('current-title').childNodes[0].nodeValue = "Station Stopped ";
-            setNowPlayingLine('LIVE', 'Click play or press Space to resume');
+            document.getElementById('current-title').textContent = 'Station Stopped';
+            setNowPlayingLine(currentStation ? 'READY' : 'LIVE', currentStation ? `READY • ${currentStation.name}` : 'Click PLAY or press SPACE to start');
 
             const bottomPlayBtn = document.getElementById('player-play-btn');
             if (bottomPlayBtn) bottomPlayBtn.innerHTML = '▶ PLAY';
@@ -2253,7 +2499,7 @@
             const name = currentStation ? currentStation.name : "Station";
             if (currentStation) stationStatus[String(currentStation.id)] = 'offline';
             updateResumeLastButton();
-            document.getElementById('current-title').childNodes[0].nodeValue = name + " ";
+            document.getElementById('current-title').textContent = name;
             setNowPlayingLine('⚠️ OFFLINE', 'Unable to load this stream');
             document.getElementById('banner-desc').innerText = "⚠️ The live stream is unavailable or temporarily interrupted.";
 
@@ -2353,8 +2599,8 @@
                     document.getElementById('banner-location').innerText = `📍 Location: ${sharedStation.location}`;
                     document.getElementById('banner-quality').innerText = `🎛️ Quality: ${sharedStation.quality}`;
                     document.getElementById('current-icon').innerText = sharedStation.icon || '📻';
-                    document.getElementById('current-title').childNodes[0].nodeValue = sharedStation.name + ' ';
-                    document.getElementById('current-genre').innerText = `READY • ${sharedStation.location} (Press SPACE or Click PLAY to start)`;
+                    document.getElementById('current-title').textContent = sharedStation.name;
+                    document.getElementById('current-genre').innerText = `READY • ${sharedStation.name}`;
                     const shareBtn = document.getElementById('share-station-btn');
                     if (shareBtn) shareBtn.style.display = 'inline-flex';
                 }
@@ -2370,8 +2616,8 @@
                     document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
                     document.getElementById('banner-quality').innerText = `🎛️ Quality: ${st.quality}`;
                     document.getElementById('current-icon').innerText = st.icon || '📻';
-                    document.getElementById('current-title').childNodes[0].nodeValue = st.name + " ";
-                    document.getElementById('current-genre').innerText = `SAVED • ${st.location} (Press SPACE or Click PLAY to start)`;
+                    document.getElementById('current-title').textContent = st.name;
+                    document.getElementById('current-genre').innerText = `READY • ${st.name}`;
                     const shareBtn = document.getElementById('share-station-btn');
                     if (shareBtn) shareBtn.style.display = 'inline-flex';
                 }
