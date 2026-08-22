@@ -900,7 +900,7 @@
 
 <style id="crh-header-install-western-v2">
 /* 🤠 COUNTRY RADIO HUB — aged western sign, clean lettering */
-header h1 {
+header .crh-brand-frame {
     position: relative;
     display: inline-block;
     margin: 0 auto;
@@ -930,7 +930,7 @@ header h1 {
         0 9px 22px rgba(0,0,0,.44);
     transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
 }
-header h1:hover {
+header .crh-brand-frame:hover {
     transform: translateY(-1px);
     filter: brightness(1.04);
     box-shadow:
@@ -941,8 +941,26 @@ header h1:hover {
         0 12px 26px rgba(0,0,0,.48),
         0 0 18px rgba(194,167,108,.14);
 }
+header .crh-brand-frame h1 {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #eadbbd !important;
+}
+header .crh-brand-frame #header-count {
+    margin: 5px 0 0;
+    color: #c9b78f !important;
+    font-size: .82rem !important;
+    line-height: 1.2;
+    letter-spacing: .15px;
+    text-shadow: 0 1px 2px rgba(0,0,0,.45);
+}
 @media (max-width: 768px) {
-    header h1 { padding-inline: 20px; letter-spacing: .8px; }
+    header .crh-brand-frame { padding-inline: 20px; }
 }
 </style>
 
@@ -1041,8 +1059,10 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 </head>
 <body>
     <header>
-        <h1>🇺🇸 COUNTRY RADIO HUB 🇺🇸</h1>
-        <p id="header-count">Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits</p>
+        <div class="crh-brand-frame">
+            <h1>🇺🇸 COUNTRY RADIO HUB 🇺🇸</h1>
+            <p id="header-count">Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits</p>
+        </div>
         
         <!-- BOUTON PAYPAL SALOON -->
         <div style="margin-top: 18px; margin-bottom: 18px; text-align: center;">
