@@ -901,60 +901,34 @@
   }
   header .crh-brand-frame h1 {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       text-align: center;
       white-space: nowrap;
-      letter-spacing: .5px;
-      font-size: 1.5rem !important;
-  }
-
-  /* Compact mobile player — controls/functions unchanged */
-  .bottom-player {
-      padding: 4px 6px !important;
-      gap: 3px !important;
-  }
-  .bottom-player .player-shell {
-      gap: 5px !important;
-  }
-  .bottom-player .player-brand {
-      gap: 7px !important;
-      min-height: 0 !important;
-  }
-  .bottom-player .now-playing-icon {
-      font-size: 1.55rem !important;
-  }
-  .bottom-player .player-live-label {
-      font-size: .58rem !important;
-      letter-spacing: .55px !important;
-  }
-  .bottom-player .player-station {
-      max-width: 180px;
-      font-size: .86rem !important;
+      overflow: hidden;
+      padding-inline: 0 !important;
+      letter-spacing: .35px;
+      font-size: 1.28rem !important;
       line-height: 1.15 !important;
   }
-  .bottom-player .player-sub {
-      font-size: .62rem !important;
-      line-height: 1.1 !important;
+
+  .bottom-player {
+      padding: 6px 8px !important;
+      gap: 6px !important;
   }
-  .bottom-player .audio-controls {
-      gap: 4px !important;
-      margin-top: 2px !important;
-  }
-  .bottom-player .player-control-group {
-      gap: 4px !important;
-  }
+  .bottom-player .player-station { max-width: 180px; }
+  .bottom-player .audio-controls { gap: 5px !important; }
   .bottom-player .btn-player-btn,
   .bottom-player .sleep-timer-select {
-      height: 28px !important;
-      min-height: 28px !important;
-      max-height: 28px !important;
-      padding: 0 7px !important;
-      font-size: 0.72rem !important;
+      height: 31px !important;
+      padding: 0 9px !important;
+      font-size: 0.76rem !important;
   }
   .bottom-player .player-divider {
       display: none !important;
   }
   .bottom-player .player-shell {
-      align-items: center !important;
+      gap: 8px !important;
   }
 }
 </style>
