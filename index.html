@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Country Radio Hub — Live US Streams & Equalizer</title>
-    <meta name="description" content="Listen to free live country radio stations online. Classic Country, Texas Red Dirt, Bluegrass & Modern Hits with built-in equalizer.">
-    <meta name="keywords" content="live country radio, country radio online, classic country stream, free country music, bluegrass radio">
+    <title>American Roots Radio Hub — Country • Blues • Gospel</title>
+    <meta name="description" content="American Roots Radio Hub — live Country, Blues and Gospel radio with a built-in 10-band equalizer, favorites, history and persistent player.">
+    <meta name="keywords" content="american roots radio, live country radio, live blues radio, live gospel radio, country radio online, blues radio online, gospel radio online, classic country, blues music, southern gospel, bluegrass radio">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://country-radio-live.github.io/">
     <meta name="msvalidate.01" content="F7C8E3E764111B0D04AGB326EBC5FB01" />
@@ -17,22 +17,22 @@
     <meta name="theme-color" content="#131314">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Country Radio">
+    <meta name="apple-mobile-web-app-title" content="American Roots">
     <link rel="apple-touch-icon" href="https://country-radio-live.github.io/favicon-192.png">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://country-radio-live.github.io/">
-    <meta property="og:title" content="Country Radio Hub — Live US Streams & Equalizer 🇺🇸">
-    <meta property="og:description" content="Listen to free live country radio stations online. Classic Country, Texas Red Dirt, Bluegrass & Modern Hits with built-in audio equalizer.">
+    <meta property="og:title" content="American Roots Radio Hub — Country • Blues • Gospel 🇺🇸">
+    <meta property="og:description" content="Live Country, Blues and Gospel radio in one American Roots hub with a built-in 10-band equalizer.">
     <meta property="og:image" content="https://country-radio-live.github.io/og-image.jpg">
     <meta property="og:locale" content="en_US">
-    <meta property="og:site_name" content="Country Radio Hub">
+    <meta property="og:site_name" content="American Roots Radio Hub">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Country Radio Hub — Live US Streams & Equalizer">
-    <meta name="twitter:description" content="Listen to free live country radio stations online with built-in equalizer.">
+    <meta name="twitter:title" content="American Roots Radio Hub — Country • Blues • Gospel">
+    <meta name="twitter:description" content="Live Country, Blues and Gospel radio with a built-in 10-band equalizer.">
     <meta name="twitter:image" content="https://country-radio-live.github.io/og-image.jpg">
 
     <style>
@@ -850,6 +850,46 @@
         }
         .install-modal-ok:hover { filter: brightness(1.08); }
 
+        /* American Roots family selector: Country / Blues / Gospel */
+        .radio-family-switch {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 24px 0 18px;
+        }
+        .btn-family {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+            color: var(--text);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 13px 18px;
+            font-size: .95rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .btn-family:hover,
+        .btn-family.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 18px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        .btn-family.active {
+            background: var(--accent);
+            color: #000;
+        }
+        #genre-filter-buttons { display: contents; }
+        @media (max-width: 768px) {
+            .radio-family-switch { gap: 8px; margin-top: 18px; }
+            .btn-family { padding: 10px 8px; font-size: .82rem; }
+            header .crh-brand-frame h1 {
+                font-size: 1.06rem !important;
+                letter-spacing: .22px !important;
+            }
+        }
+
     </style>
 
 <style id="crh-eq10-player-v1">
@@ -1024,8 +1064,18 @@ header .crh-brand-frame h1 {
     box-shadow: none;
     color: #eadbbd !important;
 }
+header .crh-brand-frame .crh-root-genres {
+    margin: 7px 0 1px;
+    color: #eadbbd !important;
+    font-size: .92rem !important;
+    font-weight: 900;
+    letter-spacing: 1.25px;
+    line-height: 1.2;
+    text-transform: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,.55);
+}
 header .crh-brand-frame #header-count {
-    margin: 5px 0 0;
+    margin: 4px 0 0;
     color: #c9b78f !important;
     font-size: .82rem !important;
     line-height: 1.2;
@@ -1033,7 +1083,11 @@ header .crh-brand-frame #header-count {
     text-shadow: 0 1px 2px rgba(0,0,0,.45);
 }
 @media (max-width: 768px) {
-    header .crh-brand-frame { padding-inline: 20px; }
+    header .crh-brand-frame { padding-inline: 16px; }
+    header .crh-brand-frame .crh-root-genres {
+        font-size: .76rem !important;
+        letter-spacing: .8px;
+    }
 }
 </style>
 
@@ -1130,11 +1184,13 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 #installAppBtn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 0 0 2px rgba(25,36,44,.85),0 7px 18px rgba(0,0,0,.38),0 0 16px rgba(141,167,184,.18),inset 0 1px 0 rgba(255,255,255,.20),inset 0 -5px 10px rgba(0,0,0,.18);}
 </style>
 </head>
-<body>
+<body data-build="american-roots-finition-v2-iphone-test">
+    <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
     <header>
         <div class="crh-brand-frame">
-            <h1>🇺🇸 COUNTRY RADIO HUB 🇺🇸</h1>
-            <p id="header-count">Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits</p>
+            <h1>🇺🇸 AMERICAN ROOTS RADIO HUB 🇺🇸</h1>
+            <p class="crh-root-genres">Country • Blues • Gospel</p>
+            <p id="header-count">124 Country + 1 Blues • 125 Verified Live Streams</p>
         </div>
         
         <!-- BOUTON PAYPAL SALOON -->
@@ -1152,7 +1208,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
-                <input type="hidden" name="subject" value="Radio Hub — New Message">
+                <input type="hidden" name="subject" value="American Roots Radio Hub — New Message">
 
                 <input type="email" name="email" placeholder="Your Email" required 
                        style="background: #111111; border: 1px solid #444444; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none;">
@@ -1343,17 +1399,20 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             </form>
         </details>
 
+        <!-- AMERICAN ROOTS FAMILY SWITCH — local prototype -->
+        <div class="radio-family-switch" aria-label="Radio family">
+            <button id="family-country-btn" class="btn-family active" type="button" onclick="switchRadioFamily('country')">🤠 COUNTRY — 124</button>
+            <button id="family-blues-btn" class="btn-family" type="button" onclick="switchRadioFamily('blues')">🎸 BLUES — 52</button>
+            <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')">⛪ GOSPEL — 52</button>
+        </div>
+
         <!-- Controls, Theme & Filters -->
         <div class="controls">
             <div class="filter-buttons">
-                <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Stations</button>
+                <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Country (124)</button>
                 <button id="favorites-filter-btn" class="btn-filter" onclick="filterGenre('fav', this)">⭐ Favorites (0)</button>
                 <button class="btn-random-station" type="button" onclick="randomStation()">🎲 Random Station</button>
-                <button class="btn-filter" onclick="filterGenre('classic', this)">Classic Country</button>
-                <button class="btn-filter" onclick="filterGenre('texas', this)">Texas & Red Dirt</button>
-                <button class="btn-filter" onclick="filterGenre('outlaw', this)">Outlaw & Americana</button>
-                <button class="btn-filter" onclick="filterGenre('pop', this)">Modern Hits</button>
-                <button class="btn-filter" onclick="filterGenre('bluegrass', this)">Bluegrass</button>
+                <span id="genre-filter-buttons"></span>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <!-- Theme Switcher Dropdown -->
@@ -1382,20 +1441,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         <div id="radio-grid" class="grid-radios"></div>
 
         <!-- Tiroir Historique d'écoute -->
-        <div id="history-overlay" class="history-overlay" onclick="closeHistory()"></div>
-        <aside id="history-drawer" class="history-drawer" aria-label="Recently Played">
-            <div class="history-header">
-                <h3>🕘 Recently Played</h3>
-                <div class="history-header-actions">
-                    <button class="history-clear" type="button" onclick="clearHistory()">Clear</button>
-                    <button class="history-close" type="button" onclick="closeHistory()" aria-label="Close">✕</button>
-                </div>
-            </div>
-            <div id="history-list" class="history-list"></div>
-        </aside>
-
-        <footer>  
-            <p>© 2026 Country Radio Hub — Direct Live Streams Aggregator</p>
+        <!-- History UI complètement retirée en finition V2 -->
+<footer>  
+            <p>© 2026 American Roots Radio Hub — Country • Blues • Gospel</p>
         </footer>
     </div>
 
@@ -1473,7 +1521,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             <div class="player-divider"></div>
             <div class="audio-controls">
                 <div class="player-control-group">
-                    <button class="btn-player-btn history-toggle-btn" type="button" onclick="toggleHistory()">🕘 History <span id="history-badge" class="history-badge">0</span></button>
+                    <!-- History UI retirée en finition V1 ; moteur conservé temporairement dans le code -->
                     <select id="sleep-timer" class="sleep-timer-select" onchange="startSleepTimer(this.value)">
                         <option value="0" style="background:#121215; color:#fff;">⏱️ Sleep Timer : Off</option>
                         <option value="15" style="background:#121215; color:#fff;">⏱️ 15 min</option>
@@ -1632,8 +1680,160 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             { id: 124, name: "98.1 KVET Austin Favorites", genre: "texas", location: "Texas, USA", desc: "Austin's All Time Country Favorites", icon: "🌵", quality: "128 kbps MP3", url: "https://stream.revma.ihrhls.com/zc2185/40_17myik2dwnota02/playlist.m3u8" }
         ];
 
-        let customStations = JSON.parse(localStorage.getItem('crh_custom_stations') || '[]');
-        let stations = [...defaultStations, ...customStations];
+        // COUNTRY + BLUES PROTOTYPE
+        // The original 124 Country definitions above are intentionally left untouched.
+        const countryStations = defaultStations.map(st => ({ ...st, family: 'country' }));
+
+        // Prototype Blues stations #125–131.
+        // Technical prototype only: this stream is currently HTTP and the station is based in Greece.
+        // Keep it for local architecture testing; do not count it as a final American Blues catalogue entry.
+        const bluesStations = [
+            { id: 125, name: "Blues Radio", family: "blues", genre: "blues", location: "Greece", desc: "Blues-focused live radio stream — prototype station for the Blues section", icon: "🎸", quality: "320 kbps MP3", url: "https://i4.streams.ovh/sc/bluesrad/stream" },
+            { id: 126, name: "Aardvark Blues FM", family: "blues", genre: "blues", location: "Houston, Texas, USA", desc: "Blues radio from Houston, Texas", icon: "🎙️", quality: "128 kbps MP3", url: "https://streaming.live365.com/b77280_128mp3" },
+            { id: 127, name: "KBluesFMRadio", family: "blues", genre: "blues", location: "Los Angeles, California, USA", desc: "American blues radio — acoustic, Chicago, Delta and electric blues", icon: "🔥", quality: "MP3", url: "https://streaming.live365.com/a89702" },
+            { id: 128, name: "Music City Roadhouse", family: "blues", genre: "blues", location: "Nashville, Tennessee, USA", desc: "Blues and roots-oriented radio from Nashville", icon: "🎹", quality: "MP3", url: "https://streaming.live365.com/a73754" },
+            { id: 129, name: "Blues Depot Radio", family: "blues", genre: "blues", location: "South Carolina, USA", desc: "Blues-focused radio from South Carolina", icon: "🚂", quality: "MP3", url: "https://a12.asurahosting.com/listen/blues_depot/radio.mp3" },
+            { id: 130, name: "BluesRadio (MRG.fm)", family: "blues", genre: "blues", location: "New Jersey, USA", desc: "Blues radio from the MRG.fm network", icon: "🎷", quality: "MP3", url: "https://str3.openstream.co/1833" },
+            { id: 131, name: "Blues Music Fan Radio", family: "blues", genre: "blues", location: "New York, USA", desc: "24/7 blues radio from Delta roots to modern blues rock", icon: "🎵", quality: "MP3", url: "https://orbit.citrus3.com:8052/stream" },
+            { id: 132, name: "Texas Coastal Bend Blues Radio", family: "blues", genre: "blues", location: "Texas, USA", desc: "Delta, electric and contemporary blues from the Texas Coastal Bend", icon: "🌵", quality: "MP3", url: "https://streaming.live365.com/a15208" },
+            { id: 133, name: "WBLZ — Blizzard of Blues Radio", family: "blues", genre: "blues", location: "Buffalo, New York, USA", desc: "Classic and contemporary blues from Western New York", icon: "❄️", quality: "MP3", url: "https://streaming.live365.com/a37212" },
+            { id: 134, name: "The World Of Blues", family: "blues", genre: "blues", location: "USA", desc: "24/7 blues — acoustic, country, Delta, contemporary and electric blues", icon: "🌎", quality: "MP3", url: "https://streaming.live365.com/a21416" },
+            { id: 135, name: "ZBLUES", family: "blues", genre: "blues", location: "South Florida, USA", desc: "Independent South Florida blues radio", icon: "🌴", quality: "MP3", url: "https://streaming.live365.com/a88387" },
+            { id: 136, name: "Big Muddy Radio", family: "blues", genre: "blues", location: "Natchez, Mississippi, USA", desc: "Delta blues, country blues and roots music from Mississippi", icon: "🛶", quality: "MP3", url: "https://streaming.live365.com/a71854" },
+            { id: 137, name: "WBPR — We The Blues People Radio Network", family: "blues", genre: "blues", location: "USA", desc: "Black traditional blues, oral history and roots culture", icon: "📜", quality: "MP3", url: "https://streaming.live365.com/a01681" },
+            { id: 138, name: "Buddy Guy Radio", family: "blues", genre: "blues", location: "USA", desc: "Blues radio centered on classic and electric blues", icon: "🎸", quality: "MP3", url: "https://streaming.live365.com/a83090" },
+            { id: 139, name: "Blues Culture Network", family: "blues", genre: "blues", location: "USA", desc: "Blues with soul, jazz and traditional roots influences", icon: "🎙️", quality: "MP3", url: "https://streaming.live365.com/a45538" },
+            { id: 140, name: "BluesWire Radio", family: "blues", genre: "blues", location: "USA", desc: "Chicago, electric and contemporary blues", icon: "⚡", quality: "MP3", url: "https://streaming.live365.com/a35378" },
+            { id: 141, name: "Paul Parello's Blues Power", family: "blues", genre: "blues", location: "Chicago, Illinois, USA", desc: "Authentic Chicago blues radio broadcasting since 1996", icon: "🎶", quality: "MP3", url: "https://streaming.live365.com/a97073" },
+            { id: 142, name: "XRDS.fm", family: "blues", genre: "blues", location: "Clarksdale, Mississippi, USA", desc: "Blues, roots and Americana from the Crossroads in Clarksdale", icon: "🛣️", quality: "MP3", url: "http://198.58.106.133:8321/stream" },
+            { id: 143, name: "WUMB Blues", family: "blues", genre: "blues", location: "Boston, Massachusetts, USA", desc: "24/7 blues spanning Delta, Piedmont, Chicago, electric and acoustic styles", icon: "🎙️", quality: "MP3", url: "http://wumb.streamguys1.com/wumb919st" },
+            { id: 144, name: "TopBlues", family: "blues", genre: "blues", location: "Tucson, Arizona, USA", desc: "Nothin' but the blues — 24/7 high quality blues radio", icon: "🎙️", quality: "MP3", url: "https://us3.internet-radio.com/proxy/topblues?mp=/stream&1624370498215" },
+            { id: 145, name: "Jus Blues Radio", family: "blues", genre: "blues", location: "Atlanta, Georgia, USA", desc: "Blues and soul radio nurturing the soul of the blues", icon: "🔥", quality: "MP3", url: "http://192.99.8.192:3444/;" },
+            { id: 146, name: "WBLU - All Blues Radio", family: "blues", genre: "blues", location: "Greenville, North Carolina, USA", desc: "Traditional blues through blues-based rock and roll, 24 hours a day", icon: "⚡", quality: "MP3", url: "http://equinox.shoutca.st:8788/;" },
+            { id: 147, name: "Road To Rock Radio", family: "blues", genre: "blues", location: "Joliet, Illinois, USA", desc: "Chicago blues and Illinois roots music from the Illinois Rock & Roll Museum", icon: "🛣️", quality: "MP3", url: "https://streaming.live365.com/a44007" },
+            { id: 148, name: "181.FM True Blues", family: "blues", genre: "blues", location: "Waynesboro, Virginia, USA", desc: "Classic and contemporary true blues", icon: "📻", quality: "128 kbps MP3", url: "http://icyrelay.181.fm/181-blues_128k.mp3" },
+            { id: 149, name: "RadioIDL", family: "blues", genre: "blues", location: "Tulsa, Oklahoma, USA", desc: "Blues from around the corner and around the globe, broadcasting from Tulsa", icon: "🎧", quality: "MP3", url: "https://streaming.live365.com/a75435" },
+            { id: 150, name: "MIDNIGHTBLUZE", family: "blues", genre: "blues", location: "Morristown, USA", desc: "24/7 blues rock and electric blues", icon: "🌙", quality: "MP3", url: "https://streaming.live365.com/a49975" },
+            { id: 151, name: "113.FM Bluesville", family: "blues", genre: "blues", location: "San Diego, California, USA", desc: "24/7 blues radio with classic and contemporary blues", icon: "🎸", quality: "128 kbps MP3", url: "https://113fm-atunwadigital.streamguys1.com/1005" },
+            { id: 152, name: "Tru Blues 97.5", family: "blues", genre: "blues", location: "Marion, Ohio, USA", desc: "Full-time community blues radio from Marion, Ohio", icon: "📻", quality: "MP3", url: "http://s30.myradiostream.com:31752/;" },
+            { id: 153, name: "Caldonia's Crossroad Radio", family: "blues", genre: "blues", location: "Frederick, Maryland, USA", desc: "Blues, roots, soul and traditional American blues programming", icon: "🛣️", quality: "MP3", url: "http://nap.casthost.net:8360/;" },
+            { id: 154, name: "Blues Hound Radio", family: "blues", genre: "blues", location: "USA", desc: "Classic and modern American blues — Muddy Waters, Howlin' Wolf, Freddie King, Stevie Ray Vaughan and more", icon: "🐺", quality: "128 kbps MP3", url: "http://login.webinternetradio.com:1250/stream" },
+            { id: 155, name: "Blues Hits Radio", family: "blues", genre: "blues", location: "USA", desc: "Commercial-free blues hits stream", icon: "💿", quality: "MP3", url: "https://stream.revma.ihrhls.com/zc9567" },
+            { id: 156, name: "BluesWave Radio", family: "blues", genre: "blues", location: "Athens, Greece", desc: "24/7 blues and blues-rock radio with classic and modern selections", icon: "🌊", quality: "192 kbps MP3", url: "https://blueswave.radio:8000/blueswave" },
+            { id: 157, name: "The Joint 247", family: "blues", genre: "blues", location: "New York, New York, USA", desc: "New York blues and Southern Soul station", icon: "🔥", quality: "MP3", url: "https://usa18.fastcast4u.com/proxy/nusoulp1?mp=/1" },
+            { id: 158, name: "KWPQ 103.3 FM", family: "blues", genre: "blues", location: "Missouri, USA", desc: "Missouri blues radio stream", icon: "🎙️", quality: "MP3", url: "https://stream.radiojar.com/1nbvpa75e78uv" },
+            { id: 159, name: "Radio Memphis", family: "blues", genre: "blues", location: "Memphis, Tennessee, USA", desc: "Memphis blues, roots and independent music", icon: "🎷", quality: "MP3", url: "http://167.172.159.27:8000/audioonly" },
+            { id: 160, name: "AT254 Radio", family: "blues", genre: "blues", location: "New York, USA", desc: "Blues, jazz and easy-listening roots programming", icon: "🎧", quality: "MP3", url: "https://s127.radiolize.com/radio/8100/radio.mp3" },
+            { id: 161, name: "24/7 Blues Radio", family: "blues", genre: "blues", location: "Global", desc: "Non-stop blues music stream for the American Roots blues section", icon: "🎚️", quality: "MP3", url: "https://ec3.yesstreaming.net:3685/stream" },
+            { id: 162, name: "Global Blues Radio", family: "blues", genre: "blues", location: "Pennsylvania, USA", desc: "Classic and modern blues with deep cuts and legendary artists", icon: "🌎", quality: "MP3", url: "http://live.radiomediapanel.com:8004/stream" },
+            { id: 163, name: "BusybluesRadio", family: "blues", genre: "blues", location: "Jonesboro, Arkansas, USA", desc: "Southern Soul and authentic blues from Arkansas", icon: "🐊", quality: "MP3", url: "https://stream.zeno.fm/wpz3ywzkmxhvv" },
+            { id: 164, name: "STAR FM Blues Rock", family: "blues", genre: "blues", location: "Berlin, Germany", desc: "Blues rock, electric blues and roots guitar music", icon: "⭐", quality: "192 kbps MP3", url: "https://stream.starfm.de/blues/mp3-192/stream.starfm.de/" },
+            { id: 165, name: "Savannah Love GA Radio", family: "blues", genre: "blues", location: "Savannah, Georgia, USA", desc: "Blues and vintage soul-flavored music from Savannah", icon: "🌺", quality: "128 kbps MP3", url: "https://stream.zeno.fm/knqlvhwzoiyuv" },
+            { id: 166, name: "NMO Radio", family: "blues", genre: "blues", location: "USA", desc: "Blues, Southern Soul and old-school R&B", icon: "🎤", quality: "320 kbps MP3", url: "https://usa10.fastcast4u.com/nmoradio1" },
+            { id: 167, name: "A MISSISSIPPI BLUES", family: "blues", genre: "blues", location: "Toronto, Canada", desc: "Blues history from early roots to contemporary artists, 24/7", icon: "🌊", quality: "MP3", url: "https://cast1.torontocast.com:4450/;" },
+            { id: 168, name: "Ella Radio - Blues", family: "blues", genre: "blues", location: "Berlin, Germany", desc: "Dedicated blues channel with classic and contemporary blues, plus touches of jazz and soul", icon: "🎙️", quality: "192 kbps MP3", url: "https://stream.ella-radio.de/ella-blues/mp3-192" },
+            { id: 169, name: "Click Your Radio - Rock & Blues", family: "blues", genre: "blues", location: "Ontario, Canada", desc: "Blues, blues-rock, Americana and classic roots music", icon: "🖱️", quality: "MP3", url: "https://kathy.torontocast.com:3845/stream" },
+            { id: 170, name: "RDMIX Relaxing Blues", family: "blues", genre: "blues", location: "Canada", desc: "Relaxed, romantic and melodic blues", icon: "🌙", quality: "MP3", url: "https://listen.openstream.co/6440/audio" },
+            { id: 171, name: "NOSTALGIE BLUES", family: "blues", genre: "blues", location: "Paris, France", desc: "Blues legends and classic blues around the clock", icon: "📼", quality: "128 kbps MP3", url: "https://streaming.nrjaudio.fm/ou8ordgk7oiu?origine=americanroots&aw_0_1st.station=Nostalgie-Blues" },
+            { id: 172, name: "Radio Bluesflac", family: "blues", genre: "blues", location: "Altea, Spain", desc: "Dedicated 24/7 blues stream in lossless FLAC quality", icon: "💎", quality: "FLAC", url: "https://streams.radiomast.io/radioblues-flac" },
+            { id: 173, name: "Bluesway Online Radio", family: "blues", genre: "blues", location: "International", desc: "High-bitrate blues and blues-rock internet radio", icon: "🛤️", quality: "320 kbps MP3", url: "http://everest.streams.ovh:1280/stream" },
+            { id: 174, name: "Bar Legend Radio", family: "blues", genre: "blues", location: "Larissa, Greece", desc: "Rhythm & Blues, electric blues, Chicago blues and blues-rock", icon: "🍺", quality: "320 kbps MP3", url: "http://solid24.streamupsolutions.com:8010/stream" },
+            { id: 175, name: "RadioArt - Just Blues", family: "blues", genre: "blues", location: "Europe", desc: "Dedicated blues stream with classic and modern blues selections", icon: "🎨", quality: "96 kbps MP3", url: "https://live.radioart.com/fJust_blues.mp3" },
+            { id: 176, name: "Blues Cafe Radio", family: "blues", genre: "blues", location: "France", desc: "Blues, roots and contemporary blues from a dedicated 24/7 stream", icon: "☕", quality: "MP3", url: "https://manager4.streamradio.fr/bluescaferadio" }
+        ];
+
+        // First Gospel test station — official Moody Radio 24/7 Gospel stream.
+        const gospelStations = [
+            { id: 177, name: "CBN Gospel", family: "gospel", genre: "gospel", location: "Virginia Beach, Virginia, USA", desc: "Urban and contemporary Gospel from the CBN Radio network", icon: "🔥", quality: "128 kbps MP3", url: "https://streams.cbnradio.com/gospel-128K" },
+            { id: 178, name: "WAGG 610 — Heaven", family: "gospel", genre: "gospel", location: "Birmingham, Alabama, USA", desc: "Urban Gospel — Birmingham's long-running Gospel station", icon: "🌤️", quality: "MP3", url: "https://stream.rcs.revma.com/nyfzg431t7uvv" },
+            { id: 179, name: "CBN Southern Gospel", family: "gospel", genre: "gospel", location: "Virginia Beach, Virginia, USA", desc: "Southern Gospel quartets, harmonies and classic Gospel from CBN Radio", icon: "🎙️", quality: "128 kbps MP3", url: "https://streams.cbnradio.com/southern-gospel-128K" },
+            { id: 180, name: "Gospel 108", family: "gospel", genre: "gospel", location: "Philadelphia, Pennsylvania, USA", desc: "Today's Gospel — contemporary and traditional Gospel artists", icon: "🎤", quality: "MP3", url: "https://hoth.alonhosting.com:2775/stream" },
+            { id: 181, name: "Radio Free Gospel", family: "gospel", genre: "gospel", location: "Los Angeles, California, USA", desc: "Gospel and Christian contemporary music", icon: "🕊️", quality: "MP3", url: "https://sonicpanel.oficialserver.com/8306/stream" },
+            { id: 182, name: "Wave 97.3 LA", family: "gospel", genre: "gospel", location: "Las Vegas, Nevada, USA", desc: "24-hour Gospel music stream", icon: "🌊", quality: "MP3", url: "https://us9.maindigitalstream.com/ssl/wave973" },
+            { id: 183, name: "Texas Gospel - Southern Gospel", family: "gospel", genre: "gospel", location: "Orange, Texas, USA", desc: "Southern and Country Gospel from Texas — classic quartets and modern artists", icon: "🌵", quality: "128 kbps MP3", url: "http://quincy.torontocast.com:1950/stream" },
+            { id: 184, name: "Texas Gospel - Country Gospel", family: "gospel", genre: "gospel", location: "Orange, Texas, USA", desc: "Country Gospel — American country artists and Gospel performers", icon: "🤠", quality: "128 kbps MP3", url: "http://quincy.torontocast.com:3610/stream" },
+            { id: 185, name: "Gospel Broadcast Radio", family: "gospel", genre: "gospel", location: "Texas, USA", desc: "Gospel radio broadcasting from Texas", icon: "📖", quality: "MP3", url: "https://gbr.out.airtime.pro/gbr_a" },
+            { id: 186, name: "Praise Austin - Urban Gospel", family: "gospel", genre: "gospel", location: "Austin, Texas, USA", desc: "Urban Gospel and inspirational praise from Austin, Texas", icon: "🌵", quality: "MP3", url: "https://sonic01.instainternet.com/8332/stream" },
+            { id: 187, name: "Gospel 99.1 HD2", family: "gospel", genre: "gospel", location: "Middlesex, New Jersey, USA", desc: "Positive and uplifting Gospel music from New Jersey", icon: "✨", quality: "MP3", url: "https://pillar.streamguys1.com/WAWZ-HD2" },
+            { id: 188, name: "Affirm Southern Gospel Radio", family: "gospel", genre: "gospel", location: "Minnesota, USA", desc: "Southern Gospel classics and current artists, 24/7", icon: "🎙️", quality: "128 kbps MP3", url: "https://ais-sa2.cdnstream1.com/1708_128" },
+            { id: 189, name: "WVRS/WVRX - The Point FM", family: "gospel", genre: "gospel", location: "West Virginia, USA", desc: "Southern Gospel radio with classic quartets and contemporary Gospel", icon: "📡", quality: "MP3", url: "https://stream.lentzsystems.net/WVRS" },
+            { id: 190, name: "The Legacy", family: "gospel", genre: "gospel", location: "Colorado, USA", desc: "Traditional hymns and timeless Southern Gospel from the KTLF Radio Network", icon: "🏔️", quality: "MP3", url: "https://stream.ktlf.radio:8010/theLegacy" },
+            { id: 191, name: "Ufdv Gospel", family: "gospel", genre: "gospel", location: "Maryland, USA", desc: "Independent Gospel radio from Maryland", icon: "🎵", quality: "MP3", url: "http://us10a.serverse.com:8145/live" },
+            { id: 192, name: "760 AM The Gospel", family: "gospel", genre: "gospel", location: "Nashville, Tennessee, USA", desc: "Gospel radio from Tennessee", icon: "📻", quality: "MP3", url: "https://us2.maindigitalstream.com/ssl/WENO" },
+            { id: 193, name: "WGCR Gospel", family: "gospel", genre: "gospel", location: "Pisgah Forest, North Carolina, USA", desc: "Gospel and Christian music from North Carolina", icon: "⛰️", quality: "AAC", url: "https://stream2.mtcstream.com:8500/wgcr1.aac" },
+            { id: 194, name: "Glory of Zion Radio", family: "gospel", genre: "gospel", location: "Florida, USA", desc: "Gospel and praise music stream", icon: "🕊️", quality: "MP3", url: "https://stream.zeno.fm/fdqe0ejvjrhtv" },
+            { id: 195, name: "WTBI Southern Gospel", family: "gospel", genre: "gospel", location: "Greenville, South Carolina, USA", desc: "Southern Gospel with Christian programming from South Carolina", icon: "🌾", quality: "MP3", url: "https://shout2.brnstream.com/proxy/wtbi?mp=/stream" },
+            { id: 196, name: "The Gospel Station", family: "gospel", genre: "gospel", location: "Ada, Oklahoma, USA", desc: "Southern Gospel network from Oklahoma", icon: "⭐", quality: "MP3", url: "https://thegospelstation.streamguys1.com/live" },
+            { id: 197, name: "Gospel 100", family: "gospel", genre: "gospel", location: "Mississippi, USA", desc: "Gospel music stream from Mississippi", icon: "💯", quality: "MP3", url: "http://69.162.75.218:8016/stream" },
+            { id: 198, name: "Adoration Gospel FM", family: "gospel", genre: "gospel", location: "Brooklyn, New York, USA", desc: "Gospel music from Brooklyn with a direct Icecast MP3 stream", icon: "🙏", quality: "MP3", url: "https://auds1.intacs.com/adorationgospelfm" },
+            { id: 199, name: "ATL Praise House", family: "gospel", genre: "gospel", location: "Snellville / Atlanta, Georgia, USA", desc: "Atlanta-area Gospel music, praise and inspirational programming", icon: "🏠", quality: "MP3", url: "https://auds1.intacs.com/atlpraisehouse" },
+            { id: 200, name: "Gospel Jazz Radio", family: "gospel", genre: "gospel", location: "USA", desc: "Gospel music blended with jazz, soul and inspirational grooves", icon: "🎷", quality: "MP3", url: "https://ec1.yesstreaming.net:1145/stream" },
+            { id: 201, name: "GODRadio1", family: "gospel", genre: "gospel", location: "San Diego, California, USA", desc: "Award-winning internet Gospel station with contemporary and classic Gospel", icon: "🏆", quality: "MP3", url: "https://streams.radio.co/sf6241e689/listen" },
+            { id: 202, name: "Totally Gospel Network", family: "gospel", genre: "gospel", location: "Buffalo, New York, USA", desc: "Urban inspiration and classic Gospel from Buffalo", icon: "👏", quality: "MP3", url: "https://shaincast.caster.fm:44284/listen.mp3" },
+            { id: 203, name: "101TheVibeFM", family: "gospel", genre: "gospel", location: "Kentucky, USA", desc: "Gospel with Christian hip-hop, pop and reggae influences", icon: "🎧", quality: "MP3", url: "https://streaming.radio.co/s188e71c13/listen" },
+            { id: 204, name: "WBRJ-DB Bayshore Radio", family: "gospel", genre: "gospel", location: "Georgia, USA", desc: "Gospel, jazz and soul from Georgia", icon: "🌊", quality: "128 kbps MP3", url: "https://ais-sa2.cdnstream1.com/1700_128" },
+            { id: 205, name: "126the Genesis Radio", family: "gospel", genre: "gospel", location: "Illinois, USA", desc: "Gospel, Christian hip-hop, jazz and inspirational talk", icon: "📜", quality: "MP3", url: "https://s5.radio.co/s1089dc418/listen" },
+            { id: 206, name: "Tomb Slayer Radio", family: "gospel", genre: "gospel", location: "Orlando, Florida, USA", desc: "Christian Country, Gospel and contemporary faith music from Orlando", icon: "🤠", quality: "MP3", url: "https://s2.radio.co/s62dd0ca7e/listen" },
+            { id: 207, name: "SOS Radio Network", family: "gospel", genre: "gospel", location: "Las Vegas, Nevada, USA", desc: "Commercial-free Christian and Gospel music from the SOS Radio Network", icon: "📡", quality: "128 kbps MP3", url: "https://ais-sa15.cdnstream1.com/4862_128.mp3" },
+            { id: 208, name: "Knoxville Gospel Music - WKGM-DB", family: "gospel", genre: "gospel", location: "Knoxville, Tennessee, USA", desc: "Southern Gospel, quartets and classic Gospel from East Tennessee", icon: "🎙️", quality: "MP3", url: "https://broadcasting.kennyinteractivehosting.com:8016/stream" },
+            { id: 209, name: "WOJG 94.7 FM", family: "gospel", genre: "gospel", location: "Bolivar, Tennessee, USA", desc: "24/7 Urban Gospel, faith and community programming from West Tennessee", icon: "🎤", quality: "96 kbps AAC", url: "https://ais-sa1.streamon.fm/7742_96k.aac" },
+            { id: 210, name: "WBCS Breaking Chains Radio", family: "gospel", genre: "gospel", location: "USA", desc: "Gospel, spiritual and uplifting praise programming", icon: "⛓️", quality: "MP3", url: "http://s5.citrus3.com:8852/stream" },
+            { id: 211, name: "Gospel 24/7", family: "gospel", genre: "gospel", location: "USA", desc: "Contemporary and traditional Gospel around the clock", icon: "🕰️", quality: "64 kbps AAC", url: "https://ais-sa8.cdnstream1.com/10310_64.aac" },
+            { id: 212, name: "HPR4 Bluegrass Gospel", family: "gospel", genre: "gospel", location: "USA", desc: "Bluegrass Gospel from Heartland Public Radio", icon: "🪕", quality: "MP3", url: "http://38.145.199.213:7739/stream" },
+            { id: 213, name: "SOGR Radio - WSGR-DB", family: "gospel", genre: "gospel", location: "Powell, Tennessee, USA", desc: "Southern Gospel radio from Tennessee", icon: "🌄", quality: "MP3", url: "http://157.173.204.49:8000/stream" },
+            { id: 214, name: "WHML Gospel Radio", family: "gospel", genre: "gospel", location: "USA", desc: "Gospel and inspirational music stream", icon: "🎶", quality: "MP3", url: "http://ec4.yesstreaming.net:1710/stream" },
+            { id: 215, name: "24.7 Praise Radio", family: "gospel", genre: "gospel", location: "USA", desc: "Praise, Gospel music and Christian programming 24/7", icon: "👏", quality: "MP3", url: "https://s4.radio.co/s7bd982a3e/listen" },
+            { id: 216, name: "Holiness Stream Radio", family: "gospel", genre: "gospel", location: "USA", desc: "Gospel and holiness praise music", icon: "🕊️", quality: "MP3", url: "https://radio.holiness-stream.com/radio.mp3" },
+            { id: 217, name: "WZYN 810 - The Old Ship of Zion", family: "gospel", genre: "gospel", location: "Hahira / Valdosta, Georgia, USA", desc: "Southern Gospel, Bluegrass Gospel, choir and sacred music from Georgia", icon: "🚢", quality: "MP3", url: "https://shout2.brnstream.com/proxy/wzyn?mp=/stream" },
+            { id: 218, name: "The Shield FM", family: "gospel", genre: "gospel", location: "North Carolina, USA", desc: "Christian Gospel, faith programming and uplifting talk", icon: "🛡️", quality: "MP3", url: "https://streaming.radio.co/s56323fdac/listen" },
+            { id: 219, name: "Praise 95", family: "gospel", genre: "gospel", location: "Kansas City, Missouri, USA", desc: "Urban Gospel, praise and Gospel hip-hop from Kansas City", icon: "🙌", quality: "MP3", url: "https://streaming.radio.co/s4966ce877/listen" },
+            { id: 220, name: "Ernest Angley World Radio", family: "gospel", genre: "gospel", location: "Ohio, USA", desc: "Christian and Gospel music with faith-based programming", icon: "🌎", quality: "MP3", url: "https://streaming.radio.co/sd35616b01/listen" },
+            { id: 221, name: "Cane Grove", family: "gospel", genre: "gospel", location: "New York, USA", desc: "Gospel with soul, jazz, oldies and uplifting urban influences", icon: "🌿", quality: "MP3", url: "https://streaming.radio.co/sd39255bf8/listen" },
+            { id: 222, name: "Rejoice 1110", family: "gospel", genre: "gospel", location: "Texas, USA", desc: "Christian Gospel and inspirational programming from Texas", icon: "🎉", quality: "MP3", url: "https://s2.radio.co/s1185f385e/listen" },
+            { id: 223, name: "Star 88", family: "gospel", genre: "gospel", location: "New Mexico, USA", desc: "Gospel and independent Christian music from New Mexico", icon: "⭐", quality: "MP3", url: "https://s5.radio.co/sa4ba3775b/listen" },
+            { id: 224, name: "Clouds of Blessings Gospel Radio", family: "gospel", genre: "gospel", location: "Brooklyn, New York, USA", desc: "24/7 Gospel stream from Clouds of Blessings Ministry in Brooklyn", icon: "☁️", quality: "128 kbps MP3", url: "https://auds1.intacs.com/beverlywalsh" },
+            { id: 225, name: "KCIS 630", family: "gospel", genre: "gospel", location: "Edmonds / Seattle, Washington, USA", desc: "Classic Christian music, Southern Gospel, hymns and inspirational programming", icon: "🌲", quality: "MP3", url: "https://crista-kcis.streamguys1.com/kcismp3" },
+            { id: 226, name: "Gospel Top 20", family: "gospel", genre: "gospel", location: "USA", desc: "Commercial-free Gospel chart favorites and contemporary Gospel hits", icon: "🏆", quality: "MP3", url: "https://stream.revma.ihrhls.com/zc9760" },
+            { id: 227, name: "La Senda Antigua", family: "gospel", genre: "gospel", location: "California, USA", desc: "Spanish-language Christian Gospel and inspirational music", icon: "☀️", quality: "MP3", url: "https://s2.radio.co/s166bfee19/listen" },
+            { id: 228, name: "The Spirit Station", family: "gospel", genre: "gospel", location: "Brooklyn, New York, USA", desc: "New York Gospel station with Christ-inspired music and programming", icon: "🗽", quality: "128 kbps MP3", url: "https://auds1.intacs.com/spiritstationstudio" }
+        ];
+
+        const FAMILY_CONFIG = {
+            country: {
+                label: 'Country',
+                icon: '🤠',
+                genres: [
+                    { value: 'classic', label: 'Classic Country' },
+                    { value: 'texas', label: 'Texas & Red Dirt' },
+                    { value: 'outlaw', label: 'Outlaw & Americana' },
+                    { value: 'pop', label: 'Modern Hits' },
+                    { value: 'bluegrass', label: 'Bluegrass' }
+                ]
+            },
+            blues: {
+                label: 'Blues',
+                icon: '🎸',
+                // Ready for Chicago / Delta / Texas / Memphis / Electric / Blues Rock later.
+                genres: [
+                    { value: 'blues', label: 'Blues Mix' }
+                ]
+            },
+            gospel: {
+                label: 'Gospel',
+                icon: '⛪',
+                // Prototype: detailed Gospel filters will be added after the catalogue is built.
+                genres: [
+                    { value: 'gospel', label: 'Gospel Mix' }
+                ]
+            }
+        };
+
+        let customStations = JSON.parse(localStorage.getItem('crh_custom_stations') || '[]')
+            .map(st => ({ ...st, family: st.family || 'country' }));
+
+        let stations = [...countryStations, ...bluesStations, ...gospelStations, ...customStations];
+        let activeFamily = localStorage.getItem('crh_active_family') || 'country';
+        if (!FAMILY_CONFIG[activeFamily]) activeFamily = 'country';
 
         let activeGenre = 'all';
         let favorites = JSON.parse(localStorage.getItem('crh_favorites') || '[]');
@@ -1695,9 +1895,82 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             localStorage.setItem('crh_theme', themeName);
         }
 
+        function getFamilyStations(family = activeFamily) {
+            return stations.filter(st => (st.family || 'country') === family);
+        }
+
+        function getVerifiedFamilyCount(family) {
+            if (family === 'country') return countryStations.length;
+            if (family === 'blues') return bluesStations.length;
+            if (family === 'gospel') return gospelStations.length;
+            return 0;
+        }
+
+        function renderFamilyFilters() {
+            const host = document.getElementById('genre-filter-buttons');
+            if (!host) return;
+            const config = FAMILY_CONFIG[activeFamily];
+            host.innerHTML = config.genres.map(item => {
+                const active = activeGenre === item.value ? ' active' : '';
+                return `<button class="btn-filter${active}" type="button" onclick="filterGenre('${item.value}', this)">${item.label}</button>`;
+            }).join('');
+
+            const customGenre = document.getElementById('cust-genre');
+            if (customGenre) {
+                customGenre.innerHTML = config.genres.map(item =>
+                    `<option value="${item.value}">${item.label}</option>`
+                ).join('');
+            }
+        }
+
+        function updateFamilyUI() {
+            const config = FAMILY_CONFIG[activeFamily];
+            const count = getVerifiedFamilyCount(activeFamily);
+
+            document.getElementById('family-country-btn')?.classList.toggle('active', activeFamily === 'country');
+            document.getElementById('family-blues-btn')?.classList.toggle('active', activeFamily === 'blues');
+            document.getElementById('family-gospel-btn')?.classList.toggle('active', activeFamily === 'gospel');
+
+            const countryBtn = document.getElementById('family-country-btn');
+            const bluesBtn = document.getElementById('family-blues-btn');
+            const gospelBtn = document.getElementById('family-gospel-btn');
+            if (countryBtn) countryBtn.textContent = `🤠 COUNTRY — ${countryStations.length}`;
+            if (bluesBtn) bluesBtn.textContent = `🎸 BLUES — ${bluesStations.length}`;
+            if (gospelBtn) gospelBtn.textContent = `⛪ GOSPEL — ${gospelStations.length}`;
+
+            const allBtn = document.getElementById('btn-all');
+            if (allBtn) allBtn.textContent = `All ${config.label} (${count})`;
+
+            const search = document.getElementById('search');
+            if (search) search.placeholder = `Search ${config.label} station or location...`;
+
+            renderFamilyFilters();
+            updateFavoritesButton();
+        }
+
+        function switchRadioFamily(family) {
+            if (!FAMILY_CONFIG[family]) return;
+            activeFamily = family;
+            activeGenre = 'all';
+            localStorage.setItem('crh_active_family', activeFamily);
+
+            const search = document.getElementById('search');
+            if (search) search.value = '';
+            updateSearchClearButton();
+
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-all')?.classList.add('active');
+
+            updateFamilyUI();
+            renderRadios(getFilteredStations());
+        }
+
         function updateFavoritesButton() {
             const btn = document.getElementById('favorites-filter-btn');
-            if (btn) btn.textContent = `⭐ Favorites (${favorites.length})`;
+            if (!btn) return;
+            const familyIds = new Set(getFamilyStations().map(st => String(st.id)));
+            const count = favorites.filter(id => familyIds.has(String(id))).length;
+            btn.textContent = `⭐ Favorites (${count})`;
         }
 
         function getStationShareUrl(station) {
@@ -1722,7 +1995,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const shareUrl = getStationShareUrl(currentStation);
             const shareData = {
                 title: currentStation.name,
-                text: `Listen to ${currentStation.name} on Country Radio Hub`,
+                text: `Listen to ${currentStation.name} on American Roots Radio Hub`,
                 url: shareUrl
             };
 
@@ -1788,6 +2061,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const url = document.getElementById('cust-url').value.trim();
             const location = document.getElementById('cust-location').value.trim() || 'Custom Stream';
             const genre = document.getElementById('cust-genre').value;
+            const family = activeFamily;
 
             if (!name || !url) return;
 
@@ -1806,6 +2080,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 id: 'custom_' + Date.now(),
                 name: name,
                 genre: genre,
+                family: family,
                 location: location,
                 desc: 'User Added Custom Stream',
                 icon: '📡',
@@ -1816,7 +2091,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
             customStations.push(newStation);
             localStorage.setItem('crh_custom_stations', JSON.stringify(customStations));
-            stations = [...defaultStations, ...customStations];
+            stations = [...countryStations, ...bluesStations, ...gospelStations, ...customStations];
 
             document.getElementById('custom-form').reset();
             updateHeaderCount();
@@ -1829,7 +2104,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
             customStations = customStations.filter(s => String(s.id) !== String(id));
             localStorage.setItem('crh_custom_stations', JSON.stringify(customStations));
-            stations = [...defaultStations, ...customStations];
+            stations = [...countryStations, ...bluesStations, ...gospelStations, ...customStations];
 
             updateHeaderCount();
             renderRadios(getFilteredStations());
@@ -1930,7 +2205,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                     <span class="history-item-icon">${escapeHtml(st.icon || '📻')}</span>
                     <span class="history-item-main">
                         <span class="history-item-name">${escapeHtml(st.name)}</span>
-                        <span class="history-item-meta">${escapeHtml(st.location)} • ${escapeHtml(String(st.genre).toUpperCase())}</span>
+                        <span class="history-item-meta">${escapeHtml(st.location)} • ${escapeHtml(String(st.family || 'country').toUpperCase())} • ${escapeHtml(String(st.genre).toUpperCase())}</span>
                     </span>
                     <span class="history-item-play">▶</span>
                 </button>`).join('');
@@ -1979,9 +2254,13 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         }
 
         function updateHeaderCount() {
-            const count = stations.length;
-            document.getElementById('header-count').innerText = `${count} Verified Live Streams • Classic Country, Texas Red Dirt & Nashville Hits`;
-            document.getElementById('btn-all').innerText = `All Stations (${count})`;
+            const countryCount = countryStations.length;
+            const bluesCount = bluesStations.length;
+            const gospelCount = gospelStations.length;
+            const verifiedTotal = countryCount + bluesCount + gospelCount;
+            document.getElementById('header-count').innerText =
+                `${countryCount} Country + ${bluesCount} Blues + ${gospelCount} Gospel • ${verifiedTotal} Verified Live Streams`;
+            updateFamilyUI();
         }
 
         function setupAudioContext() {
@@ -2117,14 +2396,15 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         function getFilteredStations() {
             const query = document.getElementById('search').value.toLowerCase();
             return stations.filter(s => {
+                const matchesFamily = (s.family || 'country') === activeFamily;
                 const isFav = favorites.some(fId => String(fId) === String(s.id));
-                const matchesGenre = (activeGenre === 'all') || 
-                                     (activeGenre === 'fav' && isFav) || 
+                const matchesGenre = (activeGenre === 'all') ||
+                                     (activeGenre === 'fav' && isFav) ||
                                      (s.genre === activeGenre);
-                const matchesSearch = s.name.toLowerCase().includes(query) || 
-                                      s.location.toLowerCase().includes(query) || 
+                const matchesSearch = s.name.toLowerCase().includes(query) ||
+                                      s.location.toLowerCase().includes(query) ||
                                       s.desc.toLowerCase().includes(query);
-                return matchesGenre && matchesSearch;
+                return matchesFamily && matchesGenre && matchesSearch;
             });
         }
 
@@ -2373,6 +2653,20 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
             const st = stations.find(s => String(s.id) === String(id));
             if (!st) return;
+
+            const stationFamily = st.family || 'country';
+            if (stationFamily !== activeFamily) {
+                activeFamily = stationFamily;
+                activeGenre = 'all';
+                localStorage.setItem('crh_active_family', activeFamily);
+                const search = document.getElementById('search');
+                if (search) search.value = '';
+                updateSearchClearButton();
+                document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                document.getElementById('btn-all')?.classList.add('active');
+                updateFamilyUI();
+            }
+
             stopMetadataReader();
             currentNowPlaying = null;
             currentStation = st;
@@ -2534,7 +2828,8 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 playStation(currentStation.id);
             } else if (stations.length > 0) {
                 const savedId = localStorage.getItem('crh_last_station');
-                playStation(savedId ? savedId : stations[0].id);
+                const familyFirst = getFamilyStations()[0];
+                playStation(savedId ? savedId : (familyFirst ? familyFirst.id : stations[0].id));
             }
         }
 
@@ -2565,6 +2860,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 updateSearchClearButton();
             }
 
+            renderFamilyFilters();
+            if (genre === 'all') document.getElementById('btn-all')?.classList.add('active');
+            if (genre === 'fav') document.getElementById('favorites-filter-btn')?.classList.add('active');
             renderRadios(getFilteredStations());
         }
 
@@ -2687,6 +2985,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 if (sharedStation) {
                     sharedStationLoaded = true;
                     currentStation = sharedStation;
+                    activeFamily = sharedStation.family || 'country';
+                    activeGenre = 'all';
+                    localStorage.setItem('crh_active_family', activeFamily);
                     document.getElementById('banner-title').innerText = sharedStation.name;
                     document.getElementById('banner-desc').innerText = sharedStation.desc;
                     document.getElementById('banner-location').innerText = `📍 Location: ${sharedStation.location}`;
@@ -2704,6 +3005,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 const st = stations.find(s => String(s.id) === String(savedStationId));
                 if (st) {
                     currentStation = st;
+                    activeFamily = st.family || 'country';
+                    activeGenre = 'all';
+                    localStorage.setItem('crh_active_family', activeFamily);
                     document.getElementById('banner-title').innerText = st.name;
                     document.getElementById('banner-desc').innerText = st.desc;
                     document.getElementById('banner-location').innerText = `📍 Location: ${st.location}`;
@@ -2716,7 +3020,10 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 }
             }
 
-            renderRadios(stations);
+            updateHeaderCount();
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-all')?.classList.add('active');
+            renderRadios(getFilteredStations());
             updateResumeLastButton();
         }
 
