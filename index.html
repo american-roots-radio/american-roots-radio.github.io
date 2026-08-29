@@ -2822,39 +2822,115 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         }
     });
 </script>
+
+<!-- MOBILE SLEEP TIMER DISPLAY FIX — desktop untouched -->
+<style id="crh-mobile-sleep-display-fix">
+@media (max-width: 768px) {
+  .crh-mobile-sleep-wrap {
+      position: relative !important;
+      display: inline-flex !important;
+      flex: 0 0 156px !important;
+      width: 156px !important;
+      min-width: 156px !important;
+      max-width: 156px !important;
+  }
+  .crh-mobile-sleep-wrap .sleep-timer-select {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      flex: 1 1 auto !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: none !important;
+  }
+  .crh-mobile-sleep-display {
+      position: absolute !important;
+      left: 9px !important;
+      right: 27px !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      pointer-events: none !important;
+      color: var(--text) !important;
+      font: inherit !important;
+      font-weight: bold !important;
+      line-height: 1 !important;
+      text-overflow: clip !important;
+  }
+}
+</style>
+
 <script>
-/* MOBILE-ONLY Sleep Timer compact label — functionality unchanged */
 (function () {
+    'use strict';
+
+    const mq = window.matchMedia('(max-width: 768px)');
     const select = document.getElementById('sleep-timer');
     if (!select) return;
 
-    const mobileQuery = window.matchMedia('(max-width: 768px)');
-    const originalLabels = Array.from(select.options).map(option => option.textContent);
+    let wrapper = null;
+    let display = null;
 
-    function updateMobileSleepTimerLabel() {
-        const isMobile = mobileQuery.matches;
+    const originalParent = select.parentElement;
 
-        select.options.forEach((option, index) => {
-            const original = originalLabels[index] || option.textContent;
-            option.textContent = original;
-        });
+    function displayText(value) {
+        const map = {
+            '0': '⏱️ Sleep Timer',
+            '15': '⏱️ 15',
+            '30': '⏱️ 30',
+            '60': '⏱️ 60'
+        };
+        return map[String(value)] || '⏱️ Sleep Timer';
+    }
 
-        if (!isMobile) return;
+    function enableMobileDisplay() {
+        if (wrapper) return;
 
-        const selected = select.options[select.selectedIndex];
-        if (!selected) return;
+        wrapper = document.createElement('span');
+        wrapper.className = 'crh-mobile-sleep-wrap';
 
-        const value = select.value;
-        if (value === '0') {
-            selected.textContent = '⏱️ Sleep Timer';
+        display = document.createElement('span');
+        display.className = 'crh-mobile-sleep-display';
+        display.setAttribute('aria-hidden', 'true');
+
+        originalParent.insertBefore(wrapper, select);
+        wrapper.appendChild(select);
+        wrapper.appendChild(display);
+
+        updateMobileDisplay();
+
+        select.addEventListener('change', updateMobileDisplay);
+    }
+
+    function disableMobileDisplay() {
+        if (!wrapper) return;
+
+        select.removeEventListener('change', updateMobileDisplay);
+        originalParent.insertBefore(select, wrapper);
+        wrapper.remove();
+
+        wrapper = null;
+        display = null;
+    }
+
+    function updateMobileDisplay() {
+        if (!display) return;
+        display.textContent = displayText(select.value);
+    }
+
+    function sync() {
+        if (mq.matches) {
+            enableMobileDisplay();
         } else {
-            selected.textContent = `⏱️ ${value}`;
+            disableMobileDisplay();
         }
     }
 
-    select.addEventListener('change', updateMobileSleepTimerLabel);
-    mobileQuery.addEventListener('change', updateMobileSleepTimerLabel);
-    updateMobileSleepTimerLabel();
+    mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
+    sync();
 })();
 </script>
 
