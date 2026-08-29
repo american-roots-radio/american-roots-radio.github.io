@@ -2822,5 +2822,41 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         }
     });
 </script>
+<script>
+/* MOBILE-ONLY Sleep Timer compact label — functionality unchanged */
+(function () {
+    const select = document.getElementById('sleep-timer');
+    if (!select) return;
+
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    const originalLabels = Array.from(select.options).map(option => option.textContent);
+
+    function updateMobileSleepTimerLabel() {
+        const isMobile = mobileQuery.matches;
+
+        select.options.forEach((option, index) => {
+            const original = originalLabels[index] || option.textContent;
+            option.textContent = original;
+        });
+
+        if (!isMobile) return;
+
+        const selected = select.options[select.selectedIndex];
+        if (!selected) return;
+
+        const value = select.value;
+        if (value === '0') {
+            selected.textContent = '⏱️ Sleep Timer';
+        } else {
+            selected.textContent = `⏱️ ${value}`;
+        }
+    }
+
+    select.addEventListener('change', updateMobileSleepTimerLabel);
+    mobileQuery.addEventListener('change', updateMobileSleepTimerLabel);
+    updateMobileSleepTimerLabel();
+})();
+</script>
+
 </body>
 </html>
