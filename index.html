@@ -1507,6 +1507,175 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     }
 }
 </style>
+
+<style id="crh-compact-hero-contact-final">
+/* FINAL HEADER COMPACTION — preserve brand identity; remove vertical utility stacking. */
+header {
+    padding: 22px 20px 14px 20px !important;
+}
+header .crh-brand-frame {
+    padding: 8px 24px 9px !important;
+}
+header .crh-brand-frame .crh-root-genres {
+    margin-top: 4px !important;
+}
+header .crh-brand-frame #header-count {
+    margin-top: 2px !important;
+}
+.hero-action-row {
+    width: min(760px, 100%);
+    margin: 14px auto 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.hero-action-row .btn-saloon-paypal,
+.hero-action-row #installAppBtn,
+.hero-action-row #contactOpenBtn {
+    min-height: 40px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+.hero-action-row .btn-saloon-paypal {
+    min-width: 0 !important;
+    padding: 8px 18px !important;
+    font-size: .84rem !important;
+}
+.hero-action-row .btn-saloon-paypal::before {
+    display: none !important;
+}
+.hero-action-row #installAppBtn,
+.hero-action-row #contactOpenBtn {
+    min-width: 138px !important;
+    padding: 8px 15px !important;
+}
+#contactOpenBtn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #3a5265 0%, #233543 52%, #17252e 100%);
+    color: #eef6fb;
+    border: 1px solid #8da7b8;
+    border-radius: 7px;
+    box-shadow: 0 0 0 2px rgba(25,36,44,.85), inset 0 1px 0 rgba(255,255,255,.16), inset 0 -5px 10px rgba(0,0,0,.22), 0 5px 14px rgba(0,0,0,.30);
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+#contactOpenBtn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+#contactOpenBtn:focus-visible {
+    outline: 2px solid #d7b66f;
+    outline-offset: 4px;
+}
+
+.contact-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(0,0,0,.70);
+    backdrop-filter: blur(4px);
+    z-index: 2300;
+}
+.contact-modal-overlay.open { display: flex; }
+.contact-modal {
+    width: min(470px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    background: var(--panel-bg);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.58), 0 0 30px var(--accent-glow);
+    animation: contactModalIn .18s ease-out;
+}
+@keyframes contactModalIn {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.contact-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #2b2b32;
+    background: var(--panel-bg);
+}
+.contact-modal-title {
+    margin: 0;
+    color: var(--accent);
+    font-size: 1rem;
+    font-weight: 850;
+}
+.contact-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: rgba(255,255,255,.04);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+}
+.contact-modal-close:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
+.contact-modal-body { padding: 16px; }
+.contact-modal .crh-contact-frame {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.contact-modal .crh-contact-frame:focus-within {
+    box-shadow: none !important;
+}
+.now-playing-banner { margin-top: 18px !important; }
+
+@media (max-width: 768px) {
+    header { padding: 18px 12px 11px 12px !important; }
+    header .crh-brand-frame { padding: 7px 12px 8px !important; }
+    .hero-action-row {
+        width: 100%;
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+    }
+    .hero-action-row .btn-saloon-paypal,
+    .hero-action-row #installAppBtn,
+    .hero-action-row #contactOpenBtn {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 40px !important;
+        padding: 8px 9px !important;
+        font-size: .78rem !important;
+    }
+    .hero-action-row #contactOpenBtn { grid-column: 1 / -1; }
+    .contact-modal-overlay { padding: 12px; }
+    .contact-modal { max-height: calc(100vh - 24px); }
+    .contact-modal-header { padding: 12px 13px; }
+    .contact-modal-body { padding: 13px; }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -1517,18 +1686,21 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             <p id="header-count">124 Country + 1 Blues • 125 Verified Live Streams</p>
         </div>
         
-        <!-- BOUTON PAYPAL SALOON -->
-        <div style="margin-top: 18px; margin-bottom: 18px; text-align: center;">
-            <button type="button" class="btn-saloon-paypal" onclick="openSupportModal()">
-                🍻 Buy me a drink at the Saloon 🍻
-            </button>
+        <!-- COMPACT HERO ACTIONS — primary header utilities -->
+        <div class="hero-action-row" aria-label="Site actions">
+            <button type="button" class="btn-saloon-paypal" onclick="openSupportModal()">🍻 Buy me a drink at the Saloon 🍻</button>
+            <button id="installAppBtn" type="button" onclick="installApp()">📲 Install App</button>
+            <button id="contactOpenBtn" type="button" onclick="openContactModal()">✉️ Contact / Report</button>
         </div>
 
-        <div style="text-align: center; margin-bottom: 18px;">
-          <button id="installAppBtn" onclick="installApp()" style="background-color: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">📲 Install App</button>
-        </div>
-
-        <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
+        <!-- CONTACT / BROKEN STREAM MODAL — form preserved, hidden until requested -->
+        <div id="contact-modal-overlay" class="contact-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" onclick="closeContactModal(event)">
+            <div class="contact-modal" onclick="event.stopPropagation()">
+                <div class="contact-modal-header">
+                    <h3 id="contact-modal-title" class="contact-modal-title">✉️ Contact / Report a Stream</h3>
+                    <button class="contact-modal-close" type="button" onclick="closeContactModal()" aria-label="Close">✕</button>
+                </div>
+                <div class="contact-modal-body">
         <div class="crh-contact-frame">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
@@ -1553,8 +1725,31 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
             <div id="form-result" style="display: none; margin-top: 12px; text-align: center; font-size: 13px; font-weight: bold;"></div>
         </div>
+                </div>
+            </div>
+        </div>
 
         <script>
+            function openContactModal() {
+                const overlay = document.getElementById('contact-modal-overlay');
+                if (!overlay) return;
+                overlay.classList.add('open');
+                setTimeout(() => {
+                    const email = overlay.querySelector('input[name="email"]');
+                    if (email) email.focus({ preventScroll: true });
+                }, 80);
+            }
+
+            function closeContactModal(event) {
+                if (event && event.target && event.target.id !== 'contact-modal-overlay') return;
+                const overlay = document.getElementById('contact-modal-overlay');
+                if (overlay) overlay.classList.remove('open');
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeContactModal();
+            });
+
             const form = document.getElementById('contact-form');
             const result = document.getElementById('form-result');
             const captchaWrap = document.getElementById('captcha-wrap');
