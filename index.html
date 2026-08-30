@@ -1454,6 +1454,13 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     .compact-secondary-controls .search-box {
         width: 100% !important;
     }
+    /* Blues/Gospel only: let Search absorb remaining desktop space so Share reaches the Country right edge. */
+    .controls-compact[data-family="blues"] .compact-secondary-controls .search-wrap,
+    .controls-compact[data-family="gospel"] .compact-secondary-controls .search-wrap {
+        flex: 1 1 370px !important;
+        width: auto !important;
+        max-width: none !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2372,7 +2379,10 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const config = FAMILY_CONFIG[activeFamily];
             const genreSelect = document.getElementById('genre-filter-select');
             const primaryControls = document.querySelector('.compact-primary-controls');
+            const controlsCompact = document.querySelector('.controls-compact');
             const showGenreSelect = config.genres.length > 1;
+
+            if (controlsCompact) controlsCompact.dataset.family = activeFamily;
 
             if (primaryControls) primaryControls.classList.toggle('no-genre', !showGenreSelect);
 
