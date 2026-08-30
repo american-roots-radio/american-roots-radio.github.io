@@ -1279,6 +1279,152 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 }
 #installAppBtn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 0 0 2px rgba(25,36,44,.85),0 7px 18px rgba(0,0,0,.38),0 0 16px rgba(141,167,184,.18),inset 0 1px 0 rgba(255,255,255,.20),inset 0 -5px 10px rgba(0,0,0,.18);}
 </style>
+
+<style id="compact-radio-controls-v1">
+/* COMPACT RADIO CONTROLS V1 — reduce visual clutter without removing core functions. */
+.controls-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(380px, .85fr);
+    gap: 10px 14px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.compact-primary-controls,
+.compact-secondary-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.compact-primary-controls { flex-wrap: wrap; }
+.compact-secondary-controls { justify-content: flex-end; }
+.genre-filter-select,
+.appearance-menu summary {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border: 1px solid #3b3d43;
+    border-radius: 20px;
+    min-height: 36px;
+    padding: 7px 34px 7px 14px;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.genre-filter-select {
+    max-width: 190px;
+    outline: none;
+}
+.genre-filter-select:focus,
+.appearance-menu[open] summary {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent-glow);
+}
+.compact-secondary-controls .search-wrap {
+    flex: 1 1 280px;
+    min-width: 220px;
+    max-width: 420px;
+}
+.compact-secondary-controls .search-box { width: 100%; box-sizing: border-box; }
+.compact-share {
+    min-height: 36px;
+    padding: 7px 13px;
+    white-space: nowrap;
+}
+.appearance-menu {
+    position: relative;
+    flex: 0 0 auto;
+}
+.appearance-menu summary {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 14px;
+    white-space: nowrap;
+}
+.appearance-menu summary::-webkit-details-marker { display: none; }
+.appearance-popover {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 7px);
+    z-index: 80;
+    padding: 8px;
+    border: 1px solid #41434a;
+    border-radius: 10px;
+    background: var(--panel-bg);
+    box-shadow: 0 12px 30px rgba(0,0,0,.42);
+}
+.appearance-menu[open] .appearance-popover { display: block; }
+.appearance-popover #theme-select { width: 235px; }
+
+@media (max-width: 900px) {
+    .controls-compact { grid-template-columns: 1fr; }
+    .compact-secondary-controls { justify-content: flex-start; }
+    .compact-secondary-controls .search-wrap { max-width: none; }
+}
+
+@media (max-width: 768px) {
+    .controls-compact {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 9px;
+        margin-bottom: 20px;
+    }
+    .compact-primary-controls {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+        width: 100%;
+    }
+    .compact-primary-controls > * {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+    .compact-primary-controls .btn-filter,
+    .compact-primary-controls .btn-random-station,
+    .compact-primary-controls .genre-filter-select {
+        min-height: 44px;
+        padding: 9px 8px;
+        font-size: .84rem;
+        justify-content: center;
+        text-align: center;
+    }
+    .compact-secondary-controls {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+        width: 100%;
+    }
+    .compact-secondary-controls .search-wrap {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+    .compact-secondary-controls .search-box { min-height: 44px; }
+    .compact-share,
+    .appearance-menu,
+    .appearance-menu summary {
+        width: 100%;
+        min-height: 44px;
+        box-sizing: border-box;
+        justify-content: center;
+    }
+    .appearance-menu summary { padding: 9px 10px; }
+    .appearance-popover {
+        left: 0;
+        right: auto;
+        width: min(270px, calc(100vw - 64px));
+        box-sizing: border-box;
+    }
+    .appearance-popover #theme-select { width: 100%; }
+}
+</style>
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -1522,34 +1668,39 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')"><span class="family-name">⛪ GOSPEL</span><span class="family-count">52</span></button>
         </div>
 
-        <!-- Controls, Theme & Filters -->
-        <div class="controls">
-            <div class="filter-buttons">
+        <!-- Controls, Theme & Filters — compact layout -->
+        <div class="controls controls-compact">
+            <div class="compact-primary-controls">
                 <button id="btn-all" class="btn-filter active" onclick="filterGenre('all', this)">All Country (124)</button>
                 <button id="favorites-filter-btn" class="btn-filter" onclick="filterGenre('fav', this)">⭐ Favorites (0)</button>
-                <button class="btn-random-station" type="button" onclick="randomStation()">🎲 Random Station</button>
-                <span id="genre-filter-buttons"></span>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <!-- Theme Switcher Dropdown -->
-                <select id="theme-select" class="eq-preset-select" onchange="changeTheme(this.value)">
-                    <option value="default">🔩 Theme: Modern Dark Steel</option>
-                    <option value="vintage">📻 Theme: Vintage Amp</option>
-                    <option value="oled">⚡ Theme: Neon OLED</option>
-                    <option value="rust">🔥 Theme: Rust Saloon</option>
-                    <option value="midnight">🌌 Theme: Midnight Blue</option>
-                    <option value="forest">🌲 Theme: Country Forest</option>
-                    <option value="forestgreen">🌿 Theme: Forest Green</option>
-                    <option value="purple">🟣 Theme: Deep Purple</option>
-                    <option value="arctic">❄️ Theme: Arctic Blue</option>
-                    <option value="mocha">🤎 Theme: Mocha</option>
+                <button class="btn-random-station" type="button" onclick="randomStation()">🎲 Random</button>
+                <select id="genre-filter-select" class="genre-filter-select" onchange="filterGenre(this.value, null)" aria-label="Genre filter">
+                    <option value="" disabled selected>🎵 Genre</option>
                 </select>
+            </div>
+            <div class="compact-secondary-controls">
                 <div class="search-wrap">
                     <input type="text" id="search" class="search-box" placeholder="Search station or location..." onkeyup="searchRadio()">
                     <button id="search-clear-btn" class="search-clear-btn" type="button" onclick="clearSearch()" aria-label="Clear search">↺ Clear</button>
                 </div>
-                <button id="resume-last-btn" class="btn-resume-last" type="button" onclick="resumeLastStation()" style="display:none;">↩️ Resume last station</button>
-                <button id="share-station-btn" class="btn-share-station" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
+                <details class="appearance-menu">
+                    <summary>🎨 Theme</summary>
+                    <div class="appearance-popover">
+                        <select id="theme-select" class="eq-preset-select" onchange="changeTheme(this.value)" aria-label="Site theme">
+                            <option value="default">🔩 Modern Dark Steel</option>
+                            <option value="vintage">📻 Vintage Amp</option>
+                            <option value="oled">⚡ Neon OLED</option>
+                            <option value="rust">🔥 Rust Saloon</option>
+                            <option value="midnight">🌌 Midnight Blue</option>
+                            <option value="forest">🌲 Country Forest</option>
+                            <option value="forestgreen">🌿 Forest Green</option>
+                            <option value="purple">🟣 Deep Purple</option>
+                            <option value="arctic">❄️ Arctic Blue</option>
+                            <option value="mocha">🤎 Mocha</option>
+                        </select>
+                    </div>
+                </details>
+                <button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
             </div>
         </div>
 
@@ -2051,13 +2202,15 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         }
 
         function renderFamilyFilters() {
-            const host = document.getElementById('genre-filter-buttons');
-            if (!host) return;
             const config = FAMILY_CONFIG[activeFamily];
-            host.innerHTML = config.genres.map(item => {
-                const active = activeGenre === item.value ? ' active' : '';
-                return `<button class="btn-filter${active}" type="button" onclick="filterGenre('${item.value}', this)">${item.label}</button>`;
-            }).join('');
+            const genreSelect = document.getElementById('genre-filter-select');
+            if (genreSelect) {
+                genreSelect.innerHTML = '<option value="" disabled>🎵 Genre</option>' + config.genres.map(item =>
+                    `<option value="${item.value}">${item.label}</option>`
+                ).join('');
+                const hasSelectedGenre = config.genres.some(item => item.value === activeGenre);
+                genreSelect.value = hasSelectedGenre ? activeGenre : '';
+            }
 
             const customGenre = document.getElementById('cust-genre');
             if (customGenre) {
