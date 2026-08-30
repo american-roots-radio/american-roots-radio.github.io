@@ -2477,8 +2477,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             }
 
             // STREAM VISUALIZER V2 — segmented studio meter, theme-aware.
-            const styles = getComputedStyle(document.body);
-            const accent = styles.getPropertyValue('--accent').trim() || '#aeb9c6';
+            const accent = '#4da3ff'; // Fixed Midnight Blue meter color across all themes.
             const barGap = 3;
             const barWidth = Math.max(2, (canvas.width / bufferLength) - barGap);
             const segmentGap = 2;
