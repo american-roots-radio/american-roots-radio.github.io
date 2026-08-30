@@ -929,6 +929,7 @@
         .btn-family.active {
             background: var(--accent);
             color: #000;
+            transform: none;
         }
         .family-name, .family-count { display: inline; }
         .family-count::before { content: " "; }
@@ -1331,6 +1332,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     min-height: 36px;
     padding: 7px 13px;
     white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 .appearance-menu {
     position: relative;
@@ -1686,24 +1690,6 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             </div>
             <canvas id="vu-meter" width="800" height="50"></canvas>
         </div>
-
-        <!-- Bloc d'ajout de Flux Personnalisé -->
-        <details class="custom-stream-panel" open>
-            <summary>➕ Add Your Own Custom Radio Stream (Saved locally)</summary>
-            <form id="custom-form" class="custom-form" onsubmit="addCustomStation(event)">
-                <input type="text" id="cust-name" placeholder="Radio Name" required class="search-box" style="flex: 1; min-width: 150px;">
-                <input type="url" id="cust-url" placeholder="Stream URL (https://...)" required class="search-box" style="flex: 2; min-width: 220px;">
-                <input type="text" id="cust-location" placeholder="Location (ex: My Favorite / Paris)" class="search-box" style="flex: 1; min-width: 140px;">
-                <select id="cust-genre" class="eq-preset-select" style="height: 36px;">
-                    <option value="classic">Classic Country</option>
-                    <option value="texas">Texas & Red Dirt</option>
-                    <option value="outlaw">Outlaw & Americana</option>
-                    <option value="pop">Modern Hits</option>
-                    <option value="bluegrass">Bluegrass</option>
-                </select>
-                <button type="submit" class="btn-player-btn" style="background: var(--accent); color: #000; border: none;">+ Save Radio</button>
-            </form>
-        </details>
 
         <!-- AMERICAN ROOTS FAMILY SWITCH — local prototype -->
         <div class="radio-family-switch" aria-label="Radio family">
@@ -2362,6 +2348,8 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 document.body.setAttribute('data-theme', themeName);
             }
             localStorage.setItem('crh_theme', themeName);
+            const appearanceMenu = document.querySelector('.appearance-menu');
+            if (appearanceMenu) appearanceMenu.open = false;
         }
 
         function getFamilyStations(family = activeFamily) {
