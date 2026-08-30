@@ -2102,6 +2102,129 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             { id: 228, name: "The Spirit Station", family: "gospel", genre: "gospel", location: "Brooklyn, New York, USA", desc: "New York Gospel station with Christ-inspired music and programming", icon: "🗽", quality: "128 kbps MP3", url: "https://auds1.intacs.com/spiritstationstudio" }
         ];
 
+
+        // ROOTS FAMILY GENRE MAP V1
+        // Classification layer only: station IDs, names, stream URLs, quality and descriptions remain untouched.
+        const BLUES_GENRE_BY_ID = Object.freeze({
+            125: 'classic',
+            126: 'classic',
+            127: 'electric',
+            128: 'roots',
+            129: 'classic',
+            130: 'classic',
+            131: 'roots',
+            132: 'roots',
+            133: 'classic',
+            134: 'roots',
+            135: 'classic',
+            136: 'roots',
+            137: 'roots',
+            138: 'electric',
+            139: 'soul',
+            140: 'electric',
+            141: 'electric',
+            142: 'roots',
+            143: 'classic',
+            144: 'classic',
+            145: 'rock',
+            146: 'rock',
+            147: 'electric',
+            148: 'classic',
+            149: 'classic',
+            150: 'rock',
+            151: 'classic',
+            152: 'rock',
+            153: 'rock',
+            154: 'electric',
+            155: 'classic',
+            156: 'rock',
+            157: 'soul',
+            158: 'classic',
+            159: 'soul',
+            160: 'soul',
+            161: 'classic',
+            162: 'classic',
+            163: 'soul',
+            164: 'rock',
+            165: 'soul',
+            166: 'soul',
+            167: 'roots',
+            168: 'soul',
+            169: 'rock',
+            170: 'classic',
+            171: 'classic',
+            172: 'classic',
+            173: 'rock',
+            174: 'classic',
+            175: 'classic',
+            176: 'roots'
+        });
+
+        const GOSPEL_GENRE_BY_ID = Object.freeze({
+            177: 'urban',
+            178: 'urban',
+            179: 'southern',
+            180: 'contemporary',
+            181: 'contemporary',
+            182: 'classic',
+            183: 'southern',
+            184: 'country',
+            185: 'classic',
+            186: 'urban',
+            187: 'classic',
+            188: 'southern',
+            189: 'southern',
+            190: 'classic',
+            191: 'soul',
+            192: 'classic',
+            193: 'classic',
+            194: 'urban',
+            195: 'southern',
+            196: 'southern',
+            197: 'classic',
+            198: 'classic',
+            199: 'urban',
+            200: 'soul',
+            201: 'contemporary',
+            202: 'urban',
+            203: 'urban',
+            204: 'soul',
+            205: 'urban',
+            206: 'country',
+            207: 'contemporary',
+            208: 'southern',
+            209: 'urban',
+            210: 'urban',
+            211: 'contemporary',
+            212: 'country',
+            213: 'southern',
+            214: 'classic',
+            215: 'urban',
+            216: 'urban',
+            217: 'southern',
+            218: 'classic',
+            219: 'urban',
+            220: 'classic',
+            221: 'soul',
+            222: 'classic',
+            223: 'contemporary',
+            224: 'classic',
+            225: 'classic',
+            226: 'contemporary',
+            227: 'classic',
+            228: 'classic'
+        });
+
+
+        bluesStations.forEach(st => {
+            const mappedGenre = BLUES_GENRE_BY_ID[st.id];
+            if (mappedGenre) st.genre = mappedGenre;
+        });
+        gospelStations.forEach(st => {
+            const mappedGenre = GOSPEL_GENRE_BY_ID[st.id];
+            if (mappedGenre) st.genre = mappedGenre;
+        });
+
         const FAMILY_CONFIG = {
             country: {
                 label: 'Country',
@@ -2117,17 +2240,24 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             blues: {
                 label: 'Blues',
                 icon: '🎸',
-                // Ready for Chicago / Delta / Texas / Memphis / Electric / Blues Rock later.
                 genres: [
-                    { value: 'blues', label: 'Blues Mix' }
+                    { value: 'classic', label: 'Traditional & Classic' },
+                    { value: 'roots', label: 'Delta & Roots' },
+                    { value: 'electric', label: 'Chicago & Electric' },
+                    { value: 'rock', label: 'Blues Rock' },
+                    { value: 'soul', label: 'Soul, Jazz & R&B' }
                 ]
             },
             gospel: {
                 label: 'Gospel',
                 icon: '⛪',
-                // Prototype: detailed Gospel filters will be added after the catalogue is built.
                 genres: [
-                    { value: 'gospel', label: 'Gospel Mix' }
+                    { value: 'southern', label: 'Southern Gospel' },
+                    { value: 'urban', label: 'Urban & Praise' },
+                    { value: 'contemporary', label: 'Contemporary Gospel' },
+                    { value: 'country', label: 'Country & Bluegrass' },
+                    { value: 'soul', label: 'Gospel Soul & Jazz' },
+                    { value: 'classic', label: 'Classic & Inspirational' }
                 ]
             }
         };
@@ -2242,7 +2372,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const config = FAMILY_CONFIG[activeFamily];
             const genreSelect = document.getElementById('genre-filter-select');
             const primaryControls = document.querySelector('.compact-primary-controls');
-            const showGenreSelect = activeFamily === 'country' && config.genres.length > 1;
+            const showGenreSelect = config.genres.length > 1;
 
             if (primaryControls) primaryControls.classList.toggle('no-genre', !showGenreSelect);
 
