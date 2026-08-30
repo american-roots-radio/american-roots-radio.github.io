@@ -880,10 +880,26 @@
             background: var(--accent);
             color: #000;
         }
+        .family-name, .family-count { display: inline; }
+        .family-count::before { content: " "; }
         #genre-filter-buttons { display: contents; }
         @media (max-width: 768px) {
             .radio-family-switch { gap: 8px; margin-top: 18px; }
-            .btn-family { padding: 10px 8px; font-size: .82rem; }
+            .btn-family {
+                padding: 10px 8px;
+                font-size: .82rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                line-height: 1.12;
+                white-space: nowrap;
+            }
+            .btn-family .family-name,
+            .btn-family .family-count { display: block; }
+            .btn-family .family-count { margin-top: 3px; }
+            .btn-family .family-count::before { content: ""; }
             header .crh-brand-frame h1 {
                 font-size: 1.06rem !important;
                 letter-spacing: .22px !important;
@@ -1401,9 +1417,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
         <!-- AMERICAN ROOTS FAMILY SWITCH — local prototype -->
         <div class="radio-family-switch" aria-label="Radio family">
-            <button id="family-country-btn" class="btn-family active" type="button" onclick="switchRadioFamily('country')">🤠 COUNTRY 124</button>
-            <button id="family-blues-btn" class="btn-family" type="button" onclick="switchRadioFamily('blues')">🎸 BLUES 52</button>
-            <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')">⛪ GOSPEL 52</button>
+            <button id="family-country-btn" class="btn-family active" type="button" onclick="switchRadioFamily('country')"><span class="family-name">🤠 COUNTRY</span><span class="family-count">124</span></button>
+            <button id="family-blues-btn" class="btn-family" type="button" onclick="switchRadioFamily('blues')"><span class="family-name">🎸 BLUES</span><span class="family-count">52</span></button>
+            <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')"><span class="family-name">⛪ GOSPEL</span><span class="family-count">52</span></button>
         </div>
 
         <!-- Controls, Theme & Filters -->
@@ -1934,9 +1950,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const countryBtn = document.getElementById('family-country-btn');
             const bluesBtn = document.getElementById('family-blues-btn');
             const gospelBtn = document.getElementById('family-gospel-btn');
-            if (countryBtn) countryBtn.textContent = `🤠 COUNTRY ${countryStations.length}`;
-            if (bluesBtn) bluesBtn.textContent = `🎸 BLUES ${bluesStations.length}`;
-            if (gospelBtn) gospelBtn.textContent = `⛪ GOSPEL ${gospelStations.length}`;
+            if (countryBtn) countryBtn.innerHTML = `<span class="family-name">🤠 COUNTRY</span><span class="family-count">${countryStations.length}</span>`;
+            if (bluesBtn) bluesBtn.innerHTML = `<span class="family-name">🎸 BLUES</span><span class="family-count">${bluesStations.length}</span>`;
+            if (gospelBtn) gospelBtn.innerHTML = `<span class="family-name">⛪ GOSPEL</span><span class="family-count">${gospelStations.length}</span>`;
 
             const allBtn = document.getElementById('btn-all');
             if (allBtn) allBtn.textContent = `All ${config.label} (${count})`;
