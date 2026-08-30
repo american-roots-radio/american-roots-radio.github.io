@@ -2092,11 +2092,28 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             updateFavoritesButton();
         }
 
+        // AUTO FAMILY WARMTH — choose the natural starting EQ only when the radio family changes.
+        function applyFamilyWarmthPreset(family) {
+            const presetByFamily = {
+                country: 'country',
+                blues: 'blueswarmth',
+                gospel: 'gospelwarmth'
+            };
+            const preset = presetByFamily[family];
+            if (!preset) return;
+
+            const presetSelect = document.getElementById('eq-presets');
+            if (presetSelect) presetSelect.value = preset;
+            applyPreset(preset);
+        }
+
         function switchRadioFamily(family) {
             if (!FAMILY_CONFIG[family]) return;
+            const familyChanged = family !== activeFamily;
             activeFamily = family;
             activeGenre = 'all';
             localStorage.setItem('crh_active_family', activeFamily);
+            if (familyChanged) applyFamilyWarmthPreset(activeFamily);
 
             const search = document.getElementById('search');
             if (search) search.value = '';
@@ -2839,6 +2856,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 activeFamily = stationFamily;
                 activeGenre = 'all';
                 localStorage.setItem('crh_active_family', activeFamily);
+                applyFamilyWarmthPreset(activeFamily);
                 const search = document.getElementById('search');
                 if (search) search.value = '';
                 updateSearchClearButton();
