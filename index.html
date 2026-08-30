@@ -1369,6 +1369,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     pointer-events: none !important;
 }
 .appearance-popover #theme-select { width: 235px; }
+.mobile-theme-picker { display: none; }
 
 @media (max-width: 900px) {
     .controls-compact { grid-template-columns: 1fr; }
@@ -1418,21 +1419,48 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     }
     .compact-secondary-controls .search-box { min-height: 44px; }
     .compact-share,
-    .appearance-menu,
-    .appearance-menu summary {
+    .mobile-theme-picker {
         width: 100%;
         min-height: 44px;
         box-sizing: border-box;
         justify-content: center;
     }
-    .appearance-menu summary { padding: 9px 10px; }
-    .appearance-popover {
-        left: 0;
-        right: auto;
-        width: min(270px, calc(100vw - 64px));
-        box-sizing: border-box;
+    /* iPhone/iOS: no details/popover at all. The native select covers the Theme button. */
+    .appearance-menu { display: none !important; }
+    .mobile-theme-picker {
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 9px 10px;
+        background: rgba(255,255,255,0.05);
+        color: var(--text);
+        border: 1px solid #3b3d43;
+        border-radius: 20px;
+        font: inherit;
+        font-size: .88rem;
+        font-weight: 700;
+        cursor: pointer;
     }
-    .appearance-popover #theme-select { width: 100%; }
+    .mobile-theme-picker:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent-glow);
+    }
+    .mobile-theme-picker > span { pointer-events: none; }
+    .mobile-theme-picker #theme-select-mobile {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        opacity: 0.001;
+        border: 0;
+        font-size: 16px;
+        cursor: pointer;
+        -webkit-appearance: menulist-button;
+        appearance: auto;
+    }
 }
 </style>
 
@@ -1736,6 +1764,21 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                         </select>
                     </div>
                 </details>
+                <label class="mobile-theme-picker" aria-label="Site theme">
+                    <span>🎨 Theme</span>
+                    <select id="theme-select-mobile" onchange="changeTheme(this.value)" aria-label="Site theme">
+                        <option value="default">🔩 Modern Dark Steel</option>
+                        <option value="vintage">📻 Vintage Amp</option>
+                        <option value="oled">⚡ Neon OLED</option>
+                        <option value="rust">🔥 Rust Saloon</option>
+                        <option value="midnight">🌌 Midnight Blue</option>
+                        <option value="forest">🌲 Country Forest</option>
+                        <option value="forestgreen">🌿 Forest Green</option>
+                        <option value="purple">🟣 Deep Purple</option>
+                        <option value="arctic">❄️ Arctic Blue</option>
+                        <option value="mocha">🤎 Mocha</option>
+                    </select>
+                </label>
                 <button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
             </div>
         </div>
@@ -2354,6 +2397,10 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 document.body.setAttribute('data-theme', themeName);
             }
             localStorage.setItem('crh_theme', themeName);
+            document.querySelectorAll('#theme-select, #theme-select-mobile').forEach(select => {
+                if (select.value !== themeName) select.value = themeName;
+                select.blur();
+            });
             const appearanceMenu = document.querySelector('.appearance-menu');
             if (appearanceMenu) {
                 const themeSelect = appearanceMenu.querySelector('#theme-select');
@@ -2366,17 +2413,6 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
                 forceCloseAppearance();
 
-                // iOS/WebKit can leave the absolutely-positioned popover layer painted
-                // after the native select closes. Re-close it after the picker settles
-                // and force one repaint of the Theme control.
-                if (window.matchMedia('(max-width: 900px)').matches) {
-                    setTimeout(() => {
-                        forceCloseAppearance();
-                        appearanceMenu.style.display = 'none';
-                        void appearanceMenu.offsetHeight;
-                        appearanceMenu.style.removeProperty('display');
-                    }, 80);
-                }
             }
         }
 
