@@ -1362,6 +1362,12 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     box-shadow: 0 12px 30px rgba(0,0,0,.42);
 }
 .appearance-menu[open] .appearance-popover { display: block; }
+.appearance-menu:not([open]) .appearance-popover {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 .appearance-popover #theme-select { width: 235px; }
 
 @media (max-width: 900px) {
@@ -2349,7 +2355,29 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             }
             localStorage.setItem('crh_theme', themeName);
             const appearanceMenu = document.querySelector('.appearance-menu');
-            if (appearanceMenu) appearanceMenu.open = false;
+            if (appearanceMenu) {
+                const themeSelect = appearanceMenu.querySelector('#theme-select');
+                if (themeSelect) themeSelect.blur();
+
+                const forceCloseAppearance = () => {
+                    appearanceMenu.open = false;
+                    appearanceMenu.removeAttribute('open');
+                };
+
+                forceCloseAppearance();
+
+                // iOS/WebKit can leave the absolutely-positioned popover layer painted
+                // after the native select closes. Re-close it after the picker settles
+                // and force one repaint of the Theme control.
+                if (window.matchMedia('(max-width: 900px)').matches) {
+                    setTimeout(() => {
+                        forceCloseAppearance();
+                        appearanceMenu.style.display = 'none';
+                        void appearanceMenu.offsetHeight;
+                        appearanceMenu.style.removeProperty('display');
+                    }, 80);
+                }
+            }
         }
 
         function getFamilyStations(family = activeFamily) {
