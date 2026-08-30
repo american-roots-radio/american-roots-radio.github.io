@@ -1676,6 +1676,72 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-final-header-actions-western">
+/* FINAL HEADER ACTIONS — Install left, Saloon centered, Contact right. */
+@media (min-width: 769px) {
+    .hero-action-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+        align-items: center !important;
+        justify-items: center !important;
+    }
+}
+
+/* Install + Contact: restrained western utility finish; Saloon remains the signature sign. */
+.hero-action-row #installAppBtn,
+.hero-action-row #contactOpenBtn {
+    background: linear-gradient(180deg, #302319 0%, #211810 52%, #17100b 100%) !important;
+    color: #eadbbd !important;
+    border: 1px solid #8e6b35 !important;
+    border-radius: 7px !important;
+    box-shadow:
+        0 0 0 2px rgba(36,21,13,.78),
+        inset 0 1px 0 rgba(255,238,190,.11),
+        inset 0 -5px 10px rgba(0,0,0,.24),
+        0 5px 13px rgba(0,0,0,.30) !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.55) !important;
+}
+.hero-action-row #installAppBtn:hover,
+.hero-action-row #contactOpenBtn:hover {
+    border-color: #b08a49 !important;
+    filter: brightness(1.08) !important;
+    box-shadow:
+        0 0 0 2px rgba(36,21,13,.82),
+        0 7px 17px rgba(0,0,0,.38),
+        0 0 14px rgba(193,151,74,.14),
+        inset 0 1px 0 rgba(255,238,190,.16),
+        inset 0 -5px 10px rgba(0,0,0,.18) !important;
+}
+.hero-action-row #installAppBtn:focus-visible,
+.hero-action-row #contactOpenBtn:focus-visible {
+    outline: 2px solid #d7b46b !important;
+    outline-offset: 4px !important;
+}
+
+@media (max-width: 768px) {
+    .hero-action-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 8px !important;
+    }
+    .hero-action-row #installAppBtn {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+    .hero-action-row #contactOpenBtn {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+    .hero-action-row .btn-saloon-paypal {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        justify-self: center !important;
+        width: min(100%, 360px) !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -1688,8 +1754,8 @@ header .crh-brand-frame #header-count {
         
         <!-- COMPACT HERO ACTIONS — primary header utilities -->
         <div class="hero-action-row" aria-label="Site actions">
-            <button type="button" class="btn-saloon-paypal" onclick="openSupportModal()">🍻 Buy me a drink at the Saloon 🍻</button>
             <button id="installAppBtn" type="button" onclick="installApp()">📲 Install App</button>
+            <button type="button" class="btn-saloon-paypal" onclick="openSupportModal()">🍻 Buy me a drink at the Saloon 🍻</button>
             <button id="contactOpenBtn" type="button" onclick="openContactModal()">✉️ Contact / Report</button>
         </div>
 
