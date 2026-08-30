@@ -1742,6 +1742,50 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-final-spacing-v2">
+/* FINAL HEADER SPACING V2 — equal desktop gaps, Saloon first on mobile. */
+@media (min-width: 769px) {
+    .hero-action-row {
+        display: grid !important;
+        grid-template-columns: 150px auto 150px !important;
+        column-gap: 16px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    .hero-action-row #installAppBtn,
+    .hero-action-row #contactOpenBtn {
+        width: 150px !important;
+        justify-self: stretch !important;
+    }
+    .hero-action-row .btn-saloon-paypal {
+        justify-self: center !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-action-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 8px !important;
+    }
+    .hero-action-row .btn-saloon-paypal {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        justify-self: center !important;
+        width: min(100%, 360px) !important;
+    }
+    .hero-action-row #installAppBtn {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+    }
+    .hero-action-row #contactOpenBtn {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
