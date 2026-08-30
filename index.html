@@ -1427,25 +1427,45 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         <div class="eq-panel">
             <div class="eq-header">
                 <h3>🎛️ SOUNDSOURCE AUDIO EQUALIZER</h3>
-                <select id="eq-presets" class="eq-preset-select" onchange="applyPreset(this.value)">
-                    <option value="flat">Flat (Off)</option>
-                    <option value="acoustic">Acoustic</option>
-                    <option value="bass">Bass Booster</option>
-                    <option value="country">Country Warmth</option>
-                    <option value="vocal">Vocal Booster</option>
-                    <option value="treble">Treble Booster</option>
-                    <option value="rock">Rock</option>
-                    <option value="pop">Pop</option>
-                    <option value="nashville">Nashville Studio</option>
-                    <option value="road">Country Road</option>
-                    <option value="honkytonk">Honky Tonk</option>
-                    <option value="southern">Southern Rock</option>
-                    <option value="vinyl">Classic Vinyl</option>
-                    <option value="tube">Warm Tube</option>
-                    <option value="wide">Wide Open</option>
-                    <option value="deep">Deep Country</option>
-                    <option value="night">Night Drive</option>
-                    <option value="guitar">Acoustic Guitar</option>
+                <select id="eq-presets" class="eq-preset-select" onchange="applyPreset(this.value)" aria-label="Audio equalizer preset">
+                    <optgroup label="🎚️ UNIVERSAL — ALL MUSIC">
+                        <option value="flat">Flat (Off)</option>
+                        <option value="acoustic">Acoustic</option>
+                        <option value="bass">Bass Booster</option>
+                        <option value="vocal">Vocal Booster</option>
+                        <option value="treble">Treble Booster</option>
+                        <option value="rock">Rock</option>
+                        <option value="pop">Pop</option>
+                        <option value="southern">Southern Rock</option>
+                        <option value="vinyl">Classic Vinyl</option>
+                        <option value="tube">Warm Tube</option>
+                        <option value="wide">Wide Open</option>
+                        <option value="night">Night Drive</option>
+                        <option value="guitar">Acoustic Guitar</option>
+                    </optgroup>
+                    <optgroup label="🤠 COUNTRY">
+                        <option value="country">Country Warmth</option>
+                        <option value="nashville">Nashville Studio</option>
+                        <option value="honkytonk">Honky Tonk</option>
+                        <option value="outlaw">Outlaw & Americana</option>
+                        <option value="texas">Texas / Red Dirt</option>
+                        <option value="bluegrass">Bluegrass</option>
+                        <option value="moderncountry">Modern Country</option>
+                    </optgroup>
+                    <optgroup label="🎸 BLUES">
+                        <option value="blueswarmth">Blues Warmth</option>
+                        <option value="delta">Delta Blues</option>
+                        <option value="chicago">Chicago Electric</option>
+                        <option value="bluesguitar">Blues Guitar</option>
+                        <option value="bluesvocals">Blues Vocals</option>
+                    </optgroup>
+                    <optgroup label="⛪ GOSPEL">
+                        <option value="gospelwarmth">Gospel Warmth</option>
+                        <option value="gospelvocals">Gospel Vocals</option>
+                        <option value="choir">Choir Presence</option>
+                        <option value="southerngospel">Southern Gospel</option>
+                        <option value="contemporarygospel">Contemporary Gospel</option>
+                    </optgroup>
                 </select>
             </div>
             <div class="eq-bands eq-bands-10">
@@ -1944,25 +1964,53 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         const frequencies = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
         
         const presets = {
-            flat:        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            acoustic:    [2, 3, 4, 2, 0, -1, 1, 3, 4, 3],
-            bass:        [6, 6, 5, 3, 1, 0, -1, -2, -2, -1],
-            country:     [4, 5, 4, 2, 0, 0, 2, 4, 3, 2],
-            vocal:      [-2, -1, 0, 2, 4, 5, 4, 3, 1, 0],
-            treble:     [-2, -1, 0, 1, 2, 3, 5, 6, 6, 5],
-            rock:       [5, 5, 4, 2, -1, -2, 2, 4, 5, 4],
-            pop:        [2, 3, 4, 2, 1, 2, 3, 2, 1, 0],
-            nashville:  [3, 4, 3, 1, 0, 1, 3, 4, 2, 1],
-            road:       [4, 5, 4, 2, 0, -1, 1, 3, 3, 2],
-            honkytonk:  [5, 4, 2, 1, -1, 0, 2, 5, 4, 2],
-            southern:   [5, 4, 3, 1, 0, -1, 2, 4, 5, 4],
-            vinyl:      [3, 2, 1, 0, 0, -1, 0, 2, 2, 1],
-            tube:       [4, 3, 2, 1, 0, 1, 2, 3, 3, 2],
-            wide:       [3, 2, 1, 0, -1, 0, 1, 3, 4, 4],
-            deep:       [5, 5, 4, 2, 0, 0, 1, 2, 2, 1],
-            night:      [2, 3, 3, 1, 0, 0, 1, 2, 3, 2],
-            guitar:     [1, 2, 4, 3, 2, 2, 3, 4, 3, 2]
+            // Universal / all music
+            flat:               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            acoustic:           [2, 3, 4, 2, 0, -1, 1, 3, 4, 3],
+            bass:               [6, 6, 5, 3, 1, 0, -1, -2, -2, -1],
+            vocal:             [-2, -1, 0, 2, 4, 5, 4, 3, 1, 0],
+            treble:            [-2, -1, 0, 1, 2, 3, 5, 6, 6, 5],
+            rock:               [5, 5, 4, 2, -1, -2, 2, 4, 5, 4],
+            pop:                [2, 3, 4, 2, 1, 2, 3, 2, 1, 0],
+            southern:           [5, 4, 3, 1, 0, -1, 2, 4, 5, 4],
+            vinyl:              [3, 2, 1, 0, 0, -1, 0, 2, 2, 1],
+            tube:               [4, 3, 2, 1, 0, 1, 2, 3, 3, 2],
+            wide:               [3, 2, 1, 0, -1, 0, 1, 3, 4, 4],
+            night:              [2, 3, 3, 1, 0, 0, 1, 2, 3, 2],
+            guitar:             [1, 2, 4, 3, 2, 2, 3, 4, 3, 2],
+
+            // Country
+            country:            [4, 5, 4, 2, 0, 0, 2, 4, 3, 2],
+            nashville:          [3, 4, 3, 1, 0, 1, 3, 4, 2, 1],
+            honkytonk:          [5, 4, 2, 1, -1, 0, 2, 5, 4, 2],
+            outlaw:             [4, 4, 3, 2, 1, 0, 1, 3, 2, 1],
+            texas:              [4, 5, 3, 1, -1, 0, 3, 5, 4, 2],
+            bluegrass:         [-2, -1, 1, 2, 3, 2, 4, 5, 4, 3],
+            moderncountry:      [4, 5, 4, 2, 1, 1, 3, 4, 3, 2],
+
+            // Blues
+            blueswarmth:        [4, 4, 3, 2, 1, 1, 2, 3, 2, 1],
+            delta:              [1, 2, 3, 4, 4, 3, 4, 5, 3, 1],
+            chicago:            [4, 5, 4, 2, 0, 1, 3, 5, 4, 2],
+            bluesguitar:        [2, 3, 3, 2, 0, 1, 4, 6, 5, 3],
+            bluesvocals:       [-1, 0, 1, 3, 5, 5, 4, 3, 1, 0],
+
+            // Gospel
+            gospelwarmth:       [3, 4, 4, 3, 2, 2, 3, 3, 2, 1],
+            gospelvocals:      [-2, -1, 0, 3, 5, 6, 5, 3, 1, 0],
+            choir:             [-2, -1, 1, 3, 4, 5, 5, 4, 2, 1],
+            southerngospel:     [2, 3, 4, 3, 2, 2, 4, 4, 3, 2],
+            contemporarygospel: [5, 6, 5, 3, 1, 2, 4, 4, 3, 2]
         };
+
+        const legacyPresetMap = {
+            road: 'texas',
+            deep: 'outlaw'
+        };
+
+        function normalizePresetName(name) {
+            return legacyPresetMap[name] || name;
+        }
 
         let timerInterval = null;
         let secondsElapsed = 0;
@@ -2369,7 +2417,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 audioSource = audioCtx.createMediaElementSource(audioElement);
                 let prevNode = audioSource;
 
-                const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
+                const savedPreset = normalizePresetName(localStorage.getItem('crh_last_preset') || 'country');
                 const initialGainVals = presets[savedPreset] || presets.country;
 
                 frequencies.forEach((freq, i) => {
@@ -2459,6 +2507,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         }
 
         function applyPreset(name, save = true) {
+            name = normalizePresetName(name);
             const vals = presets[name] || presets.flat;
             const sliderIds = ['eq-31', 'eq-62', 'eq-125', 'eq-250', 'eq-500', 'eq-1000', 'eq-2000', 'eq-4000', 'eq-8000', 'eq-16000'];
             
@@ -3061,7 +3110,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             if (themeSelect) themeSelect.value = savedTheme;
             changeTheme(savedTheme);
 
-            const savedPreset = localStorage.getItem('crh_last_preset') || 'country';
+            const savedPreset = normalizePresetName(localStorage.getItem('crh_last_preset') || 'country');
             const presetSelect = document.getElementById('eq-presets');
             if (presetSelect) presetSelect.value = savedPreset;
             applyPreset(savedPreset, false);
