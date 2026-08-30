@@ -1401,9 +1401,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
 
         <!-- AMERICAN ROOTS FAMILY SWITCH — local prototype -->
         <div class="radio-family-switch" aria-label="Radio family">
-            <button id="family-country-btn" class="btn-family active" type="button" onclick="switchRadioFamily('country')">🤠 COUNTRY — 124</button>
-            <button id="family-blues-btn" class="btn-family" type="button" onclick="switchRadioFamily('blues')">🎸 BLUES — 52</button>
-            <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')">⛪ GOSPEL — 52</button>
+            <button id="family-country-btn" class="btn-family active" type="button" onclick="switchRadioFamily('country')">🤠 COUNTRY 124</button>
+            <button id="family-blues-btn" class="btn-family" type="button" onclick="switchRadioFamily('blues')">🎸 BLUES 52</button>
+            <button id="family-gospel-btn" class="btn-family" type="button" onclick="switchRadioFamily('gospel')">⛪ GOSPEL 52</button>
         </div>
 
         <!-- Controls, Theme & Filters -->
@@ -1521,6 +1521,11 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             <div class="player-divider"></div>
             <div class="audio-controls">
                 <div class="player-control-group">
+                    <button id="player-play-btn" class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
+                    <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
+                </div>
+                <div class="player-divider"></div>
+                <div class="player-control-group">
                     <!-- History UI retirée en finition V1 ; moteur conservé temporairement dans le code -->
                     <select id="sleep-timer" class="sleep-timer-select" onchange="startSleepTimer(this.value)">
                         <option value="0" style="background:#121215; color:#fff;">⏱️ Sleep Timer : Off</option>
@@ -1528,11 +1533,6 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                         <option value="30" style="background:#121215; color:#fff;">⏱️ 30 min</option>
                         <option value="60" style="background:#121215; color:#fff;">⏱️ 60 min</option>
                     </select>
-                </div>
-                <div class="player-divider"></div>
-                <div class="player-control-group">
-                    <button id="player-play-btn" class="btn-player-btn" onclick="resumeStation()">▶ PLAY</button>
-                    <button class="btn-player-btn" onclick="stopStation()">⏹ STOP</button>
                 </div>
                 <div class="player-divider"></div>
                 <div class="volume-control">
@@ -1934,9 +1934,9 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             const countryBtn = document.getElementById('family-country-btn');
             const bluesBtn = document.getElementById('family-blues-btn');
             const gospelBtn = document.getElementById('family-gospel-btn');
-            if (countryBtn) countryBtn.textContent = `🤠 COUNTRY — ${countryStations.length}`;
-            if (bluesBtn) bluesBtn.textContent = `🎸 BLUES — ${bluesStations.length}`;
-            if (gospelBtn) gospelBtn.textContent = `⛪ GOSPEL — ${gospelStations.length}`;
+            if (countryBtn) countryBtn.textContent = `🤠 COUNTRY ${countryStations.length}`;
+            if (bluesBtn) bluesBtn.textContent = `🎸 BLUES ${bluesStations.length}`;
+            if (gospelBtn) gospelBtn.textContent = `⛪ GOSPEL ${gospelStations.length}`;
 
             const allBtn = document.getElementById('btn-all');
             if (allBtn) allBtn.textContent = `All ${config.label} (${count})`;
