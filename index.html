@@ -185,7 +185,7 @@
         .status-stats { display: flex; flex-wrap: wrap; gap: 12px 30px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
         .status-item { display: flex; align-items: center; gap: 6px; }
         .status-val { color: #fff; font-weight: bold; }
-        canvas#vu-meter { width: 100%; height: 50px; background: #09090b; border-radius: 6px; border: 1px solid #22222a; display: block; }
+        canvas#vu-meter { width: 100%; height: 54px; background: linear-gradient(180deg, rgba(6,7,10,0.98), rgba(17,18,23,0.98)); border-radius: 10px; border: 1px solid #30323a; display: block; box-shadow: inset 0 0 18px rgba(0,0,0,0.55); }
 
         /* SoundSource Equalizer Panel */
         .eq-panel { background: var(--panel-bg); border: 1px solid #33333d; border-radius: 12px; padding: 18px 22px; margin-bottom: 30px; box-shadow: inset 0 1px 3px rgba(255,255,255,0.05); }
@@ -2476,27 +2476,63 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
                 }
             }
 
-            const barWidth = (canvas.width / bufferLength) - 3;
+            // STREAM VISUALIZER V2 — segmented studio meter, theme-aware.
+            const styles = getComputedStyle(document.body);
+            const accent = styles.getPropertyValue('--accent').trim() || '#aeb9c6';
+            const barGap = 3;
+            const barWidth = Math.max(2, (canvas.width / bufferLength) - barGap);
+            const segmentGap = 2;
+            const segmentCount = 9;
+            const segmentHeight = Math.max(2, (canvas.height - ((segmentCount - 1) * segmentGap) - 10) / segmentCount);
+            const meterBottom = canvas.height - 5;
             let x = 0;
 
+            function roundedRect(xPos, yPos, width, height, radius) {
+                const r = Math.min(radius, width / 2, height / 2);
+                ctx.beginPath();
+                ctx.moveTo(xPos + r, yPos);
+                ctx.lineTo(xPos + width - r, yPos);
+                ctx.quadraticCurveTo(xPos + width, yPos, xPos + width, yPos + r);
+                ctx.lineTo(xPos + width, yPos + height - r);
+                ctx.quadraticCurveTo(xPos + width, yPos + height, xPos + width - r, yPos + height);
+                ctx.lineTo(xPos + r, yPos + height);
+                ctx.quadraticCurveTo(xPos, yPos + height, xPos, yPos + height - r);
+                ctx.lineTo(xPos, yPos + r);
+                ctx.quadraticCurveTo(xPos, yPos, xPos + r, yPos);
+                ctx.closePath();
+            }
+
             for (let i = 0; i < bufferLength; i++) {
-                let barHeight = 0;
+                let level = 0;
                 if (isWebAudioActive) {
-                    barHeight = (dataArray[i] / 255) * canvas.height;
+                    level = dataArray[i] / 255;
                 } else {
                     const speed = Date.now() / 150;
                     const wave = Math.sin(speed + i * 0.5) * 0.35 + 0.65;
                     const noise = Math.random() * 0.3 + 0.7;
-                    barHeight = (canvas.height * 0.75) * wave * noise;
+                    level = 0.75 * wave * noise;
                 }
-                
-                let color = '#f59e0b';
-                if (barHeight > canvas.height * 0.8) color = '#ef4444';
-                else if (barHeight > canvas.height * 0.5) color = '#f97316';
 
-                ctx.fillStyle = color;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 3;
+                level = Math.max(0, Math.min(1, level));
+                const activeSegments = Math.max(1, Math.round(level * segmentCount));
+
+                for (let s = 0; s < segmentCount; s++) {
+                    const y = meterBottom - ((s + 1) * segmentHeight) - (s * segmentGap);
+                    const active = s < activeSegments;
+
+                    ctx.save();
+                    roundedRect(x, y, barWidth, segmentHeight, Math.min(2.5, segmentHeight / 2));
+                    ctx.fillStyle = accent;
+                    ctx.globalAlpha = active ? (0.48 + (s / Math.max(1, segmentCount - 1)) * 0.52) : 0.09;
+                    if (active && s >= segmentCount - 3) {
+                        ctx.shadowColor = accent;
+                        ctx.shadowBlur = 7;
+                    }
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                x += barWidth + barGap;
             }
         }
 
