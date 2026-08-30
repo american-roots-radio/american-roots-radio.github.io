@@ -37,14 +37,14 @@
 
     <style>
         :root {
-            --bg-color: #0a0a0b;
-            --panel-bg: #141416;
-            --card-bg: #1a1a1e;
-            --card-hover: #25252e;
-            --accent: #f59e0b;
-            --accent-glow: rgba(245, 158, 11, 0.25);
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
+            --bg-color: #090b0e;
+            --panel-bg: #11151b;
+            --card-bg: #181e25;
+            --card-hover: #222b35;
+            --accent: #b8c4d1;
+            --accent-glow: rgba(184, 196, 209, 0.24);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
             --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
@@ -210,6 +210,20 @@
             border-radius: 10px;
             text-align: center;
             margin-bottom: 25px;
+        }
+
+        /* Modern Dark Steel — default theme only */
+        body:not([data-theme]) header {
+            background: linear-gradient(180deg, #1b232c 0%, var(--bg-color) 100%);
+        }
+        body:not([data-theme]) .now-playing-banner {
+            background: linear-gradient(135deg, #161d25 0%, var(--panel-bg) 100%);
+        }
+        body:not([data-theme]) .eq-mobile-badge {
+            background: rgba(184, 196, 209, 0.12);
+        }
+        body:not([data-theme]) #server-status {
+            color: var(--accent) !important;
         }
 
         /* Formulaire Custom Stream Panel */
@@ -1433,7 +1447,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <!-- Theme Switcher Dropdown -->
                 <select id="theme-select" class="eq-preset-select" onchange="changeTheme(this.value)">
-                    <option value="default">🌑 Theme: Modern Dark</option>
+                    <option value="default">🔩 Theme: Modern Dark Steel</option>
                     <option value="vintage">📻 Theme: Vintage Amp</option>
                     <option value="oled">⚡ Theme: Neon OLED</option>
                     <option value="rust">🔥 Theme: Rust Saloon</option>
