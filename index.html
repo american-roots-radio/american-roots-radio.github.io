@@ -1203,6 +1203,36 @@ header .crh-brand-frame #header-count {
 </style>
 
 
+<style id="crh-contact-frame-premium">
+/* Contact panel — theme-aware premium frame inspired by the brand sign */
+.crh-contact-frame {
+    position: relative;
+    width: min(420px, calc(100% - 12px));
+    margin: 15px auto 0;
+    padding: 15px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, var(--panel-bg) 0%, var(--card-bg) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    box-shadow:
+        0 0 0 2px var(--bg-color),
+        0 0 0 3px var(--accent),
+        inset 0 1px 0 rgba(255,255,255,.07),
+        inset 0 -10px 18px rgba(0,0,0,.18),
+        0 8px 22px rgba(0,0,0,.30),
+        0 0 12px var(--accent-glow);
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+.crh-contact-frame:focus-within {
+    box-shadow:
+        0 0 0 2px var(--bg-color),
+        0 0 0 3px var(--accent),
+        inset 0 1px 0 rgba(255,255,255,.10),
+        inset 0 -10px 18px rgba(0,0,0,.14),
+        0 9px 24px rgba(0,0,0,.34),
+        0 0 20px var(--accent-glow);
+}
+</style>
 <style id="crh-approved-send-message-final">
 /* ✉️ Send Message — same approved metal/steel finish as Install App */
 #submit-btn {
@@ -1271,7 +1301,7 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         </div>
 
         <!-- FORMULAIRE DE CONTACT WEB3FORMS -->
-        <div style="margin-top: 15px; margin-left: auto; margin-right: auto; max-width: 420px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid #333333;">
+        <div class="crh-contact-frame">
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
                 <input type="hidden" name="access_key" value="12f3df05-1560-4268-8feb-5fb31907b0a7">
                 <input type="hidden" name="subject" value="American Roots Radio Hub — New Message">
