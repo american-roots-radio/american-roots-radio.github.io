@@ -1425,6 +1425,43 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     .appearance-popover #theme-select { width: 100%; }
 }
 </style>
+
+<style id="compact-radio-controls-final-v2">
+/* FINAL COMPACT CONTROL ALIGNMENT — Country keeps Genre; Blues/Gospel reclaim the space. */
+@media (min-width: 901px) {
+    .controls-compact {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    .compact-primary-controls {
+        flex: 0 0 auto;
+        flex-wrap: nowrap !important;
+    }
+    .compact-secondary-controls {
+        flex: 1 1 auto;
+        justify-content: flex-start !important;
+        min-width: 0;
+    }
+    .compact-secondary-controls .search-wrap {
+        flex: 0 1 370px !important;
+        width: 370px;
+        min-width: 330px !important;
+        max-width: 390px !important;
+    }
+    .compact-secondary-controls .search-box {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .compact-primary-controls.no-genre .btn-random-station {
+        grid-column: 1 / -1;
+    }
+}
+</style>
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -2204,11 +2241,17 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
         function renderFamilyFilters() {
             const config = FAMILY_CONFIG[activeFamily];
             const genreSelect = document.getElementById('genre-filter-select');
+            const primaryControls = document.querySelector('.compact-primary-controls');
+            const showGenreSelect = activeFamily === 'country' && config.genres.length > 1;
+
+            if (primaryControls) primaryControls.classList.toggle('no-genre', !showGenreSelect);
+
             if (genreSelect) {
+                genreSelect.style.display = showGenreSelect ? '' : 'none';
                 genreSelect.innerHTML = '<option value="" disabled>🎵 Genre</option>' + config.genres.map(item =>
                     `<option value="${item.value}">${item.label}</option>`
                 ).join('');
-                const hasSelectedGenre = config.genres.some(item => item.value === activeGenre);
+                const hasSelectedGenre = showGenreSelect && config.genres.some(item => item.value === activeGenre);
                 genreSelect.value = hasSelectedGenre ? activeGenre : '';
             }
 
