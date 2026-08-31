@@ -1786,6 +1786,39 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-iphone-header-balance-v1">
+/* iPHONE-ONLY FINAL HEADER BALANCE — keep desktop untouched. */
+@media (max-width: 768px) {
+    /* Fit the complete title (including the right US flag) inside the western sign. */
+    header .crh-brand-frame {
+        overflow: visible !important;
+    }
+    header .crh-brand-frame h1 {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        padding-inline: 0 !important;
+        font-size: clamp(.94rem, 4.10vw, 1.06rem) !important;
+        letter-spacing: .05px !important;
+        line-height: 1.15 !important;
+    }
+
+    /* Give the signature Saloon action the visual weight of the two utility buttons. */
+    .hero-action-row .btn-saloon-paypal {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 46px !important;
+        padding: 10px 14px !important;
+        font-size: .84rem !important;
+        line-height: 1.15 !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
