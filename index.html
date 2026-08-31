@@ -1493,7 +1493,8 @@ font-weight:800!important;cursor:pointer;transition:transform .18s ease,filter .
     .compact-secondary-controls .search-box {
         width: 100% !important;
     }
-    /* Blues/Gospel only: let Search absorb remaining desktop space so Share reaches the Country right edge. */
+    /* Desktop: let Search absorb remaining space so Theme reaches the same right edge for every family. */
+    .controls-compact[data-family="country"] .compact-secondary-controls .search-wrap,
     .controls-compact[data-family="blues"] .compact-secondary-controls .search-wrap,
     .controls-compact[data-family="gospel"] .compact-secondary-controls .search-wrap {
         flex: 1 1 370px !important;
