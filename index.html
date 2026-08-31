@@ -2230,7 +2230,7 @@ header .crh-brand-frame #header-count {
                         <option value="mocha">🤎 Mocha</option>
                     </select>
                 </label>
-                <button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>
+                <button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()">🔗 Share</button>
             </div>
         </div>
 
@@ -2991,11 +2991,14 @@ header .crh-brand-frame #header-count {
         }
 
         async function shareCurrentStation() {
-            if (!currentStation) return;
-            const shareUrl = getStationShareUrl(currentStation);
+            const shareUrl = currentStation
+                ? getStationShareUrl(currentStation)
+                : `${window.location.origin}${window.location.pathname}`;
             const shareData = {
-                title: currentStation.name,
-                text: `Listen to ${currentStation.name} on American Roots Radio Hub`,
+                title: currentStation ? currentStation.name : 'American Roots Radio Hub',
+                text: currentStation
+                    ? `Listen to ${currentStation.name} on American Roots Radio Hub`
+                    : 'Listen to live Country, Blues and Gospel radio on American Roots Radio Hub',
                 url: shareUrl
             };
 
