@@ -1865,6 +1865,26 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-iphone-header-count-final-v1">
+/* iPHONE/MOBILE ONLY — keep the verified total together and centered on its own line. */
+@media (max-width: 768px) {
+    header .crh-brand-frame #header-count {
+        text-align: center !important;
+    }
+    header .crh-brand-frame #header-count .crh-count-separator {
+        display: none !important;
+    }
+    header .crh-brand-frame #header-count .crh-verified-total {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 1px !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -1872,7 +1892,7 @@ header .crh-brand-frame #header-count {
         <div class="crh-brand-frame">
             <h1>🇺🇸 AMERICAN ROOTS RADIO HUB 🇺🇸</h1>
             <p class="crh-root-genres">Country • Blues • Gospel</p>
-            <p id="header-count">124 Country + 1 Blues • 125 Verified Live Streams</p>
+            <p id="header-count">124 Country + 52 Blues + 52 Gospel <span class="crh-count-separator">•</span> <span class="crh-verified-total">228 Verified Live Streams</span></p>
         </div>
         
         <!-- COMPACT HERO ACTIONS — primary header utilities -->
@@ -3191,8 +3211,8 @@ header .crh-brand-frame #header-count {
             const bluesCount = bluesStations.length;
             const gospelCount = gospelStations.length;
             const verifiedTotal = countryCount + bluesCount + gospelCount;
-            document.getElementById('header-count').innerText =
-                `${countryCount} Country + ${bluesCount} Blues + ${gospelCount} Gospel • ${verifiedTotal} Verified Live Streams`;
+            document.getElementById('header-count').innerHTML =
+                `${countryCount} Country + ${bluesCount} Blues + ${gospelCount} Gospel <span class="crh-count-separator">•</span> <span class="crh-verified-total">${verifiedTotal} Verified Live Streams</span>`;
             updateFamilyUI();
         }
 
