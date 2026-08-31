@@ -1885,6 +1885,43 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-iphone-status-header-polish-v1">
+/* iPHONE/MOBILE ONLY — keep status dot circular and server status on one clean line. */
+@media (max-width: 768px) {
+    .status-box .status-header {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        align-items: start !important;
+        row-gap: 6px !important;
+    }
+
+    .status-box .status-header h3 {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .status-box #status-live-dot {
+        width: 8px !important;
+        height: 8px !important;
+        min-width: 8px !important;
+        min-height: 8px !important;
+        flex: 0 0 8px !important;
+        aspect-ratio: 1 / 1 !important;
+        border-radius: 50% !important;
+    }
+
+    .status-box #server-status {
+        display: block !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        text-align: right !important;
+        line-height: 1.2 !important;
+        font-size: .82rem !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
