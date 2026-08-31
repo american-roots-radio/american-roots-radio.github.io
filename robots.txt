@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://country-radio-live.github.io/sitemap.xml
+Sitemap: https://american-roots-radio.github.io/sitemap.xml
