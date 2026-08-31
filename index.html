@@ -1922,6 +1922,14 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-stream-status-simplify-v1">
+/* ALL DEVICES — keep JS status target alive, hide redundant SERVER STATUS text. */
+.status-box #server-status {
+    display: none !important;
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
@@ -2154,7 +2162,7 @@ header .crh-brand-frame #header-count {
         <!-- Technical Stream Status & Visualizer Box -->
         <div class="status-box">
             <div class="status-header">
-                <h3><span id="status-live-dot" class="live-dot stopped"></span> STREAM CONNECTOR & AUDIO STATUS</h3>
+                <h3><span id="status-live-dot" class="live-dot stopped"></span> STREAM CONNECTOR STATUS</h3>
                 <span id="server-status" style="color: var(--text-muted); font-weight: bold; font-size: 0.85rem;">SERVER STATUS: STANDBY</span>
             </div>
             <div class="status-stats">
