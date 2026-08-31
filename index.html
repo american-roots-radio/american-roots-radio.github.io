@@ -1819,6 +1819,40 @@ header .crh-brand-frame #header-count {
 }
 </style>
 
+
+<style id="crh-mobile-player-safe-controls-v1">
+/* iPHONE/MOBILE ONLY — controls first, Now Playing second, with iOS bottom safe area. */
+@media (max-width: 768px) {
+    .bottom-player {
+        padding-top: 8px !important;
+        padding-right: 8px !important;
+        padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
+        padding-left: 8px !important;
+    }
+    .bottom-player .player-shell {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        gap: 7px !important;
+    }
+    .bottom-player .audio-controls {
+        order: 1 !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+        justify-content: center !important;
+        flex-wrap: nowrap !important;
+    }
+    .bottom-player .player-brand {
+        order: 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: 0 0 auto !important;
+        justify-content: flex-start !important;
+    }
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
