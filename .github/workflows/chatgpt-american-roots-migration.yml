@@ -1,0 +1,61 @@
+name: ChatGPT American Roots Migration
+on:
+  push:
+    paths:
+      - .github/workflows/chatgpt-american-roots-migration.yml
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Guard and migrate identity URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json
+
+          index = Path('index.html')
+          text = index.read_text()
+          station_lines_before = [ln for ln in text.splitlines() if re.match(r'^\s*\{ id: \d+, name:', ln)]
+          ids = [int(re.search(r'\{ id: (\d+),', ln).group(1)) for ln in station_lines_before]
+          assert len(station_lines_before) == 228, f'Expected 228 station lines, got {len(station_lines_before)}'
+          assert ids == list(range(1,229)), 'Station IDs are not exactly 1..228 before migration'
+
+          old = 'https://country-radio-live.github.io/'
+          new = 'https://american-roots-radio.github.io/'
+          text = text.replace(old, new)
+          index.write_text(text)
+
+          Path('robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://american-roots-radio.github.io/sitemap.xml\n')
+          Path('sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://american-roots-radio.github.io/</loc>\n  </url>\n</urlset>\n')
+
+          manifest = json.loads(Path('manifest.json').read_text())
+          manifest['short_name'] = 'American Roots'
+          manifest['name'] = 'American Roots Radio Hub'
+          Path('manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+
+          Path('README.md').write_text('''# American Roots Radio Hub 🇺🇸📻\n\nA clean, ad-free web radio player for **Country, Blues and Gospel** — built to make verified live streams easy to browse and play from one place.\n\n## Live Radio Collection\n- 🤠 **124 Country stations**\n- 🎸 **52 Blues stations**\n- ⛪ **52 Gospel stations**\n- ✅ **228 verified live streams**\n\n## Features\n- Built-in 10-band audio equalizer\n- Favorites and listening history\n- Genre filters, search and random station selection\n- Persistent bottom player with Play, Pause, Stop and Sleep Timer\n- Responsive layout for desktop and mobile\n- Installable web app (PWA)\n- 100% free and ad-free\n\n## Live Player\nhttps://american-roots-radio.github.io/\n''')
+
+          text_after = index.read_text()
+          station_lines_after = [ln for ln in text_after.splitlines() if re.match(r'^\s*\{ id: \d+, name:', ln)]
+          ids_after = [int(re.search(r'\{ id: (\d+),', ln).group(1)) for ln in station_lines_after]
+          assert station_lines_after == station_lines_before, 'Station definition lines changed during migration'
+          assert ids_after == list(range(1,229)), 'Station IDs are not exactly 1..228 after migration'
+
+          for p in ['index.html','README.md','robots.txt','sitemap.xml']:
+              assert 'country-radio-live.github.io' not in Path(p).read_text(), f'Old URL remains in {p}'
+          PY
+          git diff --check
+          git status --short
+          git add index.html README.md manifest.json robots.txt sitemap.xml
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Migrate site identity to American Roots"
+          git push origin HEAD:main
