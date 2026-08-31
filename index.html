@@ -3499,7 +3499,12 @@ header .crh-brand-frame #header-count {
             const viewport = document.getElementById('now-playing-viewport');
             const track = document.getElementById('now-playing-track');
             const container = document.getElementById('current-genre');
-            if (!labelEl || !viewport || !track || !container) return;
+            if (!container) return;
+  if (!labelEl || !viewport || !track) {
+      const labelPrefix = `${label} • `;
+      container.textContent = String(text).startsWith(labelPrefix) ? String(text) : `${labelPrefix}${text}`;
+      return;
+  }
 
             labelEl.textContent = label;
             track.textContent = text;
