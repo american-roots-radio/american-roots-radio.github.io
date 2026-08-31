@@ -1,0 +1,85 @@
+name: ChatGPT Share Button Restore
+
+on:
+  push:
+    branches:
+      - chatgpt-share-button-restore
+
+permissions:
+  contents: write
+
+jobs:
+  restore-share:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore Share button safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp index.html /tmp/index.before
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+          before = s
+
+          old_button = '''<button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()" style="display:none;">🔗 Share</button>'''
+          new_button = '''<button id="share-station-btn" class="btn-share-station compact-share" type="button" onclick="shareCurrentStation()">🔗 Share</button>'''
+          assert s.count(old_button) == 1, f'Expected exactly one hidden Share button, found {s.count(old_button)}'
+          s = s.replace(old_button, new_button, 1)
+
+          old_share = '''        async function shareCurrentStation() {
+            if (!currentStation) return;
+            const shareUrl = getStationShareUrl(currentStation);
+            const shareData = {
+                title: currentStation.name,
+                text: `Listen to ${currentStation.name} on American Roots Radio Hub`,
+                url: shareUrl
+            };'''
+          new_share = '''        async function shareCurrentStation() {
+            const shareUrl = currentStation
+                ? getStationShareUrl(currentStation)
+                : `${window.location.origin}${window.location.pathname}`;
+            const shareData = {
+                title: currentStation ? currentStation.name : 'American Roots Radio Hub',
+                text: currentStation
+                    ? `Listen to ${currentStation.name} on American Roots Radio Hub`
+                    : 'Listen to live Country, Blues and Gospel radio on American Roots Radio Hub',
+                url: shareUrl
+            };'''
+          assert s.count(old_share) == 1, f'Expected exactly one Share function header, found {s.count(old_share)}'
+          s = s.replace(old_share, new_share, 1)
+
+          p.write_text(s)
+
+          station_re = re.compile(r'^\s*\{ id: (\d+), name: .*? url: .*? \},?\s*$', re.M)
+          before_lines = station_re.findall(before)
+          after_lines = station_re.findall(s)
+          assert len(before_lines) == 228, f'Before station count != 228: {len(before_lines)}'
+          assert len(after_lines) == 228, f'After station count != 228: {len(after_lines)}'
+          assert before_lines == after_lines, 'Station IDs/order changed'
+          assert [int(x) for x in after_lines] == list(range(1,229)), 'Station IDs are not exactly 1..228'
+
+          # Stronger byte-for-byte station-line guard.
+          before_station_lines = [ln for ln in before.splitlines() if station_re.match(ln)]
+          after_station_lines = [ln for ln in s.splitlines() if station_re.match(ln)]
+          assert before_station_lines == after_station_lines, 'A station definition line changed'
+
+          assert 'style="display:none;">🔗 Share</button>' not in s
+          assert new_button in s
+          assert "title: currentStation ? currentStation.name : 'American Roots Radio Hub'" in s
+          print('GUARD OK: Share restored; exactly 228 station definitions unchanged.')
+          PY
+
+          git diff --check
+          git diff -- index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Restore persistent Share button"
+          git push
