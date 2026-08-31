@@ -1,0 +1,73 @@
+name: ChatGPT Now Playing Stale Fix
+
+on:
+  push:
+    branches:
+      - chatgpt-now-playing-stale-fix
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-guard:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch fallback and guard 228 stations
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          station_re = re.compile(r'^\s*\{\s*id:\s*(\d+),\s*name:.*$', re.M)
+          before_lines = station_re.findall(text)
+          before_full = [m.group(0) for m in station_re.finditer(text)]
+          ids = [int(x) for x in before_lines]
+          assert len(ids) == 228, f'Expected 228 station lines, got {len(ids)}'
+          assert ids == list(range(1, 229)), 'Station IDs are not exactly 1..228'
+
+          old = "            if (!labelEl || !viewport || !track || !container) return;"
+          new = """            if (!container) return;
+            if (!labelEl || !viewport || !track) {
+                const labelPrefix = `${label} • `;
+                container.textContent = String(text).startsWith(labelPrefix) ? String(text) : `${labelPrefix}${text}`;
+                return;
+            }"""
+
+          count = text.count(old)
+          assert count == 1, f'Expected exactly one setNowPlayingLine guard, got {count}'
+          patched = text.replace(old, new, 1)
+
+          after_full = [m.group(0) for m in station_re.finditer(patched)]
+          after_ids = [int(m.group(1)) for m in station_re.finditer(patched)]
+          assert before_full == after_full, 'Station definition lines changed'
+          assert after_ids == list(range(1, 229)), 'Station IDs changed'
+
+          path.write_text(patched, encoding='utf-8')
+          PY
+
+          git diff --check
+
+          python3 - <<'PY'
+          from pathlib import Path
+          t = Path('index.html').read_text(encoding='utf-8')
+          assert "if (!container) return;" in t
+          assert "container.textContent = String(text).startsWith(labelPrefix) ? String(text) : `${labelPrefix}${text}`;" in t
+          print('Guard OK: 228 stations untouched; fallback installed.')
+          PY
+
+      - name: Remove temporary workflow and commit tested tree
+        run: |
+          rm -f .github/workflows/chatgpt-now-playing-stale-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/chatgpt-now-playing-stale-fix.yml
+          git commit -m "Fix stale now playing station info"
+          git push
