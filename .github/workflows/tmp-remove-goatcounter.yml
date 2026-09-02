@@ -1,0 +1,34 @@
+name: Temporary GoatCounter removal
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-remove-goatcounter.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove GoatCounter block only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''\n    <!-- GoatCounter analytics -->\n    <script data-goatcounter="https://americanrootsradio.goatcounter.com/count"\n            async src="//gc.zgo.at/count.js"></script>\n'''
+          if old not in s:
+              raise SystemExit('GoatCounter block not found; refusing to change index.html')
+          s2 = s.replace(old, '\n', 1)
+          p.write_text(s2, encoding='utf-8')
+          PY
+      - name: Commit removal
+        run: |
+          git config user.name "american-roots-radio"
+          git config user.email "mgena0306@icloud.com"
+          git add index.html
+          git commit -m "Remove GoatCounter analytics"
+          git push
