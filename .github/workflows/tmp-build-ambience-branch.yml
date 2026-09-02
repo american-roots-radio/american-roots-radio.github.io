@@ -1,0 +1,87 @@
+name: Temporary builder for ambience test branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/tmp-build-ambience-branch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-test-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test-ambiances
+      - name: Add ambience test to branch index
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          css = r'''
+<style id="crh-ambience-test-css">
+.ambience-panel{background:var(--panel-bg);border:1px solid #33333d;border-radius:12px;padding:18px 22px;margin:-10px 0 30px;box-shadow:inset 0 1px 3px rgba(255,255,255,.05)}
+.ambience-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.ambience-header h3{margin:0;font-size:1rem;color:#fff}.ambience-note{font-size:.78rem;color:var(--text-muted)}
+.ambience-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ambience-item{background:#17181c;border:1px solid #34363d;border-radius:10px;padding:12px}.ambience-toggle{width:100%;border:1px solid #4b4e57;background:#26282e;color:var(--text);border-radius:8px;padding:9px 10px;font-weight:700;cursor:pointer}.ambience-toggle[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow);color:#fff}.ambience-volume{width:100%;margin-top:10px;accent-color:var(--accent)}
+.ambience-stop{border:1px solid #4b4e57;background:#202126;color:var(--text);border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer}
+body:not([data-theme]) .ambience-panel{background:#25262a;border-color:#45474d}
+@media(max-width:768px){.ambience-panel{margin-top:0;padding:14px}.ambience-header{align-items:flex-start;flex-direction:column}.ambience-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ambience-note{font-size:.74rem}}
+</style>
+'''
+          html = r'''
+        <!-- BACKGROUND AMBIENCE TEST — branch test-ambiances only -->
+        <section id="ambience-panel" class="ambience-panel" aria-label="Background ambience">
+            <div class="ambience-header">
+                <div><h3>🌲 BACKGROUND AMBIENCE</h3><div class="ambience-note">Independent from radio EQ • mix several ambiences together</div></div>
+                <button class="ambience-stop" type="button" onclick="stopAllAmbiences()">■ Stop all</button>
+            </div>
+            <div class="ambience-grid">
+                <div class="ambience-item"><button id="amb-rain-btn" class="ambience-toggle" type="button" aria-pressed="false" onclick="toggleAmbience('rain')">🌧️ Rain</button><input id="amb-rain-vol" class="ambience-volume" type="range" min="0" max="1" step="0.01" value="0.28" oninput="setAmbienceVolume('rain',this.value)" aria-label="Rain volume"></div>
+                <div class="ambience-item"><button id="amb-fire-btn" class="ambience-toggle" type="button" aria-pressed="false" onclick="toggleAmbience('fire')">🔥 Campfire</button><input id="amb-fire-vol" class="ambience-volume" type="range" min="0" max="1" step="0.01" value="0.24" oninput="setAmbienceVolume('fire',this.value)" aria-label="Campfire volume"></div>
+                <div class="ambience-item"><button id="amb-wind-btn" class="ambience-toggle" type="button" aria-pressed="false" onclick="toggleAmbience('wind')">💨 Wind</button><input id="amb-wind-vol" class="ambience-volume" type="range" min="0" max="1" step="0.01" value="0.22" oninput="setAmbienceVolume('wind',this.value)" aria-label="Wind volume"></div>
+                <div class="ambience-item"><button id="amb-crickets-btn" class="ambience-toggle" type="button" aria-pressed="false" onclick="toggleAmbience('crickets')">🦗 Crickets</button><input id="amb-crickets-vol" class="ambience-volume" type="range" min="0" max="1" step="0.01" value="0.20" oninput="setAmbienceVolume('crickets',this.value)" aria-label="Crickets volume"></div>
+            </div>
+        </section>
+
+'''
+          js = r'''
+<script id="crh-ambience-test-js">
+(() => {
+  let ctx=null;
+  const state={rain:{active:false,gain:null,nodes:[]},fire:{active:false,gain:null,nodes:[],timer:null},wind:{active:false,gain:null,nodes:[]},crickets:{active:false,gain:null,nodes:[],timer:null}};
+  function getCtx(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
+  function makeNoise(seconds=2){const c=getCtx(),b=c.createBuffer(1,Math.floor(c.sampleRate*seconds),c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
+  function makeGain(type){const c=getCtx(),g=c.createGain(),sl=document.getElementById(`amb-${type}-vol`);g.gain.value=Number(sl?sl.value:.2);g.connect(c.destination);state[type].gain=g;return g}
+  function startRain(){const c=getCtx(),g=makeGain('rain'),src=c.createBufferSource(),hp=c.createBiquadFilter(),lp=c.createBiquadFilter();src.buffer=makeNoise(3);src.loop=true;hp.type='highpass';hp.frequency.value=900;lp.type='lowpass';lp.frequency.value=8500;src.connect(hp);hp.connect(lp);lp.connect(g);src.start();state.rain.nodes=[src,hp,lp]}
+  function startWind(){const c=getCtx(),g=makeGain('wind'),src=c.createBufferSource(),lp=c.createBiquadFilter(),lfo=c.createOscillator(),depth=c.createGain();src.buffer=makeNoise(4);src.loop=true;lp.type='lowpass';lp.frequency.value=700;lp.Q.value=.4;lfo.frequency.value=.13;depth.gain.value=.09;lfo.connect(depth);depth.connect(g.gain);src.connect(lp);lp.connect(g);src.start();lfo.start();state.wind.nodes=[src,lp,lfo,depth]}
+  function fireCrackle(){if(!state.fire.active||!ctx)return;const c=ctx,src=c.createBufferSource(),hp=c.createBiquadFilter(),gg=c.createGain(),now=c.currentTime,peak=.12+Math.random()*.28;src.buffer=makeNoise(.045);hp.type='highpass';hp.frequency.value=1200;gg.gain.setValueAtTime(.001,now);gg.gain.linearRampToValueAtTime(peak,now+.004);gg.gain.exponentialRampToValueAtTime(.001,now+.04);src.connect(hp);hp.connect(gg);gg.connect(state.fire.gain);src.start(now);src.stop(now+.06)}
+  function startFire(){const c=getCtx(),g=makeGain('fire'),src=c.createBufferSource(),lp=c.createBiquadFilter();src.buffer=makeNoise(3);src.loop=true;lp.type='lowpass';lp.frequency.value=650;src.connect(lp);lp.connect(g);src.start();state.fire.nodes=[src,lp];state.fire.timer=setInterval(()=>{fireCrackle();if(Math.random()>.45)setTimeout(fireCrackle,35+Math.random()*120)},220)}
+  function cricketChirp(){if(!state.crickets.active||!ctx)return;const c=ctx,osc=c.createOscillator(),gg=c.createGain(),now=c.currentTime;osc.type='sine';osc.frequency.value=3900+Math.random()*750;gg.gain.setValueAtTime(.001,now);for(let i=0;i<3;i++){const t=now+i*.055;gg.gain.setValueAtTime(.001,t);gg.gain.linearRampToValueAtTime(.13,t+.01);gg.gain.exponentialRampToValueAtTime(.001,t+.04)}osc.connect(gg);gg.connect(state.crickets.gain);osc.start(now);osc.stop(now+.19)}
+  function startCrickets(){makeGain('crickets');state.crickets.timer=setInterval(()=>{cricketChirp();if(Math.random()>.55)setTimeout(cricketChirp,220+Math.random()*420)},780);cricketChirp()}
+  function stopType(type){const s=state[type];if(s.timer){clearInterval(s.timer);s.timer=null}s.nodes.forEach(n=>{try{if(typeof n.stop==='function')n.stop()}catch(e){}try{n.disconnect()}catch(e){}});s.nodes=[];if(s.gain){try{s.gain.disconnect()}catch(e){}s.gain=null}s.active=false;const b=document.getElementById(`amb-${type}-btn`);if(b)b.setAttribute('aria-pressed','false')}
+  window.toggleAmbience=function(type){const s=state[type];if(!s)return;if(s.active){stopType(type);return}s.active=true;if(type==='rain')startRain();else if(type==='fire')startFire();else if(type==='wind')startWind();else startCrickets();const b=document.getElementById(`amb-${type}-btn`);if(b)b.setAttribute('aria-pressed','true')};
+  window.setAmbienceVolume=function(type,value){const s=state[type];if(s&&s.gain&&ctx)s.gain.gain.setTargetAtTime(Number(value),ctx.currentTime,.03)};
+  window.stopAllAmbiences=function(){Object.keys(state).forEach(stopType)};
+  window.addEventListener('pagehide',()=>{try{stopAllAmbiences();if(ctx)ctx.close()}catch(e){}});
+})();
+</script>
+'''
+          if 'id="crh-ambience-test-css"' not in s:s=s.replace('</head>',css+'\n</head>',1)
+          if 'id="ambience-panel"' not in s:
+              marker='        <!-- Technical Stream Status & Visualizer Box -->'
+              if marker not in s:raise SystemExit('HTML insertion marker not found')
+              s=s.replace(marker,html+marker,1)
+          if 'id="crh-ambience-test-js"' not in s:s=s.replace('</body>',js+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Commit test branch
+        run: |
+          git config user.name "american-roots-radio"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add background ambience test panel" || exit 0
+          git push origin test-ambiances
