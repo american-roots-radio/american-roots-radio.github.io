@@ -1,0 +1,45 @@
+name: Temporary GoatCounter install
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-add-goatcounter.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install-goatcounter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add GoatCounter to index.html
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+          marker = 'data-goatcounter="https://americanrootsradio.goatcounter.com/count"'
+
+          if marker not in html:
+              snippet = '''    <!-- GoatCounter analytics -->\n    <script data-goatcounter="https://americanrootsradio.goatcounter.com/count"\n            async src="//gc.zgo.at/count.js"></script>\n\n'''
+              if '</head>' not in html:
+                  raise SystemExit('No </head> tag found in index.html')
+              html = html.replace('</head>', snippet + '</head>', 1)
+              path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit GoatCounter integration
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Add GoatCounter analytics"
+            git push
+          fi
