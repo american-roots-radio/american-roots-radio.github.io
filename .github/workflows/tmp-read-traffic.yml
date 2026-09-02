@@ -1,0 +1,32 @@
+name: Temporary traffic stats check
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/tmp-read-traffic.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read repository traffic
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo '=== VIEWS ==='
+          gh api repos/$REPO/traffic/views || true
+          echo
+          echo '=== CLONES ==='
+          gh api repos/$REPO/traffic/clones || true
+          echo
+          echo '=== REFERRERS ==='
+          gh api repos/$REPO/traffic/popular/referrers || true
+          echo
+          echo '=== PATHS ==='
+          gh api repos/$REPO/traffic/popular/paths || true
