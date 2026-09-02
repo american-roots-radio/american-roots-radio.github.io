@@ -1,0 +1,38 @@
+name: Temporary cleanup old branches
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/tmp-clean-old-branches.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete old backup branches
+        run: |
+          git push origin --delete \
+            backup-before-american-roots-migration-2026-08-31 \
+            backup-before-compact-hero-2026-08-30 \
+            backup-before-contact-label-2026-08-30 \
+            backup-before-country-control-alignment-2026-08-31 \
+            backup-before-final-header-buttons-2026-08-30 \
+            backup-before-final-spacing-2026-08-30 \
+            backup-before-google-verification-2026-08-31 \
+            backup-before-iphone-header-count-final-2026-08-31 \
+            backup-before-iphone-header-fix-2026-08-31 \
+            backup-before-iphone-server-status-center-2026-08-31 \
+            backup-before-iphone-status-polish-2026-08-31 \
+            backup-before-mac-pwa-name-refresh-2026-08-31 \
+            backup-before-mobile-now-playing-align-2026-08-31 \
+            backup-before-mobile-now-playing-final-align-2026-08-31 \
+            backup-before-mobile-player-controls-2026-08-31 \
+            backup-before-now-playing-stale-fix-2026-08-31 \
+            backup-before-share-button-restore-2026-08-31 \
+            backup-before-stream-status-simplify-2026-08-31
