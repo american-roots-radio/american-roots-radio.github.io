@@ -1,0 +1,13 @@
+{
+  "name": "american-roots-radio-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:obfuscate": "node scripts/build.mjs --obfuscate"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}
