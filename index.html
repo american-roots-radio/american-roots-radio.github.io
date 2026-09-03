@@ -2073,6 +2073,53 @@ body[data-theme="standarddark"] .normalizer-control { background: #161b22 !impor
 /* Keep the existing western brand/signature buttons intact on purpose. */
 </style>
 
+
+
+
+<style id="crh-theme-aware-header-utilities-v1">
+/* TEST BRANCH ONLY — Install + Contact follow the active site theme.
+   Brand frame and Saloon support button intentionally stay western. */
+.hero-action-row #installAppBtn,
+.hero-action-row #contactOpenBtn {
+    background: linear-gradient(180deg, var(--card-bg) 0%, var(--panel-bg) 100%) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--accent) !important;
+    box-shadow:
+        0 0 0 1px var(--accent-glow),
+        0 5px 13px rgba(0,0,0,.28) !important;
+    text-shadow: none !important;
+    transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease !important;
+}
+
+.hero-action-row #installAppBtn:hover,
+.hero-action-row #contactOpenBtn:hover {
+    background: var(--card-hover) !important;
+    border-color: var(--accent) !important;
+    filter: none !important;
+    box-shadow:
+        0 0 0 2px var(--accent-glow),
+        0 7px 17px rgba(0,0,0,.34) !important;
+}
+
+.hero-action-row #installAppBtn:focus-visible,
+.hero-action-row #contactOpenBtn:focus-visible {
+    outline: 2px solid var(--accent) !important;
+    outline-offset: 4px !important;
+}
+</style>
+
+
+
+
+<style id="crh-mobile-eq-badge-opaque-v1">
+/* TEST BRANCH ONLY — keep the mobile EQ availability notice opaque. */
+.eq-mobile-badge {
+    background: var(--panel-bg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+</style>
+
 </head>
 <body data-build="american-roots-finition-v5-fix-145-rtw">
     <!-- LOCAL PROTOTYPE ONLY — DO NOT UPLOAD TO GITHUB UNTIL VALIDATED -->
