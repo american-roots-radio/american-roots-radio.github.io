@@ -1,0 +1,5 @@
+node_modules/
+dist/
+dist-minified/
+dist-obfuscated/
+.DS_Store
