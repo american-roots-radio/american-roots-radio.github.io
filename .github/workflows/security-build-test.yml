@@ -1,0 +1,54 @@
+name: Security build test
+
+on:
+  push:
+    branches:
+      - security-build
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install build dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build minified version
+        run: npm run build -- --out=dist-minified
+
+      - name: Build obfuscated version
+        run: npm run build:obfuscate -- --out=dist-obfuscated
+
+      - name: Verify outputs
+        run: |
+          test -s dist-minified/index.html
+          test -s dist-obfuscated/index.html
+          test -f dist-minified/manifest.json
+          test -f dist-obfuscated/manifest.json
+          ! grep -R "sourceMappingURL" dist-minified dist-obfuscated
+
+      - name: Upload minified test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: american-roots-minified-test
+          path: dist-minified
+          if-no-files-found: error
+
+      - name: Upload obfuscated test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: american-roots-obfuscated-test
+          path: dist-obfuscated
+          if-no-files-found: error
