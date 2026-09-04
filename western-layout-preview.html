@@ -10,55 +10,23 @@ iframe{display:block;width:100%;height:100%;border:0;background:#020305}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=4" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=6" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
-async function readText(path) {
-  const response = await fetch(path + '?v=4', { cache: 'no-store' });
-  if (!response.ok) throw new Error(path + ' ' + response.status);
-  return (await response.text()).trim();
-}
-
-const artworkPromise = Promise.all([
-  Promise.all([1,2,3,4,5,6].map(i => readText(`western-bg-${i}.txt`))).then(parts => parts.join('')),
-  readText('western-title-data.txt')
-]);
-
-frame.addEventListener('load', async () => {
+frame.addEventListener('load', () => {
   const doc = frame.contentDocument;
   if (!doc) return;
 
-  const link = doc.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'western-desktop.css?v=4';
-  doc.head.appendChild(link);
+  const base = doc.createElement('link');
+  base.rel = 'stylesheet';
+  base.href = 'western-desktop.css?v=6';
+  doc.head.appendChild(base);
 
-  if (frame.contentWindow.innerWidth < 901) return;
-
-  try {
-    const [backgroundData, titleData] = await artworkPromise;
-
-    doc.body.style.setProperty(
-      'background-image',
-      `linear-gradient(rgba(0,0,0,.035),rgba(0,0,0,.035)),url("data:image/jpeg;base64,${backgroundData}")`,
-      'important'
-    );
-    doc.body.style.setProperty('background-position', 'center top', 'important');
-    doc.body.style.setProperty('background-size', 'cover', 'important');
-    doc.body.style.setProperty('background-attachment', 'fixed', 'important');
-
-    const brand = doc.querySelector('.crh-brand-frame');
-    if (brand) {
-      brand.style.setProperty(
-        'background',
-        `url("data:image/webp;base64,${titleData}") center / contain no-repeat`,
-        'important'
-      );
-    }
-  } catch (error) {
-    console.error('Western preview artwork failed to load:', error);
-  }
+  const finish = doc.createElement('link');
+  finish.rel = 'stylesheet';
+  finish.href = 'western-finish.css?v=6';
+  doc.head.appendChild(finish);
 });
 </script>
 </body>
