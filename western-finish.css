@@ -1,0 +1,87 @@
+/* TEST ONLY — final western artwork + slimmer player. Desktop/Mac/PC only. */
+@media (min-width: 901px) {
+  body {
+    background-image: linear-gradient(rgba(0,0,0,.035), rgba(0,0,0,.035)), url("western-bg-hd.jpg?v=6") !important;
+    background-repeat: no-repeat !important;
+    background-position: center top !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+  }
+
+  header .crh-brand-frame,
+  header .crh-brand-frame:hover {
+    background: url("western-title-hd-transparent.png?v=6") center / 100% 100% no-repeat !important;
+    box-shadow: none !important;
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,.48)) !important;
+  }
+
+  /* Same player length and position, only thinner in height. */
+  body .bottom-player {
+    bottom: 12px !important;
+    width: calc(100vw - 120px) !important;
+    max-width: 1420px !important;
+    min-height: 60px !important;
+    height: auto !important;
+    padding: 5px 14px !important;
+    gap: 9px !important;
+    border-radius: 19px !important;
+  }
+
+  .bottom-player .player-shell {
+    gap: 10px !important;
+  }
+
+  .bottom-player .player-brand {
+    gap: 9px !important;
+  }
+
+  .bottom-player .now-playing-icon {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 9px !important;
+  }
+
+  .bottom-player .player-live-label {
+    font-size: .58rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .bottom-player .player-station {
+    font-size: .90rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .bottom-player .player-sub {
+    font-size: .66rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .bottom-player .audio-controls,
+  .bottom-player .player-control-group {
+    gap: 7px !important;
+  }
+
+  .bottom-player .btn-player-btn,
+  .bottom-player .sleep-timer-select {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    border-radius: 9px !important;
+  }
+
+  .bottom-player .volume-control,
+  .bottom-player .normalizer-control {
+    height: 28px !important;
+    min-height: 28px !important;
+  }
+
+  .bottom-player .volume-slider {
+    width: 88px !important;
+  }
+
+  .bottom-player .boost-slider {
+    width: 74px !important;
+  }
+}
