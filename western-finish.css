@@ -1,18 +1,33 @@
-/* TEST ONLY — final western artwork + slimmer player. Desktop/Mac/PC only. */
+/* TEST ONLY — western PNG background + corrected title proportions + slimmer player. Desktop/Mac/PC only. */
 @media (min-width: 901px) {
   body {
-    background-image: linear-gradient(rgba(0,0,0,.035), rgba(0,0,0,.035)), url("western-bg-hd.jpg?v=6") !important;
+    background-image: url("western-bg-hd.png?v=7") !important;
     background-repeat: no-repeat !important;
     background-position: center top !important;
-    background-size: cover !important;
+    background-size: 100% 100vh !important;
     background-attachment: fixed !important;
   }
 
+  /* The uploaded title artwork is much taller than the previous one: keep its real proportions instead of crushing it. */
   header .crh-brand-frame,
   header .crh-brand-frame:hover {
-    background: url("western-title-hd-transparent.png?v=6") center / 100% 100% no-repeat !important;
+    width: min(860px, calc(100vw - 160px)) !important;
+    max-width: 860px !important;
+    aspect-ratio: 3 / 1 !important;
+    background: url("western-title-hd-transparent.png?v=7") center / contain no-repeat !important;
     box-shadow: none !important;
-    filter: drop-shadow(0 12px 18px rgba(0,0,0,.48)) !important;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,.42)) !important;
+  }
+
+  /* Fill the remaining controls row so Theme + Share sit properly at the right edge. */
+  .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="country"] .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="blues"] .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="gospel"] .compact-secondary-controls .search-wrap {
+    flex: 1 1 285px !important;
+    width: auto !important;
+    min-width: 235px !important;
+    max-width: none !important;
   }
 
   /* Same player length and position, only thinner in height. */
