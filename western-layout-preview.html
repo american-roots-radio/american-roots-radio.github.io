@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>American Roots — Western Desktop Test</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030405}
+iframe{display:block;width:100%;height:100%;border:0;background:#030405}
+</style>
+</head>
+<body>
+<iframe id="site" src="index.html?western-layout-test=1" title="American Roots western desktop test"></iframe>
+<script>
+const frame=document.getElementById('site');
+frame.addEventListener('load',()=>{
+  const doc=frame.contentDocument;
+  if(!doc) return;
+  const link=doc.createElement('link');
+  link.rel='stylesheet';
+  link.href='western-desktop.css?v=1';
+  doc.head.appendChild(link);
+});
+</script>
+</body>
+</html>

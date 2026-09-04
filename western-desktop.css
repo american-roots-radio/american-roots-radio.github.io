@@ -1,0 +1,204 @@
+/* TEST ONLY — WESTERN DESKTOP LAYOUT
+   Injected only by western-layout-preview.html.
+   main/index.html is not modified.
+   Desktop/Mac/PC only. Mobile/tablet remains untouched.
+*/
+@media (min-width: 901px) {
+  html {
+    background: #030405 !important;
+  }
+
+  body {
+    background-color: #030405 !important;
+    background-image:
+      linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)),
+      url("western-bg.webp") !important;
+    background-repeat: no-repeat !important;
+    background-position: center top !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
+    padding-bottom: 150px !important;
+  }
+
+  /* Let the western scene show around the real site. */
+  header,
+  body:not([data-theme]) header,
+  body[data-theme] header {
+    background: transparent !important;
+    border-bottom: 0 !important;
+  }
+
+  header {
+    padding-top: 18px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* Use the approved title artwork as the desktop brand sign.
+     Real title text remains in the DOM for SEO/accessibility. */
+  header .crh-brand-frame {
+    position: relative !important;
+    display: block !important;
+    width: min(980px, calc(100vw - 110px)) !important;
+    max-width: 980px !important;
+    aspect-ratio: 1179 / 226 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: url("western-title.webp") center / contain no-repeat !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,.42) !important;
+    transform: none !important;
+    filter: none !important;
+    overflow: visible !important;
+  }
+
+  header .crh-brand-frame:hover {
+    transform: none !important;
+    filter: none !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,.42) !important;
+  }
+
+  header .crh-brand-frame::before,
+  header .crh-brand-frame::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Keep the semantic text without drawing it over the artwork. */
+  header .crh-brand-frame h1,
+  header .crh-brand-frame .crh-root-genres,
+  header .crh-brand-frame #header-count {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .hero-action-row {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Narrow only the desktop content column. */
+  .container {
+    width: min(980px, calc(100vw - 110px)) !important;
+    max-width: 980px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Preserve the compact filter row inside the narrower column. */
+  .controls-compact {
+    gap: 8px !important;
+  }
+
+  .compact-primary-controls {
+    gap: 6px !important;
+  }
+
+  .compact-secondary-controls {
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+
+  .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="country"] .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="blues"] .compact-secondary-controls .search-wrap,
+  .controls-compact[data-family="gospel"] .compact-secondary-controls .search-wrap {
+    flex: 1 1 180px !important;
+    width: auto !important;
+    min-width: 155px !important;
+    max-width: 245px !important;
+  }
+
+  .compact-secondary-controls .search-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 12px !important;
+    padding-right: 66px !important;
+    box-sizing: border-box !important;
+  }
+
+  .btn-filter,
+  .btn-random-station,
+  .genre-filter-select,
+  .compact-share,
+  .appearance-menu summary {
+    font-size: .82rem !important;
+  }
+
+  .btn-filter,
+  .btn-random-station,
+  .compact-share {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
+
+  .genre-filter-select {
+    max-width: 160px !important;
+    padding-left: 11px !important;
+    padding-right: 28px !important;
+  }
+
+  /* The real fixed player, shortened, floating and rounded like the reference. */
+  .bottom-player {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 16px !important;
+    width: min(1420px, calc(100vw - 120px)) !important;
+    max-width: none !important;
+    transform: translateX(-50%) !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(193,156,89,.58) !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+    padding: 9px 20px !important;
+    background: linear-gradient(180deg, rgba(18,20,24,.98), rgba(7,9,12,.98)) !important;
+    box-shadow:
+      0 18px 42px rgba(0,0,0,.58),
+      0 0 0 1px rgba(255,255,255,.025) inset,
+      0 -1px 0 rgba(255,255,255,.055) inset !important;
+  }
+
+  .bottom-player .player-shell {
+    width: 100% !important;
+    gap: 12px !important;
+  }
+
+  .bottom-player .player-brand {
+    min-width: 220px !important;
+  }
+
+  .bottom-player .audio-controls {
+    gap: 7px !important;
+  }
+
+  .bottom-player .btn-player-btn,
+  .bottom-player .sleep-timer-select {
+    border-radius: 9px !important;
+  }
+
+  .bottom-player .volume-control,
+  .bottom-player .normalizer-control {
+    border-radius: 18px !important;
+  }
+
+  /* Keep overlays/modals above the fixed player and unaffected by the scene. */
+  .history-overlay,
+  .history-drawer,
+  .support-modal-overlay,
+  .install-modal-overlay,
+  .contact-modal-overlay {
+    background-image: none !important;
+  }
+}
