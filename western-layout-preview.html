@@ -11,7 +11,7 @@ iframe.ready{visibility:visible}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=13" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=14" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
@@ -41,7 +41,7 @@ frame.addEventListener('load', () => {
     await loadStyle('western-desktop.css?v=9');
     await loadStyle('western-finish.css?v=9');
 
-    const horseCss = await fetch('western-horse-final.css?v=13', { cache: 'no-store' });
+    const horseCss = await fetch('western-horse-final.css?v=14', { cache: 'no-store' });
     if (!horseCss.ok) throw new Error(`Horse CSS ${horseCss.status}`);
     const horseText = await horseCss.text();
     const horseMatch = horseText.match(/data:image\/webp;base64,([^"')]+)/);
@@ -54,7 +54,7 @@ frame.addEventListener('load', () => {
     horseLayer.src = `data:image/webp;base64,${horseMatch[1]}`;
     horseLayer.style.cssText = [
       'position:fixed',
-      'left:69.42vw',
+      'left:calc(69.42vw + 24px)',
       'top:36.2vh',
       'width:30.58vw',
       'height:54.96vh',
@@ -81,7 +81,7 @@ frame.addEventListener('load', () => {
 }`;
     doc.head.appendChild(stacking);
 
-    await loadStyle('western-player-final.css?v=13');
+    await loadStyle('western-player-final.css?v=14');
   })()
     .catch(error => console.error('Western preview:', error))
     .finally(() => frame.classList.add('ready'));
