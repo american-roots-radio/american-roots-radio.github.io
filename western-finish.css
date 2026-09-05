@@ -1,27 +1,26 @@
-/* TEST ONLY — western PNG background + corrected title proportions + slimmer player. Desktop/Mac/PC only. */
+/* TEST ONLY — Western desktop v9. Original framing restored, V8 player/control opacity retained. Desktop/Mac/PC only. */
 @media (min-width: 901px) {
   body {
-    background-image: url("western-bg-hd.png?v=8") !important;
-    background-repeat: no-repeat !important;
-    /* Small desktop overscan/reframe: keeps the original artwork intact while moving
-       the right-side scene out from under the site column (moon + horse visibility). */
-    background-position: calc(50% + 20px) top !important;
-    background-size: calc(100% + 80px) 100vh !important;
-    background-attachment: fixed !important;
+    background-image:
+      url("data:image/webp;base64,UklGRmALAABXRUJQVlA4WAoAAAAQAAAAYwAAYwAAQUxQSCAGAAAFCtm27bZt5F7S/v87m9vY8lq8F5CiDN8vgIiQKNtu3DaPAEg8LEkXUbaoL9DYWBK/1GKlZYQUzhCstKDxjBhgnREhxWJYRCgkhdwxVWmswqzWlEe/x2IpVoGJB/AwC6RGzCBLwxKjZCYTiwwyBmz0gPcQE48gwpAxA0v5GZGZECZiDGJGJo9SQy45VU2GxAyNTZphINaAmnGXHCKCEqbKcoTNDNRWkYd2hloAMtydmCJPhX+uETKmqV0ZxhtZFFQYB3gMxNhhCFo4MkWdH5LMbGFVJSYBdhgi/KvKrGaZEP8MK1N1DaWYaieMhgLIZaf5jEItxo1Li/7vuTJFmUW+pB1ZBQm5vnkMVm+ZQTYT6Uw64qCp7bnJKmbMILJqiiFQhhkZtFBxS5KYopkmY6+I3Z5kBJziweo1pBQlgByXpROlKlo1e4g9EeROdYxPjOISatYWOcEwSb7u2tjHgbygZUkoHG1Elf+yaN1wIS8iwhfkjCixe6xgMw1UDZOuS6DS4FKlooUy0xfWBa4VVmQg9xiVWDKNXlP2F0mGRn6dVUhFgmlBWw07dr0tVB2y5VZmJYQyKXt8L+ZkFmid4Z11KRTds7gZBbwo0igjX7Iq4SJzI1ICG0o20gIZ5Ne5LqeihJAXZBUrpbVV06qGikSlqaFbo2dkGwtT66JzQ1WTQlEECeWgQuvw9aUaRM5uT0m1cjiGQw13yrneyDk1VPqCO2ZQktGgqpKkIoe1TAejVpwNgIWcOrVRVBQkRBHHP2gfxwMYBs0xqtaMCpUweOBnin/OcxDP243QH+yr4JGaJLOxmNmbzDZjc5oAP/Aq0Z42gTYtDIeKYyEWIcI+wmiEp+MiGblKhPyJjEQLkQyPgTvutp4yMqHmBzppDu1kmZ9HcimCK416NNDP2sUe0VceZqak1bhOk4FyzPTDo5KofNwH3ligWMcbg2s2W2fnslEinl5Qttm/O5UYfEegWVHDZjbrreh6fH15C1hJVEM3Er/HCD3SAs25BO43bMaZpDVZUg2SsE6aSrQJG43xtPGswcgNcjrTLEVQTkOtKN6ShDUJxXdtNt281ZSF2wx3FwqTYpmJEgAzJb0lAdnMjemvxVBIJkjIoZ+w3GyFmbh3ADNxxXcRu/rNguVexRPhi6i8ACu67I+sNFEX2rtcnUF4SmrSZhaUtMYruiaPTRkBmJrlyuocMoQpAQIgCskNNAtKTiDONY7OIygxYeCLpDUBtq362Dq2VbJfPLe40VmESmhCMplSRSQuzYb9sWg2wNZCm5fdfmcRyqGtDJsMmn4BcAn7hldS4x/MZW90RjEbwMW4WFAxcDjWm0UiO9DFfrOdTUJDUJMrkslUUYCAi5I0qSt8d559+sfFjIpo0Gp7aF1b9gcQDfswnUnnFNv4Kmra8ClR4pI2lzcPhxbhzrODGyNQBmUSV0AzaYAI+zGvShwQBzzE5QxzpMgHV45E5h0jgZ/TV5NPMnVbucho2BNWfwXxFtNA5pNbGfNhjHBV4ta+/BsEbva4Mk+OiTM7r2zqjQxhFfOrKJFAhiGYxZ4ArmgH28f2r4HE048FO9glHSMyq7/EQObkmJ9zsTG0a5Z/hTAGtD4rpdMoEmb3P+AG80X46ch0QT+7KFt0cV0+u9hfnl3sk0MX+/2zi/vW0MX999nF54ihi89DQxef64YuPp8OXXzOHrr4vjB08b1n6OL729DF99Chi+/Tzy6eCwxdPN8YunhO8+ziedOzi+dm6uL537OL55jPLp7HLrp4rvzs4vl4dPGcf9HFeUX0cO7Sw/lRP+dgXZznRQ/nkp2cr850TqyqItd5j8I7i57jnHj2827PzHnePdO5/UTMeG4/3/sHU8/t53r/YMb3KKa/4zDHexS/fh9kWwiZNcGWOTBLxCqnvQ/y2/daYDmV15kxQjsvhBTnlmraey1TRSvabWKThkioe6937u0sMgz+i6GPwtFfvmfkvWaUG7JRETm2hz0G3fUost6LRhECEyKdJC4ZykgnFLROfy9+0HJwYrhFDZb1dXLWgrLCK4+geFhwAKT7qhSlLcbTpmaZIlpQXwM1LKgRXAXD8FLIVI2zAlZQOCAaBQAAsBwAnQEqZABkAD4xGIpDoiGhISVWCZBABglpAMaAEZ9UKwkaV5dkpfMfp98hooDI5Uoso5Kycn2nCjjDij71Y/67/W7gg7zWhY/SArmfH86NCqNSAIIwr3C2qpYMP3sFbi9EEaWrJ5yAgJmxsMA2fmURojNvU8ZLeZcqNFokzQQ4s8fEyT1U0i3e48M+nI1d6mTKqX/PuNzcBViM2verKYxkQjEqfJBSs98a3+jM/sH8Mu7FA4qCSrosHYi3xCqO/9Rl7US/jYuuS/4X8iutu9ZpxAjVJ9jCzUtaGrFKjvBQnseBqWqqaFYRitswEAD+/q7zUVyU9J1ZaiHI9zeDrDwmEd8/9K0s4C1nxYTOUQSlGOXzM4WCnhDIcL+8GiC7xP5pDsD9B/Bkuqh3bC/5ivqcfYTLlyYnchmM3L3D8c4hZ7zFl2YBhasxQLrWAArWS2SA7zvfMxxnwiM2f8xGBwudtWePA6I3gZQGzSwZpG0XEABQtcz8OmynxwO0XxeubgGPxPDNslOjs7AEcG0j9EBuVXt1yhaavQhV7IhFrK4CGZ9VkedUz6nh3nya3CuLzqLkau2kJhCecOWwfbUO7d3WPyIxfujzU3oYlL+dZXWRqKpPoQzmupTtu9rSxtCKigQCHl1EeEpoRBMVDMwncjZpGHm1MpTbgmZ7E8xupeXpDrVIZ0aqmuttLswTr4rIt1nXyySHPkAvEsEesBPpFvmaOIg+YUR0h42/tUKgvWyDnYl60G+SR44qPMIvRhDgs2MBfdyOZK97FbIe2iR5owrXZikOmjvv96FJomHdNbNLza3go57HssJOwZi0FIX63MjOZre3r4hYPSHHSJ24Xr4Xlt4BCsJagEpRGfJpN3DvdHy10H6CNVyNBv4eJvLpFmIYygE/Brm/FHQ7gKE7inYP/vKVTYVbYvEttWJzJBpIt//q4zkj58YBEZcBRuB3OF+Rw+87b/qBRefmoD98ETZEbTQR1hjNop2JYYoSs6uD6kAMz4h/s+T1oW7vAQmqmI+iU5XEQXJtjEmv4wrXaopGIEvE/60gGUCroXh5Kx+p0og6Z/9GFmtVuQYil+MV98q1/0gdkJtgNv6r2JqyQibK/HCi3PChT8W1tOHJrW73LT12KEYbfacv3+YcAp017pmv8xtOic4xjE1GH7RHTq+7cAbpjLu2BqRI9KHH62vLbMtW+Ip2N2VsYqVo85B4Mxoe2mU5yKFKGvsPDjqauXk+9BxClQnJbhl0bNVfx/vPIBtQobz5sNYaPLO0GxA1q1A+L3B7NH1eFJ6o9FDdoNeRHqnyFDWwawDB4GlB1Ro10PCtc3PXFSTImPwKwJlnScim1Z2o/rpo8C7Kb4BRwnsUeFVPn1upt3ma3PvT+Vk4lsgel3WPkwbugLyYkrEk2w9hAIXDgAtZMHrl2c+lUwyzO3Dc8uO3d712QlQvbg7emJKfI/kfMk9IXIjJeSfXz5BQf3aaSAI6hgZS3v9NTFVU0vXR5XDza2Xo+OxbDr2OGm5Zmp+0PGe8Z1vgezawtnQ1SfsPqCg1LrGTrQ8gtUnfVjxfEq7kYApWyCpJwZx53d5HJE4Hxq1r62BZbJ4CTT0oRLlGR6F6RtGy7MVoCUuM2tJl1HUmqKZHpNNxAiKQOZixUgt9MWd/62d7T6u0OPyHXdpmh5VqGTAslzNVPxE0vKKz/CONrlfKsCuwGV+PVyH1rzrBmFLLI2y5r1Or7isB67ATAAAAAA=="),
+      url("data:image/webp;base64,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"),
+      url("western-bg-hd.png?v=9") !important;
+    background-repeat: no-repeat, no-repeat, no-repeat !important;
+    background-position: 73.56vw 16.47vh, 67.58vw 5.53vh, center top !important;
+    background-size: 5.98vw 10.63vh, 7.18vw 12.75vh, 100% 100vh !important;
+    background-attachment: fixed, fixed, fixed !important;
   }
 
-  /* Keep the approved title exactly at its current size/proportions. */
   header .crh-brand-frame,
   header .crh-brand-frame:hover {
     width: min(860px, calc(100vw - 160px)) !important;
     max-width: 860px !important;
     aspect-ratio: 3 / 1 !important;
-    background: url("western-title-hd-transparent.png?v=8") center / contain no-repeat !important;
+    background: url("western-title-hd-transparent.png?v=9") center / contain no-repeat !important;
     box-shadow: none !important;
     filter: drop-shadow(0 10px 16px rgba(0,0,0,.42)) !important;
   }
 
-  /* Pull the three hero actions directly under the wooden title. */
   .hero-action-row {
     margin-top: -18px !important;
     margin-bottom: 6px !important;
@@ -29,19 +28,21 @@
     z-index: 2 !important;
   }
 
-  /* Fill the remaining controls row so Theme + Share sit properly at the right edge. */
+  .container {
+    width: min(950px, calc(100vw - 150px)) !important;
+    max-width: 950px !important;
+  }
+
   .compact-secondary-controls .search-wrap,
   .controls-compact[data-family="country"] .compact-secondary-controls .search-wrap,
   .controls-compact[data-family="blues"] .compact-secondary-controls .search-wrap,
   .controls-compact[data-family="gospel"] .compact-secondary-controls .search-wrap {
     flex: 1 1 285px !important;
     width: auto !important;
-    min-width: 235px !important;
+    min-width: 225px !important;
     max-width: none !important;
   }
 
-  /* Western background must never bleed through controls/cards when switching theme.
-     Colors still come from the active theme variables; only the glass transparency is removed. */
   .radio-family-switch .btn-family,
   .controls-compact .btn-filter,
   .controls-compact .btn-random-station,
@@ -59,10 +60,7 @@
     background: var(--card-bg) !important;
   }
 
-  .radio-family-switch .btn-family:hover {
-    background: var(--card-hover) !important;
-  }
-
+  .radio-family-switch .btn-family:hover,
   .radio-family-switch .btn-family.active {
     background: var(--card-hover) !important;
   }
@@ -80,10 +78,7 @@
   .controls-compact .btn-filter:hover,
   .controls-compact .btn-random-station:hover,
   .controls-compact .appearance-menu summary:hover,
-  .controls-compact .compact-share:hover {
-    background: var(--card-hover) !important;
-  }
-
+  .controls-compact .compact-share:hover,
   .controls-compact .btn-filter.active {
     background: var(--card-hover) !important;
   }
@@ -96,7 +91,6 @@
     background: var(--card-hover) !important;
   }
 
-  /* Same player length and slim height, now almost flush with the browser bottom. */
   body .bottom-player {
     bottom: 3px !important;
     width: calc(100vw - 120px) !important;
@@ -108,41 +102,19 @@
     border-radius: 19px !important;
   }
 
-  .bottom-player .player-shell {
-    gap: 10px !important;
-  }
-
-  .bottom-player .player-brand {
-    gap: 9px !important;
-  }
-
+  .bottom-player .player-shell { gap: 10px !important; }
+  .bottom-player .player-brand { gap: 9px !important; }
   .bottom-player .now-playing-icon {
     flex: 0 0 44px !important;
     width: 44px !important;
     height: 44px !important;
     border-radius: 9px !important;
   }
-
-  .bottom-player .player-live-label {
-    font-size: .58rem !important;
-    line-height: 1.05 !important;
-  }
-
-  .bottom-player .player-station {
-    font-size: .90rem !important;
-    line-height: 1.08 !important;
-  }
-
-  .bottom-player .player-sub {
-    font-size: .66rem !important;
-    line-height: 1.05 !important;
-  }
-
+  .bottom-player .player-live-label { font-size: .58rem !important; line-height: 1.05 !important; }
+  .bottom-player .player-station { font-size: .90rem !important; line-height: 1.08 !important; }
+  .bottom-player .player-sub { font-size: .66rem !important; line-height: 1.05 !important; }
   .bottom-player .audio-controls,
-  .bottom-player .player-control-group {
-    gap: 7px !important;
-  }
-
+  .bottom-player .player-control-group { gap: 7px !important; }
   .bottom-player .btn-player-btn,
   .bottom-player .sleep-timer-select {
     height: 34px !important;
@@ -151,18 +123,11 @@
     padding-bottom: 4px !important;
     border-radius: 9px !important;
   }
-
   .bottom-player .volume-control,
   .bottom-player .normalizer-control {
     height: 28px !important;
     min-height: 28px !important;
   }
-
-  .bottom-player .volume-slider {
-    width: 88px !important;
-  }
-
-  .bottom-player .boost-slider {
-    width: 74px !important;
-  }
+  .bottom-player .volume-slider { width: 88px !important; }
+  .bottom-player .boost-slider { width: 74px !important; }
 }
