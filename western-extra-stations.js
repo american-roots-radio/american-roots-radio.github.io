@@ -28,25 +28,25 @@
     blues: [
       {
         id: 231,
-        name: 'Houston Blues Radio',
+        name: 'Hotmix Blues',
         family: 'blues',
         genre: 'blues',
-        location: 'Houston, Texas, USA',
-        desc: 'Texas Gulf Coast Blues and local artists',
-        icon: '🎸',
-        quality: 'MP3',
-        url: 'https://streaming.live365.com/a16858'
+        location: 'France / International',
+        desc: '24/7 dedicated Blues stream from Hotmix Radio',
+        icon: '🔥',
+        quality: '128 kbps MP3',
+        url: 'https://streaming.hotmixradio.com/hotmix-blues-en-mp3'
       },
       {
         id: 232,
-        name: 'The BluzNdaBlood Radio Network',
+        name: 'A Mississippi Blues',
         family: 'blues',
         genre: 'blues',
-        location: 'Roanoke, Virginia, USA',
-        desc: '24/7 acoustic, Chicago, contemporary and electric Blues',
-        icon: '🩸',
-        quality: '128 kbps MP3',
-        url: 'https://streaming.live365.com/a56131'
+        location: 'Toronto, Ontario, Canada',
+        desc: 'Blues and Blues Rock 24/7, from Delta roots to modern Blues',
+        icon: '🎸',
+        quality: '320 kbps MP3',
+        url: 'https://cast1.torontocast.com:4450/;'
       }
     ],
     gospel: [
