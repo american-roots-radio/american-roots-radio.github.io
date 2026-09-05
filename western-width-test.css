@@ -16,10 +16,10 @@
     max-width: 195px !important;
   }
 
-  /* Western desktop player: preserve validated left edge, reveal more scenery on the right. */
+  /* Western desktop player: centered with equal left/right reveal. */
   body .bottom-player {
     bottom: 0 !important;
-    left: calc(50% - 30px) !important;
+    left: 50% !important;
     max-width: 1240px !important;
   }
 
