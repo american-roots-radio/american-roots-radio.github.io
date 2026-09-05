@@ -37,10 +37,19 @@ frame.addEventListener('load', () => {
     doc.head.appendChild(link);
   });
 
+  const loadScript = src => new Promise(resolve => {
+    const script = doc.createElement('script');
+    script.src = src;
+    script.addEventListener('load', resolve, { once: true });
+    script.addEventListener('error', resolve, { once: true });
+    doc.head.appendChild(script);
+  });
+
   (async () => {
     await loadStyle('western-desktop.css?v=9');
     await loadStyle('western-finish.css?v=9');
     await loadStyle('western-width-test.css?v=23');
+    await loadScript('western-extra-stations.js?v=1');
 
     const searchInput = doc.querySelector('.compact-secondary-controls .search-box, .search-wrap input[type="search"], .search-wrap input');
     if (searchInput) {
@@ -56,7 +65,7 @@ frame.addEventListener('load', () => {
 
     const allFilterButton = doc.getElementById('btn-all');
     if (allFilterButton && allFilterButton.parentElement) {
-      const countryCount = doc.querySelector('#family-country-btn .family-count')?.textContent?.trim() || '124';
+      const countryCount = doc.querySelector('#family-country-btn .family-count')?.textContent?.trim() || '126';
       const measureButton = allFilterButton.cloneNode(true);
       measureButton.removeAttribute('id');
       measureButton.textContent = `All Country (${countryCount})`;
