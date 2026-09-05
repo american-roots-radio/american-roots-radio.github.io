@@ -1,22 +1,32 @@
 /* TEST ONLY — western PNG background + corrected title proportions + slimmer player. Desktop/Mac/PC only. */
 @media (min-width: 901px) {
   body {
-    background-image: url("western-bg-hd.png?v=7") !important;
+    background-image: url("western-bg-hd.png?v=8") !important;
     background-repeat: no-repeat !important;
-    background-position: center top !important;
-    background-size: 100% 100vh !important;
+    /* Small desktop overscan/reframe: keeps the original artwork intact while moving
+       the right-side scene out from under the site column (moon + horse visibility). */
+    background-position: calc(50% + 20px) top !important;
+    background-size: calc(100% + 80px) 100vh !important;
     background-attachment: fixed !important;
   }
 
-  /* The uploaded title artwork is much taller than the previous one: keep its real proportions instead of crushing it. */
+  /* Keep the approved title exactly at its current size/proportions. */
   header .crh-brand-frame,
   header .crh-brand-frame:hover {
     width: min(860px, calc(100vw - 160px)) !important;
     max-width: 860px !important;
     aspect-ratio: 3 / 1 !important;
-    background: url("western-title-hd-transparent.png?v=7") center / contain no-repeat !important;
+    background: url("western-title-hd-transparent.png?v=8") center / contain no-repeat !important;
     box-shadow: none !important;
     filter: drop-shadow(0 10px 16px rgba(0,0,0,.42)) !important;
+  }
+
+  /* Pull the three hero actions directly under the wooden title. */
+  .hero-action-row {
+    margin-top: -18px !important;
+    margin-bottom: 6px !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   /* Fill the remaining controls row so Theme + Share sit properly at the right edge. */
@@ -30,9 +40,65 @@
     max-width: none !important;
   }
 
-  /* Same player length and position, only thinner in height. */
+  /* Western background must never bleed through controls/cards when switching theme.
+     Colors still come from the active theme variables; only the glass transparency is removed. */
+  .radio-family-switch .btn-family,
+  .controls-compact .btn-filter,
+  .controls-compact .btn-random-station,
+  .controls-compact .genre-filter-select,
+  .controls-compact .search-box,
+  .controls-compact .appearance-menu summary,
+  .controls-compact .compact-share,
+  .appearance-popover,
+  .card-radio {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .radio-family-switch .btn-family {
+    background: var(--card-bg) !important;
+  }
+
+  .radio-family-switch .btn-family:hover {
+    background: var(--card-hover) !important;
+  }
+
+  .radio-family-switch .btn-family.active {
+    background: var(--card-hover) !important;
+  }
+
+  .controls-compact .btn-filter,
+  .controls-compact .btn-random-station,
+  .controls-compact .genre-filter-select,
+  .controls-compact .search-box,
+  .controls-compact .appearance-menu summary,
+  .controls-compact .compact-share,
+  .appearance-popover {
+    background: var(--panel-bg) !important;
+  }
+
+  .controls-compact .btn-filter:hover,
+  .controls-compact .btn-random-station:hover,
+  .controls-compact .appearance-menu summary:hover,
+  .controls-compact .compact-share:hover {
+    background: var(--card-hover) !important;
+  }
+
+  .controls-compact .btn-filter.active {
+    background: var(--card-hover) !important;
+  }
+
+  .card-radio {
+    background: var(--card-bg) !important;
+  }
+
+  .card-radio:hover {
+    background: var(--card-hover) !important;
+  }
+
+  /* Same player length and slim height, now almost flush with the browser bottom. */
   body .bottom-player {
-    bottom: 12px !important;
+    bottom: 3px !important;
     width: calc(100vw - 120px) !important;
     max-width: 1420px !important;
     min-height: 60px !important;
