@@ -6,37 +6,90 @@
 <title>American Roots — Western Desktop Test</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020305}
-iframe{display:block;width:100%;height:100%;border:0;background:#020305}
+iframe{display:block;width:100%;height:100%;border:0;background:#020305;visibility:hidden}
+iframe.ready{visibility:visible}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=10" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=12" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
 frame.addEventListener('load', () => {
   const doc = frame.contentDocument;
-  if (!doc) return;
+  const win = frame.contentWindow;
+  if (!doc || !win) {
+    frame.classList.add('ready');
+    return;
+  }
 
-  const base = doc.createElement('link');
-  base.rel = 'stylesheet';
-  base.href = 'western-desktop.css?v=9';
-  doc.head.appendChild(base);
+  if (!win.matchMedia('(min-width: 901px)').matches) {
+    frame.classList.add('ready');
+    return;
+  }
 
-  const finish = doc.createElement('link');
-  finish.rel = 'stylesheet';
-  finish.href = 'western-finish.css?v=9';
-  doc.head.appendChild(finish);
+  const loadStyle = href => new Promise(resolve => {
+    const link = doc.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+    doc.head.appendChild(link);
+  });
 
-  const horse = doc.createElement('link');
-  horse.rel = 'stylesheet';
-  horse.href = 'western-horse-final.css?v=10';
-  doc.head.appendChild(horse);
+  (async () => {
+    await loadStyle('western-desktop.css?v=9');
+    await loadStyle('western-finish.css?v=9');
+    await loadStyle('western-horse-final.css?v=12');
 
-  const playerFinal = doc.createElement('link');
-  playerFinal.rel = 'stylesheet';
-  playerFinal.href = 'western-player-final.css?v=11';
-  doc.head.appendChild(playerFinal);
+    const horsePseudo = win.getComputedStyle(doc.body, '::before');
+    const horseBackground = horsePseudo.backgroundImage;
+
+    if (horseBackground && horseBackground !== 'none') {
+      const horseLayer = doc.createElement('div');
+      horseLayer.id = 'western-horse-final-layer';
+      horseLayer.setAttribute('aria-hidden', 'true');
+      horseLayer.style.backgroundImage = horseBackground;
+      doc.body.prepend(horseLayer);
+
+      const horseFix = doc.createElement('style');
+      horseFix.textContent = `
+@media (min-width:901px) {
+  body::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  #western-horse-final-layer {
+    position: fixed !important;
+    left: 69.42vw !important;
+    top: 36.2vh !important;
+    width: 30.58vw !important;
+    height: 54.96vh !important;
+    background-position: center !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+  }
+
+  header,
+  .container {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  body .bottom-player {
+    z-index: 1000 !important;
+  }
+}`;
+      doc.head.appendChild(horseFix);
+    }
+
+    await loadStyle('western-player-final.css?v=12');
+  })()
+    .catch(error => console.error('Western preview:', error))
+    .finally(() => frame.classList.add('ready'));
 });
 </script>
 </body>
