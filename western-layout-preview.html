@@ -43,7 +43,16 @@ frame.addEventListener('load', () => {
     await loadStyle('western-width-test.css?v=23');
 
     const searchInput = doc.querySelector('.compact-secondary-controls .search-box, .search-wrap input[type="search"], .search-wrap input');
-    if (searchInput) searchInput.setAttribute('placeholder', 'Search station');
+    if (searchInput) {
+      const fixedSearchPlaceholder = 'Search station';
+      searchInput.setAttribute('placeholder', fixedSearchPlaceholder);
+      const searchPlaceholderObserver = new MutationObserver(() => {
+        if (searchInput.getAttribute('placeholder') !== fixedSearchPlaceholder) {
+          searchInput.setAttribute('placeholder', fixedSearchPlaceholder);
+        }
+      });
+      searchPlaceholderObserver.observe(searchInput, { attributes: true, attributeFilter: ['placeholder'] });
+    }
 
     const appearanceMenu = doc.querySelector('.appearance-menu');
     if (appearanceMenu) {
