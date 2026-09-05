@@ -11,7 +11,7 @@ iframe.ready{visibility:visible}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=14" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=15" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
@@ -41,17 +41,38 @@ frame.addEventListener('load', () => {
     await loadStyle('western-desktop.css?v=9');
     await loadStyle('western-finish.css?v=9');
 
-    const horseCss = await fetch('western-horse-final.css?v=14', { cache: 'no-store' });
+    const horseCss = await fetch('western-horse-final.css?v=15', { cache: 'no-store' });
     if (!horseCss.ok) throw new Error(`Horse CSS ${horseCss.status}`);
     const horseText = await horseCss.text();
     const horseMatch = horseText.match(/data:image\/webp;base64,([^"')]+)/);
     if (!horseMatch) throw new Error('Horse WebP data not found');
 
+    const raw = atob(horseMatch[1]);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i += 1) bytes[i] = raw.charCodeAt(i);
+
+    const isWebP = bytes.length >= 12 &&
+      bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+      bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50;
+    if (!isWebP) throw new Error('Horse asset is not a RIFF WebP');
+
+    const riffPayloadSize = (
+      bytes[4] |
+      (bytes[5] << 8) |
+      (bytes[6] << 16) |
+      (bytes[7] << 24)
+    ) >>> 0;
+    const webpLength = riffPayloadSize + 8;
+    if (webpLength > bytes.length) throw new Error('Horse WebP is truncated');
+
+    const cleanBytes = bytes.slice(0, webpLength);
+    const horseUrl = URL.createObjectURL(new Blob([cleanBytes], { type: 'image/webp' }));
+
     const horseLayer = doc.createElement('img');
     horseLayer.id = 'western-horse-final-layer';
     horseLayer.alt = '';
     horseLayer.setAttribute('aria-hidden', 'true');
-    horseLayer.src = `data:image/webp;base64,${horseMatch[1]}`;
+    horseLayer.src = horseUrl;
     horseLayer.style.cssText = [
       'position:fixed',
       'left:calc(69.42vw + 24px)',
@@ -61,7 +82,7 @@ frame.addEventListener('load', () => {
       'object-fit:fill',
       'pointer-events:none',
       'user-select:none',
-      'z-index:5'
+      'z-index:9'
     ].join(';');
 
     await horseLayer.decode();
@@ -81,7 +102,7 @@ frame.addEventListener('load', () => {
 }`;
     doc.head.appendChild(stacking);
 
-    await loadStyle('western-player-final.css?v=14');
+    await loadStyle('western-player-final.css?v=15');
   })()
     .catch(error => console.error('Western preview:', error))
     .finally(() => frame.classList.add('ready'));
