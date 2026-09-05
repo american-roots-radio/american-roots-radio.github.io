@@ -54,6 +54,31 @@ frame.addEventListener('load', () => {
       searchPlaceholderObserver.observe(searchInput, { attributes: true, attributeFilter: ['placeholder'] });
     }
 
+    const allFilterButton = doc.getElementById('btn-all');
+    if (allFilterButton && allFilterButton.parentElement) {
+      const countryCount = doc.querySelector('#family-country-btn .family-count')?.textContent?.trim() || '124';
+      const measureButton = allFilterButton.cloneNode(true);
+      measureButton.removeAttribute('id');
+      measureButton.textContent = `All Country (${countryCount})`;
+      measureButton.style.setProperty('position', 'absolute', 'important');
+      measureButton.style.setProperty('visibility', 'hidden', 'important');
+      measureButton.style.setProperty('pointer-events', 'none', 'important');
+      measureButton.style.setProperty('width', 'auto', 'important');
+      measureButton.style.setProperty('min-width', '0', 'important');
+      measureButton.style.setProperty('max-width', 'none', 'important');
+      measureButton.style.setProperty('flex', 'none', 'important');
+      allFilterButton.parentElement.appendChild(measureButton);
+      const countryAllWidth = Math.ceil(measureButton.getBoundingClientRect().width);
+      measureButton.remove();
+
+      if (countryAllWidth > 0) {
+        allFilterButton.style.setProperty('width', `${countryAllWidth}px`, 'important');
+        allFilterButton.style.setProperty('min-width', `${countryAllWidth}px`, 'important');
+        allFilterButton.style.setProperty('max-width', `${countryAllWidth}px`, 'important');
+        allFilterButton.style.setProperty('flex', `0 0 ${countryAllWidth}px`, 'important');
+      }
+    }
+
     const appearanceMenu = doc.querySelector('.appearance-menu');
     if (appearanceMenu) {
       doc.addEventListener('click', event => {
