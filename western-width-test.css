@@ -16,10 +16,11 @@
     max-width: 195px !important;
   }
 
-  /* Western desktop player: keep it centered, reveal more scenery, remove separators. */
+  /* Western desktop player: preserve validated left edge, reveal more scenery on the right. */
   body .bottom-player {
     bottom: 0 !important;
-    max-width: 1300px !important;
+    left: calc(50% - 30px) !important;
+    max-width: 1240px !important;
   }
 
   .bottom-player .player-divider {
