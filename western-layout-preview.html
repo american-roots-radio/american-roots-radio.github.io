@@ -11,7 +11,7 @@ iframe.ready{visibility:visible}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=20" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=23" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
@@ -40,7 +40,10 @@ frame.addEventListener('load', () => {
   (async () => {
     await loadStyle('western-desktop.css?v=9');
     await loadStyle('western-finish.css?v=9');
-    await loadStyle('western-width-test.css?v=20');
+    await loadStyle('western-width-test.css?v=23');
+
+    const searchInput = doc.querySelector('.compact-secondary-controls .search-box, .search-wrap input[type="search"], .search-wrap input');
+    if (searchInput) searchInput.setAttribute('placeholder', 'Search station');
 
     const horseCss = await fetch('western-horse-final.css?v=15', { cache: 'no-store' });
     if (!horseCss.ok) throw new Error(`Horse CSS ${horseCss.status}`);
