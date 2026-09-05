@@ -11,7 +11,7 @@ iframe.ready{visibility:visible}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=12" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=13" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
@@ -40,53 +40,48 @@ frame.addEventListener('load', () => {
   (async () => {
     await loadStyle('western-desktop.css?v=9');
     await loadStyle('western-finish.css?v=9');
-    await loadStyle('western-horse-final.css?v=12');
 
-    const horsePseudo = win.getComputedStyle(doc.body, '::before');
-    const horseBackground = horsePseudo.backgroundImage;
+    const horseCss = await fetch('western-horse-final.css?v=13', { cache: 'no-store' });
+    if (!horseCss.ok) throw new Error(`Horse CSS ${horseCss.status}`);
+    const horseText = await horseCss.text();
+    const horseMatch = horseText.match(/data:image\/webp;base64,([^"')]+)/);
+    if (!horseMatch) throw new Error('Horse WebP data not found');
 
-    if (horseBackground && horseBackground !== 'none') {
-      const horseLayer = doc.createElement('div');
-      horseLayer.id = 'western-horse-final-layer';
-      horseLayer.setAttribute('aria-hidden', 'true');
-      horseLayer.style.backgroundImage = horseBackground;
-      doc.body.prepend(horseLayer);
+    const horseLayer = doc.createElement('img');
+    horseLayer.id = 'western-horse-final-layer';
+    horseLayer.alt = '';
+    horseLayer.setAttribute('aria-hidden', 'true');
+    horseLayer.src = `data:image/webp;base64,${horseMatch[1]}`;
+    horseLayer.style.cssText = [
+      'position:fixed',
+      'left:69.42vw',
+      'top:36.2vh',
+      'width:30.58vw',
+      'height:54.96vh',
+      'object-fit:fill',
+      'pointer-events:none',
+      'user-select:none',
+      'z-index:5'
+    ].join(';');
 
-      const horseFix = doc.createElement('style');
-      horseFix.textContent = `
+    await horseLayer.decode();
+    doc.body.appendChild(horseLayer);
+
+    const stacking = doc.createElement('style');
+    stacking.textContent = `
 @media (min-width:901px) {
-  body::before {
-    content: none !important;
-    display: none !important;
-  }
-
-  #western-horse-final-layer {
-    position: fixed !important;
-    left: 69.42vw !important;
-    top: 36.2vh !important;
-    width: 30.58vw !important;
-    height: 54.96vh !important;
-    background-position: center !important;
-    background-size: 100% 100% !important;
-    background-repeat: no-repeat !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-  }
-
   header,
   .container {
     position: relative !important;
-    z-index: 1 !important;
+    z-index: 10 !important;
   }
-
   body .bottom-player {
     z-index: 1000 !important;
   }
 }`;
-      doc.head.appendChild(horseFix);
-    }
+    doc.head.appendChild(stacking);
 
-    await loadStyle('western-player-final.css?v=12');
+    await loadStyle('western-player-final.css?v=13');
   })()
     .catch(error => console.error('Western preview:', error))
     .finally(() => frame.classList.add('ready'));
