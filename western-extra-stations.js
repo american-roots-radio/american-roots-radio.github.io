@@ -39,14 +39,14 @@
       },
       {
         id: 232,
-        name: 'A Mississippi Blues',
+        name: 'Jazz Radio Blues',
         family: 'blues',
         genre: 'blues',
-        location: 'Toronto, Ontario, Canada',
-        desc: 'Blues and Blues Rock 24/7, from Delta roots to modern Blues',
-        icon: '🎸',
-        quality: '320 kbps MP3',
-        url: 'https://cast1.torontocast.com:4450/;'
+        location: 'Paris, France',
+        desc: 'Dedicated Blues stream from Jazz Radio, classic and contemporary Blues',
+        icon: '🎷',
+        quality: '128 kbps MP3',
+        url: 'https://jazzblues.ice.infomaniak.ch/jazzblues-high.mp3'
       }
     ],
     gospel: [
