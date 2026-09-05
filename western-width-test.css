@@ -1,0 +1,7 @@
+/* TEST ONLY — Slightly narrower western desktop content. Desktop only. */
+@media (min-width: 901px) {
+  .container {
+    width: min(920px, calc(100vw - 120px)) !important;
+    max-width: 920px !important;
+  }
+}
