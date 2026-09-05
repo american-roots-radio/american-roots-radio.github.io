@@ -39,14 +39,14 @@
       },
       {
         id: 232,
-        name: 'Crossroads Chicago Radio',
+        name: 'The BluzNdaBlood Radio Network',
         family: 'blues',
         genre: 'blues',
-        location: 'Chicago, Illinois, USA',
-        desc: 'Chicago Blues, Soul, Jazz and roots from Maxwell Street',
-        icon: '🎷',
-        quality: 'MP3',
-        url: 'https://streaming.live365.com/a50006'
+        location: 'Roanoke, Virginia, USA',
+        desc: '24/7 acoustic, Chicago, contemporary and electric Blues',
+        icon: '🩸',
+        quality: '128 kbps MP3',
+        url: 'https://streaming.live365.com/a56131'
       }
     ],
     gospel: [
