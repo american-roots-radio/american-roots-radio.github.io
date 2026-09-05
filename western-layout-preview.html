@@ -45,6 +45,23 @@ frame.addEventListener('load', () => {
     const searchInput = doc.querySelector('.compact-secondary-controls .search-box, .search-wrap input[type="search"], .search-wrap input');
     if (searchInput) searchInput.setAttribute('placeholder', 'Search station');
 
+    const appearanceMenu = doc.querySelector('.appearance-menu');
+    if (appearanceMenu) {
+      doc.addEventListener('click', event => {
+        if (appearanceMenu.open && !appearanceMenu.contains(event.target)) {
+          appearanceMenu.open = false;
+          appearanceMenu.removeAttribute('open');
+        }
+      });
+    }
+
+    const mainAudio = doc.getElementById('main-audio');
+    if (mainAudio && typeof win.clearNowPlayingLine === 'function') {
+      mainAudio.addEventListener('play', () => {
+        win.clearNowPlayingLine();
+      });
+    }
+
     const horseCss = await fetch('western-horse-final.css?v=15', { cache: 'no-store' });
     if (!horseCss.ok) throw new Error(`Horse CSS ${horseCss.status}`);
     const horseText = await horseCss.text();
