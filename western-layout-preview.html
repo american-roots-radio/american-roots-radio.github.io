@@ -10,7 +10,7 @@ iframe{display:block;width:100%;height:100%;border:0;background:#020305}
 </style>
 </head>
 <body>
-<iframe id="site" src="index.html?western-layout-test=9" title="American Roots western desktop test"></iframe>
+<iframe id="site" src="index.html?western-layout-test=10" title="American Roots western desktop test"></iframe>
 <script>
 const frame = document.getElementById('site');
 
@@ -27,6 +27,11 @@ frame.addEventListener('load', () => {
   finish.rel = 'stylesheet';
   finish.href = 'western-finish.css?v=9';
   doc.head.appendChild(finish);
+
+  const horse = doc.createElement('link');
+  horse.rel = 'stylesheet';
+  horse.href = 'western-horse-final.css?v=10';
+  doc.head.appendChild(horse);
 });
 </script>
 </body>
